@@ -1,0 +1,42 @@
+/*
+ * Copyright 2025 Trixnity
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.folivo.lognity.appender
+
+import dev.karmakrafts.filament.Mutex
+import dev.karmakrafts.filament.guarded
+import net.folivo.lognity.api.LogLevel
+import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.appender.LogAppender
+import net.folivo.lognity.api.appender.LogFilter
+
+@PublishedApi
+internal class ConsoleAppender( // @formatter:off
+    override val pattern: String,
+    override val formatter: LogFormatter,
+    private val filter: LogFilter
+) : LogAppender { // @formatter:on
+    private val mutex: Mutex = Mutex()
+
+    override fun append(logger: Logger, level: LogLevel, message: String, marker: LogMarker?) {
+        if (!filter(level, message, marker)) return
+        mutex.guarded {
+            println(formatter.transform(logger, level, message, marker, pattern))
+        }
+    }
+}

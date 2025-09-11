@@ -1,0 +1,30 @@
+/*
+ * Copyright 2025 Trixnity
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.folivo.lognity.util
+
+import net.folivo.lognity.api.LogLevel
+import platform.windows.EVENTLOG_ERROR_TYPE
+import platform.windows.EVENTLOG_INFORMATION_TYPE
+import platform.windows.EVENTLOG_WARNING_TYPE
+import platform.windows.WORD
+
+val LogLevel.eventType: WORD
+    get() = when (this) {
+        LogLevel.TRACE, LogLevel.DEBUG, LogLevel.INFO -> EVENTLOG_INFORMATION_TYPE
+        LogLevel.WARN -> EVENTLOG_WARNING_TYPE
+        LogLevel.ERROR, LogLevel.FATAL -> EVENTLOG_ERROR_TYPE
+    }.toUShort()
