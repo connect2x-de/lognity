@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Karma Krafts & associates
+ * Copyright 2025 Trixnity
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ import dev.karmakrafts.conventions.GitLabCI
 import dev.karmakrafts.conventions.apache2License
 import dev.karmakrafts.conventions.authenticatedSonatype
 import dev.karmakrafts.conventions.defaultDependencyLocking
-import dev.karmakrafts.conventions.setRepository
 import dev.karmakrafts.conventions.signPublications
 
 plugins {
