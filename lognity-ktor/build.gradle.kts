@@ -16,6 +16,7 @@
 
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.setProjectInfo
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -24,6 +25,7 @@ plugins {
 
 configureJava(rootProject.libs.versions.java)
 
+@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -49,6 +51,14 @@ kotlin {
     jvm()
     androidTarget {
         publishLibraryVariants("release")
+    }
+    js {
+        browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
     }
     applyDefaultHierarchyTemplate()
     sourceSets {
