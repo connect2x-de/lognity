@@ -18,26 +18,26 @@ package net.folivo.lognity.api
 
 import net.folivo.lognity.api.ansi.AnsiScope
 
-inline fun Logger.trace(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.trace(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     trace(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }
 
-inline fun Logger.debug(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.debug(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     debug(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }
 
-inline fun Logger.info(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.info(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     info(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }
 
-inline fun Logger.warn(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.warn(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     warn(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }
 
-inline fun Logger.error(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.error(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     error(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }
 
-inline fun Logger.fatal(throwable: Throwable?, marker: LogMarker? = null, crossinline message: AnsiScope.() -> Any) {
+inline fun Logger.fatal(throwable: Throwable?, marker: Marker? = null, crossinline message: AnsiScope.() -> Any) {
     fatal(marker) { "${message()}: ${throwable?.stackTraceToString() ?: "Stacktrace unavailable"}" }
 }

@@ -17,10 +17,9 @@
 package net.folivo.lognity.api
 
 import net.folivo.lognity.api.ansi.AnsiScope
-import net.folivo.lognity.api.backend.LogBackend
-import net.folivo.lognity.api.config.LoggerConfig
-import net.folivo.lognity.api.config.LoggerConfigBuilder
-import kotlin.reflect.KClass
+import net.folivo.lognity.api.backend.Backend
+import net.folivo.lognity.api.config.Config
+import net.folivo.lognity.api.config.ConfigBuilder
 
 /**
  * An interface which provides functions to log to all appenders of
@@ -32,16 +31,16 @@ interface Logger {
          * The default configuration specification used when creating new logger instances
          * without explicitly providing a configuration.
          *
-         * This property delegates to the current [LogBackend]'s defaultConfigSpec.
+         * This property delegates to the current [Backend]'s defaultConfigSpec.
          * Changing this value affects all subsequently created loggers that don't specify
          * their own configuration.
          *
-         * @see LoggerConfigBuilder
+         * @see ConfigBuilder
          */
-        var defaultConfig: LoggerConfigBuilder.() -> Unit
-            get() = LogBackend.current.defaultConfigSpec
+        var defaultConfig: ConfigBuilder.() -> Unit
+            get() = Backend.current.defaultConfigSpec
             set(value) {
-                LogBackend.current.defaultConfigSpec = value
+                Backend.current.defaultConfigSpec = value
             }
     }
 
@@ -54,13 +53,13 @@ interface Logger {
     /**
      * The immutable configuration of this logger instance.
      */
-    val config: LoggerConfig
+    val config: Config
 
     /**
      * The current log level of this logger instance.
      * This may be changed at any time from any thread.
      */
-    var level: LogLevel
+    var level: Level
 
     /**
      * If true, this logger will forward all messages to its appenders,
@@ -83,7 +82,7 @@ interface Logger {
      * @param level The level at which to report the message.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun log(level: LogLevel, message: AnsiScope.() -> Any)
+    fun log(level: Level, message: AnsiScope.() -> Any)
 
     /**
      * Log a message at the given level to all appenders.
@@ -94,10 +93,10 @@ interface Logger {
      * @param level The level at which to report the message.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun log(marker: LogMarker?, level: LogLevel, message: AnsiScope.() -> Any)
+    fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any)
 
     /**
-     * Log a message at the [LogLevel.TRACE] level if enabled.
+     * Log a message at the [Level.TRACE] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.TRACE, message)
@@ -105,10 +104,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun trace(message: AnsiScope.() -> Any) = log(LogLevel.TRACE, message)
+    fun trace(message: AnsiScope.() -> Any) = log(Level.TRACE, message)
 
     /**
-     * Log a message at the [LogLevel.DEBUG] level if enabled.
+     * Log a message at the [Level.DEBUG] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.DEBUG, message)
@@ -116,10 +115,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun debug(message: AnsiScope.() -> Any) = log(LogLevel.DEBUG, message)
+    fun debug(message: AnsiScope.() -> Any) = log(Level.DEBUG, message)
 
     /**
-     * Log a message at the [LogLevel.INFO] level if enabled.
+     * Log a message at the [Level.INFO] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.INFO, message)
@@ -127,10 +126,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun info(message: AnsiScope.() -> Any) = log(LogLevel.INFO, message)
+    fun info(message: AnsiScope.() -> Any) = log(Level.INFO, message)
 
     /**
-     * Log a message at the [LogLevel.WARN] level if enabled.
+     * Log a message at the [Level.WARN] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.WARN, message)
@@ -138,10 +137,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun warn(message: AnsiScope.() -> Any) = log(LogLevel.WARN, message)
+    fun warn(message: AnsiScope.() -> Any) = log(Level.WARN, message)
 
     /**
-     * Log a message at the [LogLevel.ERROR] level if enabled.
+     * Log a message at the [Level.ERROR] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.ERROR, message)
@@ -149,10 +148,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun error(message: AnsiScope.() -> Any) = log(LogLevel.ERROR, message)
+    fun error(message: AnsiScope.() -> Any) = log(Level.ERROR, message)
 
     /**
-     * Log a message at the [LogLevel.FATAL] level if enabled.
+     * Log a message at the [Level.FATAL] level if enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(LogLevel.FATAL, message)
@@ -160,10 +159,10 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun fatal(message: AnsiScope.() -> Any) = log(LogLevel.FATAL, message)
+    fun fatal(message: AnsiScope.() -> Any) = log(Level.FATAL, message)
 
     /**
-     * Log a message at the [LogLevel.TRACE] level and with the given marker if both are enabled.
+     * Log a message at the [Level.TRACE] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.TRACE, message)
@@ -172,10 +171,10 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun trace(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.TRACE, message)
+    fun trace(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.TRACE, message)
 
     /**
-     * Log a message at the [LogLevel.DEBUG] level and with the given marker if both are enabled.
+     * Log a message at the [Level.DEBUG] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.DEBUG, message)
@@ -184,10 +183,10 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun debug(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.DEBUG, message)
+    fun debug(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.DEBUG, message)
 
     /**
-     * Log a message at the [LogLevel.INFO] level and with the given marker if both are enabled.
+     * Log a message at the [Level.INFO] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.INFO, message)
@@ -196,10 +195,10 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun info(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.INFO, message)
+    fun info(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.INFO, message)
 
     /**
-     * Log a message at the [LogLevel.WARN] level and with the given marker if both are enabled.
+     * Log a message at the [Level.WARN] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.WARN, message)
@@ -208,10 +207,10 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun warn(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.WARN, message)
+    fun warn(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.WARN, message)
 
     /**
-     * Log a message at the [LogLevel.ERROR] level and with the given marker if both are enabled.
+     * Log a message at the [Level.ERROR] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.ERROR, message)
@@ -220,10 +219,10 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun error(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.ERROR, message)
+    fun error(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.ERROR, message)
 
     /**
-     * Log a message at the [LogLevel.FATAL] level and with the given marker if both are enabled.
+     * Log a message at the [Level.FATAL] level and with the given marker if both are enabled.
      * Semantically equal to
      * ```kotlin
      * Logger.log(marker, LogLevel.FATAL, message)
@@ -232,42 +231,16 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun fatal(marker: LogMarker?, message: AnsiScope.() -> Any) = log(marker, LogLevel.FATAL, message)
+    fun fatal(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.FATAL, message)
 }
 
 /**
  * Create a new [Logger] instance with the given name.
  *
  * @param name The name of the newly created logger instance.
- * @param configSpec The configuration spec applied to the newly created logger instance. See [LoggerConfigBuilder].
+ * @param configSpec The configuration spec applied to the newly created logger instance. See [ConfigBuilder].
  * @return A new logger instance with the given name.
  */
-fun Logger(name: String, configSpec: LoggerConfigBuilder.() -> Unit = LogBackend.current.defaultConfigSpec): Logger {
-    return LogBackend.current.createLogger(name, configSpec)
-}
-
-/**
- * Create a new [Logger] instance owned by the given class.
- * The package segments of the class FQN will be shortened to 2 characters max to keep the log readable.
- *
- * @param clazz The class the newly created logger instance is owned by.
- * @param configSpec The configuration spec applied to the newly created logger instance. See [LoggerConfigBuilder].
- * @return A new logger instance owned by the given class.
- */
-fun Logger(
-    clazz: KClass<*>,
-    configSpec: LoggerConfigBuilder.() -> Unit = LogBackend.current.defaultConfigSpec
-): Logger {
-    val nameParts = requireNotNull(clazz.qualifiedName) { "Could not retrieve qualified class name" }.split('.')
-    var name = ""
-    for (i in nameParts.indices) {
-        val part = nameParts[i]
-        if (i == nameParts.lastIndex) {
-            name += part
-            continue
-        }
-        name += if (part.length > 2) part.substring(0..<2) else part
-        if (i < nameParts.lastIndex) name += '.'
-    }
-    return LogBackend.current.createLogger(name, configSpec)
+fun Logger(name: String, configSpec: ConfigBuilder.() -> Unit = Backend.current.defaultConfigSpec): Logger {
+    return Backend.current.createLogger(name, configSpec)
 }

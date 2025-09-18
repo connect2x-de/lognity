@@ -16,16 +16,16 @@
 
 package net.folivo.lognity.api.format
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 
 /**
  * A function which represents a transformation applied for a given template variable
  * in the log pattern.
  */
 @Suppress("NOTHING_TO_INLINE")
-fun interface LogPatternElement {
+fun interface FormatElement {
     /**
      * Transforms the given string and replaces all occurrences
      * of the template variable associated with this format element.
@@ -39,26 +39,26 @@ fun interface LogPatternElement {
      */
     operator fun invoke( // @formatter:off
         logger: Logger,
-        level: LogLevel,
+        level: Level,
         content: Any,
-        marker: LogMarker?,
+        marker: Marker?,
         s: String
     ): String // @formatter:on
 
     /**
-     * Concatenates this format element with another to form a new [LogFormatter] instance.
+     * Concatenates this format element with another to form a new [Formatter] instance.
      *
      * @param other The element with which to join this element to form a new formatter instance.
-     * @return A new [LogFormatter] instance containing both this and the other format element.
+     * @return A new [Formatter] instance containing both this and the other format element.
      */
-    operator fun plus(other: LogPatternElement): LogFormatter = LogFormatter { logger, level, content, marker, s ->
+    operator fun plus(other: FormatElement): Formatter = Formatter { logger, level, content, marker, s ->
         other(logger, level, content, marker, this(logger, level, content, marker, s))
     }
 
     /**
      * Creates a new log formatter from this format element.
      *
-     * @return A new [LogFormatter] instance containing only this format element.
+     * @return A new [Formatter] instance containing only this format element.
      */
-    fun asFormatter(): LogFormatter = LogFormatter(this)
+    fun asFormatter(): Formatter = Formatter(this)
 }

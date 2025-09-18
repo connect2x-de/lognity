@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import dev.karmakrafts.conventions.setProjectInfo
 import dev.karmakrafts.conventions.configureJava
-import java.time.ZonedDateTime
+import dev.karmakrafts.conventions.setProjectInfo
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.dokka)
 }
 
 configureJava(rootProject.libs.versions.java)
 
+@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     mingwX64()
     linuxX64()
@@ -49,6 +49,14 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
+    js {
+        browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
+    }
     applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
@@ -57,19 +65,9 @@ kotlin {
                 api(libs.kotlinx.io.bytestring)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.filament.core)
                 implementation(libs.stately.common)
                 implementation(libs.stately.collections)
             }
-        }
-    }
-}
-
-dokka {
-    moduleName = project.name
-    pluginsConfiguration {
-        html {
-            footerMessage = "(c) ${ZonedDateTime.now().year} Karma Krafts & associates"
         }
     }
 }
@@ -82,23 +80,6 @@ android {
     }
 }
 
-val dokkaJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.dokkaGeneratePublicationHtml)
-    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-tasks {
-    System.getProperty("publishDocs.root")?.let { docsDir ->
-        register("publishDocs", Copy::class) {
-            dependsOn(dokkaJar)
-            mustRunAfter(dokkaJar)
-            from(zipTree(dokkaJar.get().outputs.files.first()))
-            into(docsDir)
-        }
-    }
-}
-
 publishing {
-    setProjectInfo("Skroll API", "Lightweight logging API for Kotlin/Multiplatform")
+    setProjectInfo("Lognity API", "Lightweight logging API for Kotlin/Multiplatform")
 }

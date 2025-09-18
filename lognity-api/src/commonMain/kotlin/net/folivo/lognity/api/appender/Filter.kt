@@ -16,22 +16,22 @@
 
 package net.folivo.lognity.api.appender
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
-import net.folivo.lognity.api.appender.LogFilter.Companion.levels
-import net.folivo.lognity.api.appender.LogFilter.Companion.markers
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
+import net.folivo.lognity.api.appender.Filter.Companion.levels
+import net.folivo.lognity.api.appender.Filter.Companion.markers
 
 /**
  * A functional interface which allows expressing a finely grained
  * message filter which can be applied on a per-appender basis.
  */
 @Suppress("NOTHING_TO_INLINE")
-fun interface LogFilter {
+fun interface Filter {
     companion object {
         /**
          * A filter which will always let all messages through.
          */
-        val always: LogFilter = LogFilter { _, _, _ -> true }
+        val always: Filter = Filter { _, _, _ -> true }
 
         /**
          * Creates a filter which lets through all messages at the specified level(s).
@@ -39,9 +39,9 @@ fun interface LogFilter {
          * @param levels The levels at which to pass messages.
          * @return A new filter instance only allowing the given levels.
          */
-        inline fun levels(vararg levels: LogLevel): LogFilter = object : LogFilter {
-            private val filteredLevels: Set<LogLevel> = levels.toSet()
-            override fun invoke(level: LogLevel, message: String, marker: LogMarker?): Boolean = level in filteredLevels
+        inline fun levels(vararg levels: Level): Filter = object : Filter {
+            private val filteredLevels: Set<Level> = levels.toSet()
+            override fun invoke(level: Level, message: String, marker: Marker?): Boolean = level in filteredLevels
         }
 
         /**
@@ -50,9 +50,9 @@ fun interface LogFilter {
          * @param levels The levels at which to omit messages.
          * @return A new filter instance allowing any level except the given ones.
          */
-        inline fun levelsExcept(vararg levels: LogLevel): LogFilter = object : LogFilter {
-            private val filteredLevels: Set<LogLevel> = LogLevel.entries.toSet() - levels.toSet()
-            override fun invoke(level: LogLevel, message: String, marker: LogMarker?): Boolean = level in filteredLevels
+        inline fun levelsExcept(vararg levels: Level): Filter = object : Filter {
+            private val filteredLevels: Set<Level> = Level.entries.toSet() - levels.toSet()
+            override fun invoke(level: Level, message: String, marker: Marker?): Boolean = level in filteredLevels
         }
 
         /**
@@ -61,9 +61,9 @@ fun interface LogFilter {
          * @param markers The markers to pass messages for.
          * @return A new filter instance allowing all messages with the given markers to pass.
          */
-        inline fun markers(vararg markers: LogMarker): LogFilter = object : LogFilter {
-            private val filteredMarkers: Set<LogMarker> = markers.toSet()
-            override fun invoke(level: LogLevel, message: String, marker: LogMarker?): Boolean =
+        inline fun markers(vararg markers: Marker): Filter = object : Filter {
+            private val filteredMarkers: Set<Marker> = markers.toSet()
+            override fun invoke(level: Level, message: String, marker: Marker?): Boolean =
                 marker in filteredMarkers
         }
 
@@ -73,7 +73,7 @@ fun interface LogFilter {
          * @param s The substring to look for in all messages-
          * @return A new filter instance allowing all messages with the given substring to pass.
          */
-        inline fun containsString(s: String): LogFilter = LogFilter { _, message, _ -> s in message }
+        inline fun containsString(s: String): Filter = Filter { _, message, _ -> s in message }
     }
 
     /**
@@ -84,7 +84,7 @@ fun interface LogFilter {
      * @param marker The marker of the current message.
      * @return True if the current message should be forwarded to the appender.
      */
-    operator fun invoke(level: LogLevel, message: String, marker: LogMarker?): Boolean
+    operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
 
     /**
      * Concatenates this filter with another using a short-circuit AND operation (`&&`).
@@ -93,7 +93,7 @@ fun interface LogFilter {
      * @return A new filter instance checking both, this filter and the given one
      *  using a short-circuit AND operation.
      */
-    operator fun plus(other: LogFilter): LogFilter = LogFilter { level, message, marker ->
+    operator fun plus(other: Filter): Filter = Filter { level, message, marker ->
         this(level, message, marker) && other(level, message, marker)
     }
 }

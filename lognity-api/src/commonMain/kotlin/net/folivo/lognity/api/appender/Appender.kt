@@ -16,10 +16,10 @@
 
 package net.folivo.lognity.api.appender
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.format.Formatter
 
 /**
  * Interface representing a log appender, which is responsible for outputting log messages
@@ -29,12 +29,12 @@ import net.folivo.lognity.api.format.LogFormatter
  * Each appender has a formatter that controls how messages are formatted before being appended,
  * and typically works with a filter to determine which messages should be processed.
  */
-interface LogAppender {
+interface Appender {
     /**
      * The formatter used by this appender to transform log messages according to a pattern.
      * The formatter applies the pattern to the raw message content before it is appended.
      */
-    val formatter: LogFormatter
+    val formatter: Formatter
 
     /**
      * The formatting pattern string used by this appender.
@@ -51,7 +51,7 @@ interface LogAppender {
      * @param message The formatted message content to be appended.
      * @param marker An optional marker that can be used for additional filtering or processing.
      */
-    fun append(logger: Logger, level: LogLevel, message: String, marker: LogMarker?)
+    fun append(logger: Logger, level: Level, message: String, marker: Marker?)
 
     /**
      * A function which may be explicitly invoked to free all underlying

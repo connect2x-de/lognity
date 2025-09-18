@@ -19,13 +19,13 @@ package net.folivo.lognity.api
 import net.folivo.lognity.api.ansi.AnsiBg
 import net.folivo.lognity.api.ansi.AnsiFg
 import net.folivo.lognity.api.ansi.AnsiSequence
-import net.folivo.lognity.api.backend.LogBackend
+import net.folivo.lognity.api.backend.Backend
 
 /**
  * The log level designates the importance of a logged message in
  * ascending order.
  */
-enum class LogLevel( // @formatter:off
+enum class Level( // @formatter:off
     val symbol: String,
     val ansi: AnsiSequence
 ) { // @formatter:on
@@ -45,6 +45,6 @@ enum class LogLevel( // @formatter:off
          * @return The global default log level.
          */
         @Suppress("NOTHING_TO_INLINE")
-        inline fun default(): LogLevel = LogBackend.current.defaultLogLevel
+        inline fun default(): Level = Backend.current.defaultLevel
     }
 }

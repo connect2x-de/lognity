@@ -16,13 +16,13 @@
 
 package net.folivo.lognity.api.backend
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.config.LoggerConfigBuilder
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.format.Formatter
 import kotlinx.io.files.Path
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -32,16 +32,16 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  * The backend is responsible for creating loggers, markers, and appenders,
  * as well as providing default configuration for the logging system.
  */
-interface LogBackend {
+interface Backend {
     @OptIn(ExperimentalAtomicApi::class)
     companion object {
-        private val _current: AtomicReference<LogBackend> = AtomicReference(NoopLogBackend)
+        private val _current: AtomicReference<Backend> = AtomicReference(NoopBackend)
 
         /**
          * The current active logging backend instance.
          * This property allows getting and setting the global logging backend.
          */
-        var current: LogBackend
+        var current: Backend
             get() = _current.load()
             set(value) {
                 _current.store(value)
@@ -57,19 +57,19 @@ interface LogBackend {
      * The default log level used by this backend when not explicitly specified.
      * This is used as the initial level for new loggers.
      */
-    val defaultLogLevel: LogLevel
+    val defaultLevel: Level
 
     /**
      * The default log formatter used by this backend when not explicitly specified.
      * This is used for formatting log messages in appenders.
      */
-    val defaultFormatter: LogFormatter
+    val defaultFormatter: Formatter
 
     /**
      * The default logger configuration specification used by this backend.
      * This is used when creating new loggers without an explicit configuration.
      */
-    var defaultConfigSpec: LoggerConfigBuilder.() -> Unit
+    var defaultConfigSpec: ConfigBuilder.() -> Unit
 
     /**
      * Creates a new log marker with the specified parameters.
@@ -79,7 +79,7 @@ interface LogBackend {
      * @param isEnabled When true, all messages with this marker will be logged.
      * @return A new log marker instance.
      */
-    fun createMarker(key: String, name: String, isEnabled: Boolean): LogMarker
+    fun createMarker(key: String, name: String, isEnabled: Boolean): Marker
 
     /**
      * Creates a new logger with the specified name and configuration.
@@ -88,7 +88,7 @@ interface LogBackend {
      * @param configSpec The configuration specification for the logger. Defaults to the backend's default configuration.
      * @return A new logger instance.
      */
-    fun createLogger(name: String, configSpec: LoggerConfigBuilder.() -> Unit = defaultConfigSpec): Logger
+    fun createLogger(name: String, configSpec: ConfigBuilder.() -> Unit = defaultConfigSpec): Logger
 
     /**
      * Creates a new file appender that writes log messages to a file.
@@ -99,7 +99,7 @@ interface LogBackend {
      * @param path The file path where log messages will be written.
      * @return A new file appender instance.
      */
-    fun createFileAppender(pattern: String, formatter: LogFormatter, filter: LogFilter, path: Path): LogAppender
+    fun createFileAppender(pattern: String, formatter: Formatter, filter: Filter, path: Path): Appender
 
     /**
      * Creates a new console appender that writes log messages to the standard output.
@@ -109,7 +109,7 @@ interface LogBackend {
      * @param filter The filter to apply to determine whether a message should be logged.
      * @return A new console appender instance.
      */
-    fun createConsoleAppender(pattern: String, formatter: LogFormatter, filter: LogFilter): LogAppender
+    fun createConsoleAppender(pattern: String, formatter: Formatter, filter: Filter): Appender
 
     /**
      * Creates a platform-specific console appender that writes log messages to the
@@ -124,6 +124,6 @@ interface LogBackend {
      * @param filter The filter to apply to determine whether a message should be logged.
      * @return A new platform-specific console appender instance.
      */
-    fun createSystemAppender(pattern: String, formatter: LogFormatter, filter: LogFilter): LogAppender =
+    fun createSystemAppender(pattern: String, formatter: Formatter, filter: Filter): Appender =
         createConsoleAppender(pattern, formatter, filter)
 }

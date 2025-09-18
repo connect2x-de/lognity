@@ -16,16 +16,16 @@
 
 package net.folivo.lognity.api.config
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.appender.LogAppender
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.appender.Appender
 
 /**
  * The immutable configuration of a given [net.folivo.lognity.api.Logger] instance.
  * Mainly used for storing references to all appenders used by the logger.
  */
 @ConsistentCopyVisibility
-data class LoggerConfig internal constructor( // @formatter:off
-    val initialLevel: LogLevel = LogLevel.default(),
+data class Config internal constructor( // @formatter:off
+    val initialLevel: Level = Level.default(),
     val initialEnableState: Boolean = true,
-    val appenders: List<LogAppender> = emptyList()
+    val appenders: List<Appender> = emptyList()
 ) // @formatter:on

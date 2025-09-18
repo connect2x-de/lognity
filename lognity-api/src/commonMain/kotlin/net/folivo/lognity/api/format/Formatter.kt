@@ -16,10 +16,10 @@
 
 package net.folivo.lognity.api.format
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.backend.LogBackend
+import net.folivo.lognity.api.backend.Backend
 import kotlin.jvm.JvmInline
 
 /**
@@ -28,20 +28,20 @@ import kotlin.jvm.JvmInline
  * by applying one or more pattern elements in sequence.
  */
 @JvmInline
-value class LogFormatter @PublishedApi internal constructor(@PublishedApi internal val rootElement: LogPatternElement) {
+value class Formatter @PublishedApi internal constructor(@PublishedApi internal val rootElement: FormatElement) {
     companion object {
         /**
          * A formatter that returns the input string unchanged.
          * This identity formatter can be used as a base for building more complex formatters
          * or when no formatting is desired.
          */
-        val identity: LogFormatter = LogPatternElement { _, _, _, _, s -> s }.asFormatter()
+        val identity: Formatter = FormatElement { _, _, _, _, s -> s }.asFormatter()
 
         /**
          * The default formatter provided by the current log backend.
          */
-        inline val default: LogFormatter
-            get() = LogBackend.current.defaultFormatter
+        inline val default: Formatter
+            get() = Backend.current.defaultFormatter
     }
 
     /**
@@ -58,31 +58,31 @@ value class LogFormatter @PublishedApi internal constructor(@PublishedApi intern
     @Suppress("NOTHING_TO_INLINE")
     inline fun transform( // @formatter:off
         logger: Logger,
-        level: LogLevel,
+        level: Level,
         content: Any,
-        marker: LogMarker?,
+        marker: Marker?,
         s: String
     ): String { // @formatter:on
         return rootElement(logger, level, content, marker, s)
     }
 
     /**
-     * Concatenates this formatter with another format element to form a new [LogFormatter] instance.
+     * Concatenates this formatter with another format element to form a new [Formatter] instance.
      *
      * @param other The element with which to join this formatter to form a new formatter instance.
-     * @return A new [LogFormatter] instance containing both these formatters elements and the other format element.
+     * @return A new [Formatter] instance containing both these formatters elements and the other format element.
      */
-    operator fun plus(other: LogPatternElement): LogFormatter = LogFormatter { logger, level, content, marker, s ->
+    operator fun plus(other: FormatElement): Formatter = Formatter { logger, level, content, marker, s ->
         other(logger, level, content, marker, rootElement(logger, level, content, marker, s))
     }
 
     /**
-     * Concatenates this formatter with another formatter to form a new [LogFormatter] instance.
+     * Concatenates this formatter with another formatter to form a new [Formatter] instance.
      *
      * @param other The formatter with which to join this formatter to form a new formatter instance.
-     * @return A new [LogFormatter] instance containing both these formatters elements and the other formatters elements.
+     * @return A new [Formatter] instance containing both these formatters elements and the other formatters elements.
      */
-    operator fun plus(other: LogFormatter): LogFormatter = LogFormatter { logger, level, content, marker, s ->
+    operator fun plus(other: Formatter): Formatter = Formatter { logger, level, content, marker, s ->
         other.transform(logger, level, content, marker, rootElement(logger, level, content, marker, s))
     }
 }

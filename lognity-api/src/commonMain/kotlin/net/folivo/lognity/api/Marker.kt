@@ -16,13 +16,13 @@
 
 package net.folivo.lognity.api
 
-import net.folivo.lognity.api.backend.LogBackend
+import net.folivo.lognity.api.backend.Backend
 
 /**
  * Represents a log marker to tag messages with to allow
  * operations like filtering of the messages.
  */
-interface LogMarker {
+interface Marker {
     /**
      * The internal key the marker is referenced by in cache.
      */
@@ -48,10 +48,10 @@ interface LogMarker {
  * @return A new log marker instance with the given key, name and state.
  */
 @Suppress("NOTHING_TO_INLINE")
-inline fun LogMarker( // @formatter:off
+inline fun Marker( // @formatter:off
     key: String,
     name: String = key,
     isEnabled: Boolean = true
-): LogMarker { // @formatter:on
-    return LogBackend.current.createMarker(key, name, isEnabled)
+): Marker { // @formatter:on
+    return Backend.current.createMarker(key, name, isEnabled)
 }

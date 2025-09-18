@@ -16,23 +16,23 @@
 
 package net.folivo.lognity.api.config
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.backend.LogBackend
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.backend.Backend
+import net.folivo.lognity.api.format.Formatter
 import kotlinx.io.files.Path
 
 /**
- * A builder class for creating a new [LoggerConfig] instance
+ * A builder class for creating a new [Config] instance
  * using a simple DSL.
  */
-class LoggerConfigBuilder {
+class ConfigBuilder {
     /**
      * The initial log level used by the logger instance(s)
      * using this config.
      */
-    var level: LogLevel = LogLevel.default()
+    var level: Level = Level.default()
 
     /**
      * The initial enable state applied to the logger instance(s)
@@ -41,16 +41,16 @@ class LoggerConfigBuilder {
     var isEnabled: Boolean = true
 
     @PublishedApi
-    internal val appenders: ArrayList<LogAppender> = ArrayList()
+    internal val appenders: ArrayList<Appender> = ArrayList()
 
     /**
-     * Copies all config properties from the given [LoggerConfig] instance
+     * Copies all config properties from the given [Config] instance
      * into this builder instance.
      *
      * @param config The config from which to copy all properties into this builder instance.
      * @return This builder instance.
      */
-    fun setFrom(config: LoggerConfig): LoggerConfigBuilder {
+    fun setFrom(config: Config): ConfigBuilder {
         level = config.initialLevel
         isEnabled = config.initialEnableState
         appenders += config.appenders
@@ -62,7 +62,7 @@ class LoggerConfigBuilder {
      *
      * @param appender The appender instance to add to this config.
      */
-    fun appender(appender: LogAppender) {
+    fun appender(appender: Appender) {
         require(appender !in appenders) { "Appender is already present" }
         appenders += appender
     }
@@ -71,15 +71,15 @@ class LoggerConfigBuilder {
      * Adds a new console appender to this logger config.
      *
      * @param pattern The formatting pattern to apply to all messages passed to the new appender.
-     * @param formatter The formatter used to apply the specified pattern to each message. See [LogFormatter].
+     * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
      * @param filter The filter to apply for every message to determine whether it should be logged.
      */
     fun consoleAppender( // @formatter:off
         pattern: String,
-        formatter: LogFormatter = LogFormatter.default,
-        filter: LogFilter = LogFilter.always
+        formatter: Formatter = Formatter.default,
+        filter: Filter = Filter.always
     ) { // @formatter:on
-        appenders += LogBackend.current.createConsoleAppender(pattern, formatter, filter)
+        appenders += Backend.current.createConsoleAppender(pattern, formatter, filter)
     }
 
     /**
@@ -88,15 +88,15 @@ class LoggerConfigBuilder {
      * underlying platform instead of raw stdio if available.
      *
      * @param pattern The formatting pattern to apply to all messages passed to the new appender.
-     * @param formatter The formatter used to apply the specified pattern to each message. See [LogFormatter].
+     * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
      * @param filter The filter to apply for every message to determine whether it should be logged.
      */
     fun platformConsoleAppender( // @formatter:off
         pattern: String,
-        formatter: LogFormatter = LogFormatter.default,
-        filter: LogFilter = LogFilter.always
+        formatter: Formatter = Formatter.default,
+        filter: Filter = Filter.always
     ) { // @formatter:on
-        appenders += LogBackend.current.createSystemAppender(pattern, formatter, filter)
+        appenders += Backend.current.createSystemAppender(pattern, formatter, filter)
     }
 
     /**
@@ -104,17 +104,17 @@ class LoggerConfigBuilder {
      *
      * @param pattern The formatting pattern to apply to all messages passed to the new appender.
      * @param path The file path at which to save the log.
-     * @param formatter The formatter used to apply the specified pattern to each message. See [LogFormatter].
+     * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
      * @param filter The filter to apply for every message to determine whether it should be logged.
      */
     fun fileAppender( // @formatter:off
         pattern: String,
         path: Path,
-        formatter: LogFormatter = LogFormatter.default,
-        filter: LogFilter = LogFilter.always
+        formatter: Formatter = Formatter.default,
+        filter: Filter = Filter.always
     ) { // @formatter:on
-        appenders += LogBackend.current.createFileAppender(pattern, formatter, filter, path)
+        appenders += Backend.current.createFileAppender(pattern, formatter, filter, path)
     }
 
-    fun build(): LoggerConfig = LoggerConfig(level, isEnabled, appenders)
+    fun build(): Config = Config(level, isEnabled, appenders)
 }
