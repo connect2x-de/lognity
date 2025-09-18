@@ -70,6 +70,11 @@ kotlin {
                 implementation(libs.stately.collections)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
+        }
         val jvmAndAndroidMain by creating { dependsOn(commonMain) }
         jvmMain { dependsOn(jvmAndAndroidMain) }
         androidMain { dependsOn(jvmAndAndroidMain) }
