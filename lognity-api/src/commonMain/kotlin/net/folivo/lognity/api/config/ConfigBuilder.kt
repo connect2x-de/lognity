@@ -16,12 +16,12 @@
 
 package net.folivo.lognity.api.config
 
+import kotlinx.io.files.Path
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.format.Formatter
-import kotlinx.io.files.Path
 
 /**
  * A builder class for creating a new [Config] instance

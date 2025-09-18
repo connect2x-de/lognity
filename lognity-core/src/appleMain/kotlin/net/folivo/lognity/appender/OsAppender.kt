@@ -20,7 +20,6 @@ import co.touchlab.stately.collections.SharedHashMap
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.osLogType
 import kotlinx.cinterop.ExperimentalForeignApi
 import net.folivo.lognity.api.appender.Appender

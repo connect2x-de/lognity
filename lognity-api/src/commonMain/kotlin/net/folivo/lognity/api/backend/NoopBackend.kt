@@ -24,8 +24,8 @@ import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
-import net.folivo.lognity.api.format.Formatter
 import kotlinx.io.files.Path
+import net.folivo.lognity.api.format.Formatter
 
 private object NoopMarker : Marker {
     override val key: String = ""

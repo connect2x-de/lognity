@@ -16,14 +16,14 @@
 
 package net.folivo.lognity.api.backend
 
+import kotlinx.io.files.Path
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.format.Formatter
-import kotlinx.io.files.Path
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 

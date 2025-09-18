@@ -18,8 +18,8 @@ package net.folivo.lognity.backend
 
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
-import net.folivo.lognity.appender.OsAppender
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.appender.OsAppender
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,

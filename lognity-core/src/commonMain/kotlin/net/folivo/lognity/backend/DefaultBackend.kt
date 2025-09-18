@@ -26,7 +26,6 @@ import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.ConfigBuilder
-import net.folivo.lognity.api.format.FormatElement
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.appender.ConsoleAppender
 import net.folivo.lognity.appender.FileAppender
@@ -73,14 +72,14 @@ object DefaultBackend : Backend {
         }
 
     @OptIn(ExperimentalTime::class)
-    override val defaultFormatter: Formatter = FormatElement { logger, level, content, marker, s ->
+    override val defaultFormatter: Formatter = Formatter { logger, level, content, marker, s ->
         defaultFormatterFst(s, formatterContext.get().apply {
             this.logger = logger
             this.level = level
             this.content = content
             this.marker = marker
         })
-    }.asFormatter()
+    }
 
     override fun createMarker(
         key: String, name: String, isEnabled: Boolean

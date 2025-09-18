@@ -46,7 +46,7 @@ internal class DefaultLogger( // @formatter:off
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter.transform(this, level, messageContent, null, appender.pattern), null
+                this, level, appender.formatter(this, level, messageContent, null, appender.pattern), null
             )
         }
     }
@@ -56,7 +56,7 @@ internal class DefaultLogger( // @formatter:off
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter.transform(this, level, messageContent, marker, appender.pattern), marker
+                this, level, appender.formatter(this, level, messageContent, marker, appender.pattern), marker
             )
         }
     }

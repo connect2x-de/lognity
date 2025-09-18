@@ -41,7 +41,7 @@ class Slf4jLognityLogger(
         if (level < this.level || marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         val formattedMessage =
-            Backend.current.defaultFormatter.transform(this, level, messageContent, marker, formatPattern)
+            Backend.current.defaultFormatter(this, level, messageContent, marker, formatPattern)
         when (level) {
             Level.TRACE -> delegate.trace(formattedMessage)
             Level.DEBUG -> delegate.debug(formattedMessage)

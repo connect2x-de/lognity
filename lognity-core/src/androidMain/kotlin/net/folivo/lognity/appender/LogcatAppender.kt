@@ -21,10 +21,10 @@ import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
 import net.folivo.lognity.api.ansi.toAnsi
-import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.logcatLevel
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
 
 internal class LogcatAppender( // @formatter:off
     override val pattern: String,

@@ -20,7 +20,6 @@ import co.touchlab.stately.collections.SharedHashMap
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.eventType
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValuesOf
@@ -28,6 +27,7 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.wcstr
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
 import platform.windows.DeregisterEventSource
 import platform.windows.HANDLE
 import platform.windows.RegisterEventSourceW

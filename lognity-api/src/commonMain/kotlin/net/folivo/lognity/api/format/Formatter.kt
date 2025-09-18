@@ -17,25 +17,23 @@
 package net.folivo.lognity.api.format
 
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.backend.Backend
-import kotlin.jvm.JvmInline
 
 /**
- * A formatter for log messages that applies transformations based on pattern elements.
- * LogFormatter is responsible for transforming raw log messages into formatted output
- * by applying one or more pattern elements in sequence.
+ * A function which represents a transformation applied for a given template variable
+ * in the log pattern.
  */
-@JvmInline
-value class Formatter @PublishedApi internal constructor(@PublishedApi internal val rootElement: FormatElement) {
+@Suppress("NOTHING_TO_INLINE")
+fun interface Formatter {
     companion object {
         /**
          * A formatter that returns the input string unchanged.
          * This identity formatter can be used as a base for building more complex formatters
          * or when no formatting is desired.
          */
-        val identity: Formatter = FormatElement { _, _, _, _, s -> s }.asFormatter()
+        val identity: Formatter = Formatter { _, _, _, _, s -> s }
 
         /**
          * The default formatter provided by the current log backend.
@@ -46,43 +44,30 @@ value class Formatter @PublishedApi internal constructor(@PublishedApi internal 
 
     /**
      * Transforms the given string and replaces all occurrences
-     * of the template variables associated with this formatter instance.
+     * of the template variable associated with this format element.
      *
-     * @param logger The logger instance associated with this formatter.
+     * @param logger The logger instance associated with this format element.
      * @param level The level at which the message will be logged.
      * @param content The raw content of the message.
      * @param marker The log marker the message being formatted is tagged with.
      * @param s The string being transformed.
-     * @return The transformed (formatted) message.
+     * @return The transformed string or the original string if no template variable was replaced.
      */
-    @Suppress("NOTHING_TO_INLINE")
-    inline fun transform( // @formatter:off
+    operator fun invoke( // @formatter:off
         logger: Logger,
         level: Level,
         content: Any,
         marker: Marker?,
         s: String
-    ): String { // @formatter:on
-        return rootElement(logger, level, content, marker, s)
-    }
+    ): String // @formatter:on
 
     /**
-     * Concatenates this formatter with another format element to form a new [Formatter] instance.
+     * Concatenates this format element with another to form a new [Formatter] instance.
      *
-     * @param other The element with which to join this formatter to form a new formatter instance.
-     * @return A new [Formatter] instance containing both these formatters elements and the other format element.
-     */
-    operator fun plus(other: FormatElement): Formatter = Formatter { logger, level, content, marker, s ->
-        other(logger, level, content, marker, rootElement(logger, level, content, marker, s))
-    }
-
-    /**
-     * Concatenates this formatter with another formatter to form a new [Formatter] instance.
-     *
-     * @param other The formatter with which to join this formatter to form a new formatter instance.
-     * @return A new [Formatter] instance containing both these formatters elements and the other formatters elements.
+     * @param other The element with which to join this element to form a new formatter instance.
+     * @return A new [Formatter] instance containing both this and the other format element.
      */
     operator fun plus(other: Formatter): Formatter = Formatter { logger, level, content, marker, s ->
-        other.transform(logger, level, content, marker, rootElement(logger, level, content, marker, s))
+        other(logger, level, content, marker, this(logger, level, content, marker, s))
     }
 }
