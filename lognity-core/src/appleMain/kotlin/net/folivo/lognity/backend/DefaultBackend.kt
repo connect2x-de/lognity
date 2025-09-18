@@ -16,22 +16,15 @@
 
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.appender.LogcatAppender
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.appender.OsAppender
+import net.folivo.lognity.api.format.Formatter
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
-    return LogcatAppender(pattern, formatter, filter)
-}
-
-internal actual fun getDefaultLogLevel(): LogLevel {
-    return System.getProperty("skroll.default.level")?.let { levelName ->
-        LogLevel.entries.find { it.name == levelName }
-    } ?: LogLevel.INFO
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
+    return OsAppender(pattern, formatter, filter)
 }

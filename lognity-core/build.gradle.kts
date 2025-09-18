@@ -16,16 +16,16 @@
 
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.setProjectInfo
-import java.time.ZonedDateTime
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.dokka)
 }
 
 configureJava(rootProject.libs.versions.java)
 
+@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     mingwX64()
     linuxX64()
@@ -49,29 +49,30 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
+    js {
+        browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
+    }
     applyDefaultHierarchyTemplate()
     sourceSets {
-        commonMain {
+        val commonMain by getting {
             dependencies {
                 api(libs.kotlinx.io.core)
                 api(libs.kotlinx.io.bytestring)
                 api(projects.lognityApi)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.filament.core)
                 implementation(libs.stately.common)
                 implementation(libs.stately.collections)
             }
         }
-    }
-}
-
-dokka {
-    moduleName = project.name
-    pluginsConfiguration {
-        html {
-            footerMessage = "(c) ${ZonedDateTime.now().year} Karma Krafts & associates"
-        }
+        val jvmAndAndroidMain by creating { dependsOn(commonMain) }
+        jvmMain { dependsOn(jvmAndAndroidMain) }
+        androidMain { dependsOn(jvmAndAndroidMain) }
     }
 }
 
@@ -83,23 +84,6 @@ android {
     }
 }
 
-val dokkaJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.dokkaGeneratePublicationHtml)
-    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-tasks {
-    System.getProperty("publishDocs.root")?.let { docsDir ->
-        register("publishDocs", Copy::class) {
-            dependsOn(dokkaJar)
-            mustRunAfter(dokkaJar)
-            from(zipTree(dokkaJar.get().outputs.files.first()))
-            into(docsDir)
-        }
-    }
-}
-
 publishing {
-    setProjectInfo("Skroll Core", "Lightweight logging implementation for Kotlin/Multiplatform")
+    setProjectInfo("Lognity Core", "Lightweight logging implementation for Kotlin/Multiplatform")
 }

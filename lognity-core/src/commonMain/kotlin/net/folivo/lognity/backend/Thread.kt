@@ -16,15 +16,10 @@
 
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.appender.OsLogAppender
-import net.folivo.lognity.api.format.LogFormatter
+import kotlinx.coroutines.sync.Mutex
 
-internal actual fun createSystemLogAppender( // @formatter:off
-    pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
-    return OsLogAppender(pattern, formatter, filter)
-}
+internal expect fun getThreadName(): String
+
+internal expect fun getThreadId(): ULong
+
+internal expect inline fun <reified R> Mutex.withBlockingLock(crossinline action: () -> R): R

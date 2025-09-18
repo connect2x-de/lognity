@@ -16,16 +16,25 @@
 
 package net.folivo.lognity.backend
 
+import kotlinx.browser.window
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.appender.ConsoleAppender
+import org.w3c.dom.url.URLSearchParams
 
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.appender.LogcatAppender
-import net.folivo.lognity.api.format.LogFormatter
+@PublishedApi
+internal actual fun getDefaultLogLevel(): Level {
+    val params = URLSearchParams(window.location.search)
+    val levelName = params.get("logLevel")
+    return Level.entries.find { it.name.equals(levelName, true) } ?: Level.INFO
+}
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
-    return LogcatAppender(pattern, formatter, filter)
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
+    return ConsoleAppender(pattern, formatter, filter)
 }

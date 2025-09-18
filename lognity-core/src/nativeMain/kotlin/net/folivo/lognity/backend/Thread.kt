@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.backend
 
-import net.folivo.lognity.api.Level
-import platform.windows.EVENTLOG_ERROR_TYPE
-import platform.windows.EVENTLOG_INFORMATION_TYPE
-import platform.windows.EVENTLOG_WARNING_TYPE
-import platform.windows.WORD
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
-val Level.eventType: WORD
-    get() = when (this) {
-        Level.TRACE, Level.DEBUG, Level.INFO -> EVENTLOG_INFORMATION_TYPE
-        Level.WARN -> EVENTLOG_WARNING_TYPE
-        Level.ERROR, Level.FATAL -> EVENTLOG_ERROR_TYPE
-    }.toUShort()
+internal actual inline fun <reified R> Mutex.withBlockingLock(crossinline action: () -> R): R {
+    return runBlocking {
+        withLock { action() }
+    }
+}

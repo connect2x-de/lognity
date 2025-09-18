@@ -16,22 +16,15 @@
 
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.api.LogLevel
 import net.folivo.lognity.appender.ConsoleAppender
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.format.LogFormatter
-
-internal actual fun getDefaultLogLevel(): LogLevel {
-    return System.getProperty("lognity.default.level")?.let { levelName ->
-        LogLevel.entries.find { it.name == levelName }
-    } ?: LogLevel.INFO
-}
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
     return ConsoleAppender(pattern, formatter, filter)
 }

@@ -17,25 +17,24 @@
 package net.folivo.lognity.backend
 
 import co.touchlab.stately.collections.SharedHashMap
-import dev.karmakrafts.filament.Thread
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.DateTimeFormatBuilder
 import kotlinx.datetime.format.char
 import kotlinx.io.files.Path
-import net.folivo.lognity.DefaultLogMarker
 import net.folivo.lognity.DefaultLogger
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.DefaultMarker
+import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiSequence
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.backend.LogBackend
-import net.folivo.lognity.api.config.LoggerConfigBuilder
-import net.folivo.lognity.api.format.LogFormatter
-import net.folivo.lognity.api.format.LogPatternElement
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.backend.Backend
+import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.format.FormatElement
+import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.appender.ConsoleAppender
 import net.folivo.lognity.appender.FileAppender
 import kotlin.concurrent.atomics.AtomicReference
@@ -45,45 +44,45 @@ import kotlin.time.ExperimentalTime
 
 private typealias DateTimeElement = Pair<String, DateTimeFormatBuilder.WithDateTimeComponents.() -> Unit>
 
-internal expect fun getDefaultLogLevel(): LogLevel
+internal expect fun getDefaultLogLevel(): Level
 
 internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: LogFormatter = LogFormatter.default,
-    filter: LogFilter = LogFilter.always
-): LogAppender // @formatter:on
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always
+): Appender // @formatter:on
 
 // TODO: document this
 @OptIn(ExperimentalAtomicApi::class)
-object DefaultLogBackend : LogBackend {
+object DefaultBackend : Backend {
     override val name: String = "Skroll"
-    override val defaultLogLevel: LogLevel = getDefaultLogLevel()
+    override val defaultLevel: Level = getDefaultLogLevel()
 
-    private val _defaultConfigSpec: AtomicReference<LoggerConfigBuilder.() -> Unit> = AtomicReference {
+    private val _defaultConfigSpec: AtomicReference<ConfigBuilder.() -> Unit> = AtomicReference {
         platformConsoleAppender(
             "{{levelColor}}>>  {{levelSymbol}}\t{{datetime(hh:mm:ss.SSS)}} ({{name}} @ {{thread}}) {{message}}{{r}}"
         )
         fileAppender(
             pattern = "[{{level}}][{{datetime(yyyy/MM/dd hh:mm:ss.SSS)}}] ({{name}} @ {{thread}}) {{message}}",
             path = Path("latest.log"),
-            filter = LogFilter.levelsExcept(LogLevel.DEBUG, LogLevel.TRACE)
+            filter = Filter.levelsExcept(Level.DEBUG, Level.TRACE)
         )
         fileAppender(
             pattern = "[{{level}}][{{datetime(yyyy/MM/dd hh:mm:ss.SSS)}}] ({{name}} @ {{thread}}) {{message}}",
             path = Path("debug.log"),
-            filter = LogFilter.levels(LogLevel.DEBUG)
+            filter = Filter.levels(Level.DEBUG)
         )
     }
-    override var defaultConfigSpec: LoggerConfigBuilder.() -> Unit
+    override var defaultConfigSpec: ConfigBuilder.() -> Unit
         get() = _defaultConfigSpec.load()
         set(value) {
             _defaultConfigSpec.store(value)
         }
 
-    private val maxLevelNameLength: Int = LogLevel.entries //
+    private val maxLevelNameLength: Int = Level.entries //
         .maxOf { it.name.length }
 
-    private val paddedLevelNames: Array<String> = LogLevel.entries //
+    private val paddedLevelNames: Array<String> = Level.entries //
         .map { it.name.padEnd(maxLevelNameLength, '-') } //
         .toTypedArray()
 
@@ -91,7 +90,7 @@ object DefaultLogBackend : LogBackend {
         "yyyy" to { year() },
         "yy" to { yearTwoDigits(2000) },
         "MM" to { monthNumber() },
-        "dd" to { dayOfMonth() },
+        "dd" to { day() },
         "hh" to { amPmHour() },
         "HH" to { hour() },
         "mm" to { minute() },
@@ -115,9 +114,9 @@ object DefaultLogBackend : LogBackend {
             val paramsBegin = matchBegin + matchLength
             val paramsEnd = result.indexOf(')', paramsBegin)
             val params = result.substring(paramsBegin, paramsEnd)
-            result = result.replaceRange(
-                matchBegin, matchBegin + matchLength + (paramsEnd - paramsBegin) + 3, transform(params)
-            )
+            // Match begin + length of ident match + length of params + 3 for delimiter ')}}'
+            val matchEnd = matchBegin + matchLength + (paramsEnd - paramsBegin) + 3
+            result = result.replaceRange(matchBegin, matchEnd, transform(params))
         }
         return result
     }
@@ -146,13 +145,13 @@ object DefaultLogBackend : LogBackend {
     }
 
     @OptIn(ExperimentalTime::class)
-    override val defaultFormatter: LogFormatter = LogPatternElement { logger, level, content, marker, s ->
+    override val defaultFormatter: Formatter = FormatElement { logger, level, content, marker, s ->
         s.replaceTemplate("r", AnsiSequence.reset.toString())
             .replaceTemplate("levelColor", level.ansi.toString())
             .replaceTemplate("marker", marker?.name ?: "n/a")
             .replaceTemplate("message", content.toString())
-            .replaceTemplate("thread", Thread.name)
-            .replaceTemplate("threadId", Thread.id.toString())
+            .replaceTemplate("thread", getThreadName())
+            .replaceTemplate("threadId", getThreadId().toString())
             .replaceTemplate("level", paddedLevelNames[level.ordinal])
             .replaceTemplate("levelSymbol", level.symbol)
             .replaceTemplate("name", logger.name)
@@ -161,31 +160,31 @@ object DefaultLogBackend : LogBackend {
 
     override fun createMarker(
         key: String, name: String, isEnabled: Boolean
-    ): LogMarker {
-        return DefaultLogMarker(key, name, isEnabled)
+    ): Marker {
+        return DefaultMarker(key, name, isEnabled)
     }
 
     override fun createLogger(
-        name: String, configSpec: LoggerConfigBuilder.() -> Unit
+        name: String, configSpec: ConfigBuilder.() -> Unit
     ): Logger {
-        return DefaultLogger(name, LoggerConfigBuilder().apply(configSpec).build())
+        return DefaultLogger(name, ConfigBuilder().apply(configSpec).build())
     }
 
     override fun createFileAppender(
-        pattern: String, formatter: LogFormatter, filter: LogFilter, path: Path
-    ): LogAppender {
+        pattern: String, formatter: Formatter, filter: Filter, path: Path
+    ): Appender {
         return FileAppender(pattern, formatter, path, filter)
     }
 
     override fun createConsoleAppender(
-        pattern: String, formatter: LogFormatter, filter: LogFilter
-    ): LogAppender {
+        pattern: String, formatter: Formatter, filter: Filter
+    ): Appender {
         return ConsoleAppender(pattern, formatter, filter)
     }
 
     override fun createSystemAppender(
-        pattern: String, formatter: LogFormatter, filter: LogFilter
-    ): LogAppender {
+        pattern: String, formatter: Formatter, filter: Filter
+    ): Appender {
         return createSystemLogAppender(pattern, formatter, filter)
     }
 }

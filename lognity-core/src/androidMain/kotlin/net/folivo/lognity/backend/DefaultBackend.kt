@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
+@file:JvmName("DefaultBackendImpl")
+
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.appender.ConsoleAppender
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.appender.LogcatAppender
+import net.folivo.lognity.api.format.Formatter
+
+internal actual fun getDefaultLogLevel(): Level {
+    return System.getProperty("skroll.default.level")?.let { levelName ->
+        Level.entries.find { it.name == levelName }
+    } ?: Level.INFO
+}
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
-    return ConsoleAppender(pattern, formatter, filter)
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
+    return LogcatAppender(pattern, formatter, filter)
 }

@@ -17,14 +17,19 @@
 package net.folivo.lognity.util
 
 import net.folivo.lognity.api.Level
-import platform.windows.EVENTLOG_ERROR_TYPE
-import platform.windows.EVENTLOG_INFORMATION_TYPE
-import platform.windows.EVENTLOG_WARNING_TYPE
-import platform.windows.WORD
+import platform.android.ANDROID_LOG_DEBUG
+import platform.android.ANDROID_LOG_ERROR
+import platform.android.ANDROID_LOG_FATAL
+import platform.android.ANDROID_LOG_INFO
+import platform.android.ANDROID_LOG_VERBOSE
+import platform.android.ANDROID_LOG_WARN
 
-val Level.eventType: WORD
+val Level.logcatLevel: Int
     get() = when (this) {
-        Level.TRACE, Level.DEBUG, Level.INFO -> EVENTLOG_INFORMATION_TYPE
-        Level.WARN -> EVENTLOG_WARNING_TYPE
-        Level.ERROR, Level.FATAL -> EVENTLOG_ERROR_TYPE
-    }.toUShort()
+        Level.TRACE -> ANDROID_LOG_VERBOSE
+        Level.DEBUG -> ANDROID_LOG_DEBUG
+        Level.WARN -> ANDROID_LOG_WARN
+        Level.ERROR -> ANDROID_LOG_ERROR
+        Level.FATAL -> ANDROID_LOG_FATAL
+        Level.INFO -> ANDROID_LOG_INFO
+    }.toInt()

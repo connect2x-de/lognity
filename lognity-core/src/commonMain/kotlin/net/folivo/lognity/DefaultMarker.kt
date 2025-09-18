@@ -16,16 +16,16 @@
 
 package net.folivo.lognity
 
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 @OptIn(ExperimentalAtomicApi::class)
-internal class DefaultLogMarker( // @formatter:off
+internal class DefaultMarker( // @formatter:off
     override val key: String,
     override val name: String,
     isEnabled: Boolean
-) : LogMarker { // @formatter:on
+) : Marker { // @formatter:on
     private val _isEnabled: AtomicBoolean = AtomicBoolean(isEnabled)
     override var isEnabled: Boolean
         get() = _isEnabled.load()
@@ -33,7 +33,7 @@ internal class DefaultLogMarker( // @formatter:off
 
     override fun equals(other: Any?): Boolean {
         return when (other) {
-            is LogMarker -> other.key == key && other.name == name && other.isEnabled == isEnabled
+            is Marker -> other.key == key && other.name == name && other.isEnabled == isEnabled
             else -> false
         }
     }

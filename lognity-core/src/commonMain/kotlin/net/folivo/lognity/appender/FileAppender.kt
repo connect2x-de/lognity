@@ -17,21 +17,20 @@
 package net.folivo.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
-import dev.karmakrafts.filament.Mutex
-import dev.karmakrafts.filament.guarded
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.ansi.toAnsi
-import net.folivo.lognity.api.format.LogFormatter
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import kotlin.concurrent.atomics.AtomicBoolean
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
+import net.folivo.lognity.api.ansi.toAnsi
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.backend.withBlockingLock
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.decrementAndFetch
@@ -41,7 +40,6 @@ import kotlin.concurrent.atomics.incrementAndFetch
 private data class RefCountedSink(
     val value: Sink
 ) {
-    private var isReleased: AtomicBoolean = AtomicBoolean(false)
     private var refCount: AtomicInt = AtomicInt(0)
 
     @Suppress("NOTHING_TO_INLINE")
@@ -51,14 +49,13 @@ private data class RefCountedSink(
     }
 
     inline fun release(releaseAction: () -> Unit = {}): RefCountedSink {
-        if (isReleased.load()) return this
+        if (refCount.load() == 0) return this
+        refCount.decrementAndFetch()
         if (refCount.load() == 0) {
             releaseAction()
             value.close()
-            isReleased.store(true)
             return this
         }
-        refCount.decrementAndFetch()
         return this
     }
 }
@@ -66,10 +63,10 @@ private data class RefCountedSink(
 @PublishedApi
 internal class FileAppender( // @formatter:off
     override val pattern: String,
-    override val formatter: LogFormatter,
+    override val formatter: Formatter,
     private val path: Path,
-    private val filter: LogFilter
-) : LogAppender { // @formatter:on
+    private val filter: Filter
+) : Appender { // @formatter:on
     companion object {
         private val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
     }
@@ -80,10 +77,10 @@ internal class FileAppender( // @formatter:off
 
     private val mutex: Mutex = Mutex()
 
-    override fun append(logger: Logger, level: LogLevel, message: String, marker: LogMarker?) {
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         // Make sure to strip out any ANSI codes when writing to file
-        mutex.guarded {
+        mutex.withBlockingLock {
             sink.value.writeString("${message.toAnsi().cleanString()}\n")
         }
     }

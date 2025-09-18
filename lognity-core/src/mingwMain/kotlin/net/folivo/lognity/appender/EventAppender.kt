@@ -16,18 +16,18 @@
 
 package net.folivo.lognity.appender
 
-import co.touchlab.stately.collections.ConcurrentMutableMap
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import co.touchlab.stately.collections.SharedHashMap
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.eventType
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValuesOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.wcstr
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
 import platform.windows.DeregisterEventSource
 import platform.windows.HANDLE
 import platform.windows.RegisterEventSourceW
@@ -37,12 +37,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalForeignApi::class)
-internal class EventLogAppender( // @formatter:off
+internal class EventAppender( // @formatter:off
     override val pattern: String,
-    override val formatter: LogFormatter,
-    private val filter: LogFilter
-) : LogAppender { // @formatter:on
-    private val eventSources: ConcurrentMutableMap<Logger, HANDLE> = ConcurrentMutableMap()
+    override val formatter: Formatter,
+    private val filter: Filter
+) : Appender { // @formatter:on
+    private val eventSources: SharedHashMap<Logger, HANDLE> = SharedHashMap()
 
     private fun getOrCreateEventSource(logger: Logger): HANDLE {
         return eventSources.getOrPut(logger) {
@@ -53,7 +53,7 @@ internal class EventLogAppender( // @formatter:off
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    override fun append(logger: Logger, level: LogLevel, message: String, marker: LogMarker?) = memScoped {
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = memScoped {
         if (!filter(level, message, marker)) return@memScoped
         val eventSource = getOrCreateEventSource(logger)
         val eventId = Uuid.random().hashCode().toUInt()

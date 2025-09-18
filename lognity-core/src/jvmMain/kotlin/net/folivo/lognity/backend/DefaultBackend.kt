@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.appender
+@file:JvmName("DefaultBackendImpl")
 
-import android.util.Log
+package net.folivo.lognity.backend
+
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.ansi.toAnsi
-import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.util.logcatLevel
+import net.folivo.lognity.appender.ConsoleAppender
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
 
-internal class LogcatAppender( // @formatter:off
-    override val pattern: String,
-    override val formatter: Formatter,
-    private val filter: Filter
-) : Appender { // @formatter:on
-    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (!filter(level, message, marker)) return
-        Log.println(level.logcatLevel, marker?.name, message.toAnsi().cleanString())
-    }
+internal actual fun getDefaultLogLevel(): Level {
+    return System.getProperty("lognity.default.level")?.let { levelName ->
+        Level.entries.find { it.name == levelName }
+    } ?: Level.INFO
+}
+
+internal actual fun createSystemLogAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
+    return ConsoleAppender(pattern, formatter, filter)
 }

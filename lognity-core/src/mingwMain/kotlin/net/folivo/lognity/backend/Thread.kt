@@ -16,15 +16,9 @@
 
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.appender.EventLogAppender
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
-import net.folivo.lognity.api.format.LogFormatter
+import platform.windows.GetCurrentThreadId
 
-internal actual fun createSystemLogAppender( // @formatter:off
-    pattern: String,
-    formatter: LogFormatter,
-    filter: LogFilter
-): LogAppender { // @formatter:on
-    return EventLogAppender(pattern, formatter, filter)
-}
+// TODO: Implement a combination of GetThreadDescription & legacy debugger names
+internal actual fun getThreadName(): String = getThreadId().toString()
+
+internal actual fun getThreadId(): ULong = GetCurrentThreadId().toULong()

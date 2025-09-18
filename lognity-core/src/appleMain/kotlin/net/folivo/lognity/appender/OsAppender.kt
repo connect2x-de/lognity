@@ -17,29 +17,29 @@
 package net.folivo.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.format.LogFormatter
+import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.osLogType
 import kotlinx.cinterop.ExperimentalForeignApi
-import net.folivo.lognity.api.appender.LogAppender
-import net.folivo.lognity.api.appender.LogFilter
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
 import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
 import platform.darwin.os_log_t
 
-internal class OsLogAppender( // @formatter:off
+internal class OsAppender( // @formatter:off
     override val pattern: String,
-    override val formatter: LogFormatter,
-    private val filter: LogFilter
-) : LogAppender { // @formatter:on
+    override val formatter: Formatter,
+    private val filter: Filter
+) : Appender { // @formatter:on
     companion object {
         private val delegates: SharedHashMap<Logger, os_log_t> = SharedHashMap()
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    override fun append(logger: Logger, level: LogLevel, message: String, marker: LogMarker?) {
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         _os_log_internal(null, delegates.getOrPut(logger) {
             os_log_create(logger.name, null)

@@ -17,9 +17,9 @@
 package net.folivo.lognity
 
 import net.folivo.lognity.api.ansi.AnsiScope
-import net.folivo.lognity.api.config.LoggerConfig
-import net.folivo.lognity.api.LogLevel
-import net.folivo.lognity.api.LogMarker
+import net.folivo.lognity.api.config.Config
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
@@ -29,11 +29,11 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 @PublishedApi
 internal class DefaultLogger( // @formatter:off
     override val name: String,
-    override val config: LoggerConfig
+    override val config: Config
 ) : Logger { // @formatter:on
     private val _level: AtomicInt = AtomicInt(config.initialLevel.ordinal)
-    override var level: LogLevel
-        get() = LogLevel.entries[_level.load()]
+    override var level: Level
+        get() = Level.entries[_level.load()]
         set(value) { _level.store(value.ordinal) }
 
     private val _isEnabled: AtomicBoolean = AtomicBoolean(config.initialEnableState)
@@ -41,7 +41,7 @@ internal class DefaultLogger( // @formatter:off
         get() = _isEnabled.load()
         set(value) { _isEnabled.store(value) }
 
-    override fun log(level: LogLevel, message: AnsiScope.() -> Any) {
+    override fun log(level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
@@ -51,7 +51,7 @@ internal class DefaultLogger( // @formatter:off
         }
     }
 
-    override fun log(marker: LogMarker?, level: LogLevel, message: AnsiScope.() -> Any) {
+    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level || marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {

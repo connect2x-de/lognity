@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.backend
 
-import android.util.Log
 
-val LogLevel.logcatLevel: Int
-    get() = when(this) {
-        LogLevel.TRACE -> Log.VERBOSE
-        LogLevel.DEBUG -> Log.DEBUG
-        LogLevel.INFO -> Log.INFO
-        LogLevel.WARN -> Log.WARN
-        LogLevel.ERROR -> Log.ERROR
-        LogLevel.FATAL -> Log.ASSERT
-    }
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.appender.LogcatAppender
+import net.folivo.lognity.api.format.Formatter
+
+internal actual fun createSystemLogAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter
+): Appender { // @formatter:on
+    return LogcatAppender(pattern, formatter, filter)
+}

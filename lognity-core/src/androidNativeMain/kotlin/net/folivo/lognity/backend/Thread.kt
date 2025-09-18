@@ -16,11 +16,12 @@
 
 package net.folivo.lognity.backend
 
-import net.folivo.lognity.api.LogLevel
-import kotlin.experimental.ExperimentalNativeApi
+import kotlinx.cinterop.UnsafeNumber
+import platform.posix.pthread_gettid_np
+import platform.posix.pthread_self
 
-@OptIn(ExperimentalNativeApi::class)
-@PublishedApi
-internal actual fun getDefaultLogLevel(): LogLevel {
-    return if(Platform.isDebugBinary) LogLevel.DEBUG else LogLevel.INFO
-}
+// TODO: Try to find a better solution for this if possible
+internal actual fun getThreadName(): String = getThreadId().toString()
+
+@OptIn(UnsafeNumber::class)
+internal actual fun getThreadId(): ULong = pthread_gettid_np(pthread_self()).toULong()

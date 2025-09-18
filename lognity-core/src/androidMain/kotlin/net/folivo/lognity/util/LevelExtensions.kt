@@ -16,20 +16,15 @@
 
 package net.folivo.lognity.util
 
-import net.folivo.lognity.api.LogLevel
-import platform.android.ANDROID_LOG_DEBUG
-import platform.android.ANDROID_LOG_ERROR
-import platform.android.ANDROID_LOG_FATAL
-import platform.android.ANDROID_LOG_INFO
-import platform.android.ANDROID_LOG_VERBOSE
-import platform.android.ANDROID_LOG_WARN
+import android.util.Log
+import net.folivo.lognity.api.Level
 
-val LogLevel.logcatLevel: Int
-    get() = when (this) {
-        LogLevel.TRACE -> ANDROID_LOG_VERBOSE
-        LogLevel.DEBUG -> ANDROID_LOG_DEBUG
-        LogLevel.WARN -> ANDROID_LOG_WARN
-        LogLevel.ERROR -> ANDROID_LOG_ERROR
-        LogLevel.FATAL -> ANDROID_LOG_FATAL
-        LogLevel.INFO -> ANDROID_LOG_INFO
-    }.toInt()
+val Level.logcatLevel: Int
+    get() = when(this) {
+        Level.TRACE -> Log.VERBOSE
+        Level.DEBUG -> Log.DEBUG
+        Level.INFO -> Log.INFO
+        Level.WARN -> Log.WARN
+        Level.ERROR -> Log.ERROR
+        Level.FATAL -> Log.ASSERT
+    }

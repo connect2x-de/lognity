@@ -16,17 +16,17 @@
 
 package net.folivo.lognity.util
 
-import net.folivo.lognity.api.LogLevel
+import net.folivo.lognity.api.Level
 import platform.darwin.OS_LOG_TYPE_DEBUG
 import platform.darwin.OS_LOG_TYPE_ERROR
 import platform.darwin.OS_LOG_TYPE_FAULT
 import platform.darwin.OS_LOG_TYPE_INFO
 import platform.darwin.os_log_type_t
 
-val LogLevel.osLogType: os_log_type_t
+val Level.osLogType: os_log_type_t
     get() = when (this) {
-        LogLevel.DEBUG, LogLevel.TRACE -> OS_LOG_TYPE_DEBUG
-        LogLevel.INFO, LogLevel.WARN -> OS_LOG_TYPE_INFO
-        LogLevel.ERROR -> OS_LOG_TYPE_ERROR
-        LogLevel.FATAL -> OS_LOG_TYPE_FAULT
+        Level.DEBUG, Level.TRACE -> OS_LOG_TYPE_DEBUG
+        Level.INFO, Level.WARN -> OS_LOG_TYPE_INFO
+        Level.ERROR -> OS_LOG_TYPE_ERROR
+        Level.FATAL -> OS_LOG_TYPE_FAULT
     }
