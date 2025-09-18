@@ -41,4 +41,5 @@ dependencyResolutionManagement {
 include("lognity-api")
 include("lognity-core")
 include("lognity-slf4j")
+include("lognity-java-logging")
 include("lognity-ktor")

@@ -16,11 +16,9 @@
 
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.setProjectInfo
-import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.android.library)
 }
 
@@ -38,22 +36,10 @@ kotlin {
                 api(projects.lognityApi)
             }
         }
-        val jvmAndAndroidMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-                api(libs.slf4j.api)
-                implementation(libs.autoService)
-            }
-        }
+        val jvmAndAndroidMain by creating { dependsOn(commonMain) }
         val androidMain by getting { dependsOn(jvmAndAndroidMain) }
         val jvmMain by getting { dependsOn(jvmAndAndroidMain) }
     }
-}
-
-val kaptConfig = findKaptConfiguration("main")!!
-
-dependencies {
-    kaptConfig(libs.autoService)
 }
 
 android {
