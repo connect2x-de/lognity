@@ -19,10 +19,10 @@
 package net.folivo.lognity.backend
 
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.appender.ConsoleAppender
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.appender.ExtendedConsoleAppender
 
 internal actual fun getDefaultLogLevel(): Level {
     return System.getProperty("lognity.default.level")?.let { levelName ->
@@ -35,5 +35,5 @@ internal actual fun createSystemLogAppender( // @formatter:off
     formatter: Formatter,
     filter: Filter
 ): Appender { // @formatter:on
-    return ConsoleAppender(pattern, formatter, filter)
+    return ExtendedConsoleAppender(pattern, formatter, filter)
 }

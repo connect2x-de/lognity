@@ -52,15 +52,15 @@ object DefaultBackend : Backend {
 
     private val _defaultConfigSpec: AtomicReference<ConfigBuilder.() -> Unit> = AtomicReference {
         platformConsoleAppender(
-            "{{levelColor}}>>  {{levelSymbol}}\t{{datetime(hh:mm:ss.SSS)}} ({{name}} @ {{thread}}) {{message}}{{r}}"
+            "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}{{r}}"
         )
         fileAppender(
-            pattern = "[{{level}}][{{datetime(yyyy/MM/dd hh:mm:ss.SSS)}}] ({{name}} @ {{thread}}) {{message}}",
+            pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
             path = Path("latest.log"),
             filter = Filter.levelsExcept(Level.DEBUG, Level.TRACE)
         )
         fileAppender(
-            pattern = "[{{level}}][{{datetime(yyyy/MM/dd hh:mm:ss.SSS)}}] ({{name}} @ {{thread}}) {{message}}",
+            pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
             path = Path("debug.log"),
             filter = Filter.levels(Level.DEBUG)
         )
