@@ -18,7 +18,6 @@ import dev.karmakrafts.conventions.GitLabCI
 import dev.karmakrafts.conventions.apache2License
 import dev.karmakrafts.conventions.authenticatedSonatype
 import dev.karmakrafts.conventions.defaultDependencyLocking
-import dev.karmakrafts.conventions.signPublications
 
 plugins {
     alias(libs.plugins.dokka) apply false
@@ -44,10 +43,6 @@ subprojects {
 
     publishing {
         apache2License()
-    }
-
-    signing {
-        signPublications()
     }
 }
 
