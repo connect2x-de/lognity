@@ -20,46 +20,61 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
 import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiSequence
+import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.backend.getThreadId
 import net.folivo.lognity.backend.getThreadName
 import net.folivo.lognity.util.ThreadLocal
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-private val maxLevelNameLength: Int = Level.entries //
-    .maxOf { it.name.length }
+internal object DefaultFormatter : Formatter {
+    private val maxLevelNameLength: Int = Level.entries //
+        .maxOf { it.name.length }
 
-private val paddedLevelNames: Array<String> = Level.entries //
-    .map { it.name.padEnd(maxLevelNameLength, '-') } //
-    .toTypedArray()
+    private val paddedLevelNames: Array<String> = Level.entries //
+        .map { it.name.padEnd(maxLevelNameLength, '-') } //
+        .toTypedArray()
 
-private val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
-private val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
-private val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
-private val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
-private val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
-private val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
-private val secondFractionFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { secondFraction() }
+    private val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
+    private val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
+    private val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
+    private val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
+    private val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
+    private val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
+    private val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
+        DateTimeComponents.Format { secondFraction() }
 
-@OptIn(ExperimentalTime::class)
-internal val defaultFormatterFst: FST<FormatterContext> = FST(mapOf( // @formatter:off
-    "r" to { AnsiSequence.reset.toString() },
-    "levelColor" to { ctx -> ctx.level.ansi.toString() },
-    "marker" to { ctx -> ctx.marker?.name ?: "" },
-    "message" to { ctx -> ctx.content.toString() },
-    "thread" to { getThreadName() },
-    "threadId" to { getThreadId().toString() },
-    "level" to { ctx -> paddedLevelNames[ctx.level.ordinal] },
-    "levelSymbol" to { ctx -> ctx.level.symbol },
-    "name" to { ctx -> ctx.logger.name },
-    "yyyy" to { Clock.System.now().format(yearFormat) },
-    "MM" to { Clock.System.now().format(monthFormat) },
-    "dd" to { Clock.System.now().format(dayFormat) },
-    "hh" to { Clock.System.now().format(hourFormat) },
-    "mm" to { Clock.System.now().format(minuteFormat) },
-    "ss" to { Clock.System.now().format(secondFormat) },
-    "SSS" to { Clock.System.now().format(secondFractionFormat) }
-)) // @formatter:on
+    @OptIn(ExperimentalTime::class)
+    private val defaultFormatterFst: FST<FormatterContext> = FST(mapOf( // @formatter:off
+        "r" to { AnsiSequence.reset.toString() },
+        "levelColor" to { ctx -> ctx.level.ansi.toString() },
+        "marker" to { ctx -> ctx.marker?.name ?: "" },
+        "message" to { ctx -> ctx.content.toString() },
+        "thread" to { getThreadName() },
+        "threadId" to { getThreadId().toString() },
+        "level" to { ctx -> paddedLevelNames[ctx.level.ordinal] },
+        "levelSymbol" to { ctx -> ctx.level.symbol },
+        "name" to { ctx -> ctx.logger.name },
+        "yyyy" to { Clock.System.now().format(yearFormat) },
+        "MM" to { Clock.System.now().format(monthFormat) },
+        "dd" to { Clock.System.now().format(dayFormat) },
+        "hh" to { Clock.System.now().format(hourFormat) },
+        "mm" to { Clock.System.now().format(minuteFormat) },
+        "ss" to { Clock.System.now().format(secondFormat) },
+        "SSS" to { Clock.System.now().format(secondFractionFormat) }
+    )) // @formatter:on
 
-internal val formatterContext: ThreadLocal<FormatterContext> = ThreadLocal { FormatterContext() }
+    private val formatterContext: ThreadLocal<FormatterContext> = ThreadLocal { FormatterContext() }
+
+    override operator fun invoke(logger: Logger, level: Level, content: Any, marker: Marker?, s: String): String {
+        return defaultFormatterFst(s, formatterContext.get().apply {
+            this.logger = logger
+            this.level = level
+            this.content = content
+            this.marker = marker
+        })
+    }
+}
