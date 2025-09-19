@@ -20,7 +20,6 @@ import kotlinx.io.Buffer
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.appender.NoopAppender
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.appender.FileAppender
 import net.folivo.lognity.backend.DefaultBackend
@@ -133,7 +132,7 @@ class ConfigLoaderTest {
         )
         val config = ConfigLoader.load(source)
         val appender = config.appenders.first()
-        if(appender !is FileAppender) return
+        if (appender !is FileAppender) return
         assertEquals("{{message}}", appender.pattern)
         assertEquals(Path("latest.log"), appender.path)
         assertSame(Backend.current.defaultFormatter, appender.formatter)

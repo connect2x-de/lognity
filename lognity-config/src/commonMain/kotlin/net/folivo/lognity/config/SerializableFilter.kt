@@ -25,7 +25,7 @@ import net.folivo.lognity.api.appender.Filter
 
 @Serializable
 internal data class SerializableFilter(
-    val conditions: List<Condition> = emptyList()
+    val conditions: List<Condition> = listOf(AlwaysCondition)
 ) : Filter {
     override operator fun invoke(level: Level, message: String, marker: Marker?): Boolean {
         return conditions.all { cond -> cond(level, message, marker) }
@@ -35,6 +35,14 @@ internal data class SerializableFilter(
     @Polymorphic
     sealed interface Condition {
         operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
+    }
+
+    @SerialName("always")
+    @Serializable
+    data object AlwaysCondition : Condition {
+        override operator fun invoke(level: Level, message: String, marker: Marker?): Boolean {
+            return true
+        }
     }
 
     @SerialName("marker")

@@ -35,7 +35,7 @@ open class ConsoleAppender( // @formatter:off
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {
-            println(formatter(logger, level, message, marker, pattern))
+            println(message)
         }
     }
 }

@@ -29,6 +29,7 @@ import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.toAnsi
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.backend.withBlockingLock
 import kotlin.concurrent.atomics.AtomicInt
@@ -50,8 +51,7 @@ private data class RefCountedSink(
 
     inline fun release(releaseAction: () -> Unit = {}): RefCountedSink {
         if (refCount.load() == 0) return this
-        refCount.decrementAndFetch()
-        if (refCount.load() == 0) {
+        if (refCount.decrementAndFetch() == 0) {
             releaseAction()
             value.close()
             return this
@@ -70,8 +70,12 @@ class FileAppender( // @formatter:off
         private val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
     }
 
+    init {
+        Backend.current.registerShutdownHook(::dispose)
+    }
+
     private val sink: RefCountedSink = sinks.getOrPut(path) {
-        RefCountedSink(SystemFileSystem.sink(path).buffered())
+        RefCountedSink(SystemFileSystem.sink(path, true).buffered())
     }.acquire()
 
     private val mutex: Mutex = Mutex()
@@ -85,6 +89,7 @@ class FileAppender( // @formatter:off
     }
 
     override fun dispose() {
+        sink.value.flush()
         sink.release { sinks -= path }
     }
 }

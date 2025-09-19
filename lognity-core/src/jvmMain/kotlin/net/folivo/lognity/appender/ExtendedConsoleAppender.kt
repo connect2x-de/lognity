@@ -31,9 +31,8 @@ class ExtendedConsoleAppender( // @formatter:off
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {
-            val formattedMessage = formatter(logger, level, message, marker, pattern)
-            if (level >= Level.ERROR) System.err.println(formattedMessage)
-            else println(formattedMessage)
+            if (level >= Level.ERROR) System.err.println(message)
+            else println(message)
         }
     }
 }

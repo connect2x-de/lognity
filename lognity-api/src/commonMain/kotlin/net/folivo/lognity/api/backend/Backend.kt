@@ -71,6 +71,16 @@ interface Backend {
     var defaultConfigSpec: ConfigBuilder.() -> Unit
 
     /**
+     * Register the given shutdown hook to be invoked when [shutdown] is called.
+     */
+    fun registerShutdownHook(hook: () -> Unit)
+
+    /**
+     * Shut down the logging backend and free any held resources.
+     */
+    fun shutdown()
+
+    /**
      * Creates a new log marker with the specified parameters.
      *
      * @param key The internal key the marker is referenced by in cache.

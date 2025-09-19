@@ -16,6 +16,7 @@
 
 package net.folivo.lognity.backend
 
+import co.touchlab.stately.collections.SharedLinkedList
 import net.folivo.lognity.DefaultLogger
 import net.folivo.lognity.DefaultMarker
 import net.folivo.lognity.api.Level
@@ -77,6 +78,17 @@ object DefaultBackend : Backend {
 
     @OptIn(ExperimentalTime::class)
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
+    private val shutdownHooks: SharedLinkedList<() -> Unit> = SharedLinkedList()
+
+    override fun registerShutdownHook(hook: () -> Unit) {
+        shutdownHooks += hook
+    }
+
+    override fun shutdown() {
+        for (hook in shutdownHooks) {
+            hook()
+        }
+    }
 
     override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker {
         return DefaultMarker(key, name, isEnabled)

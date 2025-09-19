@@ -73,6 +73,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.lognityApi)
+                implementation(projects.lognityCore)
                 api(libs.kotlinx.io.bytestring)
                 api(libs.kotlinx.io.core)
                 implementation(libs.kotlinx.serialization.core)
@@ -82,7 +83,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-                implementation(projects.lognityCore)
             }
         }
     }

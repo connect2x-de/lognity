@@ -19,7 +19,7 @@ package net.folivo.lognity.format
 import kotlin.jvm.JvmInline
 
 @JvmInline
-internal value class CompiledFormat<T> private constructor(val segments: List<Segment<T>>) {
+value class CompiledFormat<T> private constructor(val segments: List<Segment<T>>) {
     companion object {
         fun <T> compile(variables: Map<String, Segment<T>>, pattern: String): CompiledFormat<T> {
             val dfa = DFA()

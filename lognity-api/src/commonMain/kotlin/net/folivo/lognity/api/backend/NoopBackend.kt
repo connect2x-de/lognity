@@ -19,10 +19,10 @@ package net.folivo.lognity.api.backend
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Logger
 import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.ansi.AnsiScope
+import net.folivo.lognity.api.NoopLogger
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
-import net.folivo.lognity.api.config.Config
+import net.folivo.lognity.api.appender.NoopAppender
 import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.format.Formatter
 
@@ -33,29 +33,6 @@ private object NoopMarker : Marker {
     override var isEnabled: Boolean
         get() = false
         set(value) {}
-}
-
-private object NoopLogger : Logger {
-    override val name: String = ""
-    override val config: Config = Config()
-
-    override var level: Level
-        get() = Level.INFO
-        set(value) {}
-
-    override var isEnabled: Boolean
-        get() = false
-        set(value) {}
-
-    override fun log(level: Level, message: AnsiScope.() -> Any) = Unit
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) = Unit
-}
-
-private object NoopAppender : Appender {
-    override val formatter: Formatter = Formatter.identity
-    override val pattern: String = ""
-
-    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = Unit
 }
 
 /**
@@ -72,6 +49,10 @@ object NoopBackend : Backend {
     override var defaultConfigSpec: ConfigBuilder.() -> Unit
         get() = {}
         set(value) {}
+
+    override fun registerShutdownHook(hook: () -> Unit) = Unit
+
+    override fun shutdown() = Unit
 
     override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker = NoopMarker
 

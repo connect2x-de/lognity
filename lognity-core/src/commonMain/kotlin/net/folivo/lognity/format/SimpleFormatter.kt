@@ -31,7 +31,7 @@ import net.folivo.lognity.util.ThreadLocal
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-internal class SimpleFormatter(
+class SimpleFormatter(
     private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
 ) : Formatter {
     companion object {
@@ -51,7 +51,7 @@ internal class SimpleFormatter(
         internal val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
         internal val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
         internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
-            DateTimeComponents.Format { secondFraction(1, 3) }
+            DateTimeComponents.Format { secondFraction(3, 3) }
 
         @OptIn(ExperimentalTime::class)
         val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off

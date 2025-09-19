@@ -24,7 +24,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import net.folivo.lognity.api.backend.Backend
-import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.format.Formatter
 
@@ -42,6 +41,7 @@ object ConfigLoader {
                 subclass(SerializableAppender.File::class)
             }
             polymorphic(SerializableFilter.Condition::class) {
+                subclass(SerializableFilter.AlwaysCondition::class)
                 subclass(SerializableFilter.LevelCondition::class)
                 subclass(SerializableFilter.MarkerCondition::class)
                 subclass(SerializableFilter.MessageCondition::class)
@@ -52,20 +52,21 @@ object ConfigLoader {
     fun load( // @formatter:off
         source: Source,
         formatters: Map<String, Formatter> = mapOf("default" to Backend.current.defaultFormatter)
-    ): Config = ConfigBuilder().apply { // @formatter:on
+    ): ConfigBuilder.() -> Unit {
         val config = json.decodeFromString<SerializableConfig>(source.readString())
-        level = config.level
-        isEnabled = config.enabled
-        for (appender in config.appenders) when (appender) {
-            is SerializableAppender.Console -> {
-                val formatter = formatters[appender.formatter]!!
-                platformConsoleAppender(appender.pattern, formatter, appender.filter)
-            }
-
-            is SerializableAppender.File -> {
-                val formatter = formatters[appender.formatter]!!
-                fileAppender(appender.pattern, formatter, appender.filter, appender.path)
+        return {
+            level = config.level
+            isEnabled = config.enabled
+            for(appender in config.appenders) when(appender) {
+                is SerializableAppender.Console -> {
+                    val formatter = formatters[appender.formatter]!!
+                    platformConsoleAppender(appender.pattern, formatter, appender.filter)
+                }
+                is SerializableAppender.File -> {
+                    val formatter = formatters[appender.formatter]!!
+                    fileAppender(appender.pattern, formatter, appender.filter, appender.path)
+                }
             }
         }
-    }.build()
+    }
 }
