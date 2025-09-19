@@ -44,14 +44,14 @@ internal class SimpleFormatter(
             .map { it.name.padEnd(maxLevelNameLength, '-') } //
             .toTypedArray()
 
-        private val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
-        private val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
-        private val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
-        private val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
-        private val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
-        private val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
-        private val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
-            DateTimeComponents.Format { secondFraction() }
+        internal val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
+        internal val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
+        internal val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
+        internal val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
+        internal val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
+        internal val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
+        internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
+            DateTimeComponents.Format { secondFraction(1, 3) }
 
         @OptIn(ExperimentalTime::class)
         val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off
