@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.backend
 
-import android.util.Log
-import net.folivo.lognity.api.Level
+import kotlinx.io.files.Path
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.appender.FileAppender
 
-val Level.logcatLevel: Int
-    get() = when (this) {
-        Level.TRACE -> Log.VERBOSE
-        Level.DEBUG -> Log.DEBUG
-        Level.INFO -> Log.INFO
-        Level.WARN -> Log.WARN
-        Level.ERROR -> Log.ERROR
-        Level.FATAL -> Log.ASSERT
-    }
+internal actual fun createSystemFileAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter,
+    path: String
+): Appender = FileAppender(pattern, formatter, filter, Path(path)) // @formatter:on

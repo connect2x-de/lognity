@@ -60,12 +60,11 @@ private data class RefCountedSink(
     }
 }
 
-@PublishedApi
-internal class FileAppender( // @formatter:off
+class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    private val path: Path,
-    private val filter: Filter
+    override val filter: Filter,
+    val path: Path
 ) : Appender { // @formatter:on
     companion object {
         private val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()

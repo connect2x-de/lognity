@@ -43,7 +43,7 @@ internal value class CompiledFormat<T> private constructor(val segments: List<Se
             for (segment in segments) {
                 val lastSegment = optimizedSegments.lastOrNull()
                 if (lastSegment is Text && segment is Text) {
-                    optimizedSegments.removeLast()
+                    optimizedSegments.removeLastOrNull()
                     optimizedSegments += Text("${lastSegment.value}${segment.value}")
                     continue
                 }

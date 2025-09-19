@@ -17,6 +17,7 @@ gradleNexus = "2.0.0" # https://github.com/gradle-nexus/publish-plugin/releases
 karmaConventions = "1.7.0" # TODO: replace this with c2x conventions
 slf4j = "2.0.17"
 autoService = "1.1.1" # https://github.com/google/auto/releases
+kotlinxSerialization = "1.9.0"
 
 [libraries]
 
@@ -25,6 +26,8 @@ kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring"
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIo" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
@@ -37,6 +40,7 @@ android-library = { id = "com.android.library", version.ref = "androidGradle" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 karmaConventions = { id = "dev.karmakrafts.conventions.karma-conventions", version.ref = "karmaConventions" }
 gradleNexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradleNexus" }

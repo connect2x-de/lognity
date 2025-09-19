@@ -50,12 +50,22 @@ kotlin {
         publishLibraryVariants("release")
     }
     js {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
     wasmJs {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
     applyDefaultHierarchyTemplate()
     sourceSets {

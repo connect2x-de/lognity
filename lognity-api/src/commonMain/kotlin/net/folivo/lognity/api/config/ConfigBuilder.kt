@@ -16,7 +16,6 @@
 
 package net.folivo.lognity.api.config
 
-import kotlinx.io.files.Path
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
@@ -109,9 +108,9 @@ class ConfigBuilder {
      */
     fun fileAppender( // @formatter:off
         pattern: String,
-        path: Path,
         formatter: Formatter = Formatter.default,
-        filter: Filter = Filter.always
+        filter: Filter = Filter.always,
+        path: String
     ) { // @formatter:on
         appenders += Backend.current.createFileAppender(pattern, formatter, filter, path)
     }

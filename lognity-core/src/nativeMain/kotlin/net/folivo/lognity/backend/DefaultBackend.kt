@@ -22,5 +22,5 @@ import kotlin.experimental.ExperimentalNativeApi
 @OptIn(ExperimentalNativeApi::class)
 @PublishedApi
 internal actual fun getDefaultLogLevel(): Level {
-    return if(Platform.isDebugBinary) Level.DEBUG else Level.INFO
+    return if (Platform.isDebugBinary) Level.DEBUG else Level.INFO
 }

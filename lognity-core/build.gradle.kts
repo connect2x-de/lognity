@@ -50,12 +50,22 @@ kotlin {
         publishLibraryVariants("release")
     }
     js {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
     wasmJs {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
     applyDefaultHierarchyTemplate()
     sourceSets {
@@ -78,6 +88,9 @@ kotlin {
         val jvmAndAndroidMain by creating { dependsOn(commonMain) }
         jvmMain { dependsOn(jvmAndAndroidMain) }
         androidMain { dependsOn(jvmAndAndroidMain) }
+        val webMain by creating { dependsOn(commonMain) }
+        jsMain { dependsOn(webMain) }
+        wasmJsMain { dependsOn(webMain) }
     }
 }
 

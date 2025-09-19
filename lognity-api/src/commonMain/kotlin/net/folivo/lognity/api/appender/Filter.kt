@@ -63,8 +63,7 @@ fun interface Filter {
          */
         inline fun markers(vararg markers: Marker): Filter = object : Filter {
             private val filteredMarkers: Set<Marker> = markers.toSet()
-            override fun invoke(level: Level, message: String, marker: Marker?): Boolean =
-                marker in filteredMarkers
+            override fun invoke(level: Level, message: String, marker: Marker?): Boolean = marker in filteredMarkers
         }
 
         /**

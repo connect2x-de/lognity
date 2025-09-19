@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.config
 
-import android.util.Log
-import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.config.Config
+import net.folivo.lognity.appender.ConsoleAppender
+import net.folivo.lognity.appender.FileAppender
 
-val Level.logcatLevel: Int
-    get() = when (this) {
-        Level.TRACE -> Log.VERBOSE
-        Level.DEBUG -> Log.DEBUG
-        Level.INFO -> Log.INFO
-        Level.WARN -> Log.WARN
-        Level.ERROR -> Log.ERROR
-        Level.FATAL -> Log.ASSERT
-    }
+inline val Config.consoleAppenders: List<ConsoleAppender>
+    get() = appenders.filterIsInstance<ConsoleAppender>()
+
+inline val Config.fileAppenders: List<FileAppender>
+    get() = appenders.filterIsInstance<FileAppender>()

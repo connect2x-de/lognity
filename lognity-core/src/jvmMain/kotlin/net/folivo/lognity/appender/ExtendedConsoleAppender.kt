@@ -16,22 +16,18 @@
 
 package net.folivo.lognity.appender
 
-import kotlinx.coroutines.sync.Mutex
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Logger
 import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.backend.withBlockingLock
 
-internal class ExtendedConsoleAppender( // @formatter:off
-    override val pattern: String,
-    override val formatter: Formatter,
-    private val filter: Filter
-) : Appender { // @formatter:on
-    private val mutex: Mutex = Mutex()
-
+class ExtendedConsoleAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter
+) : ConsoleAppender(pattern, formatter, filter) { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {

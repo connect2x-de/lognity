@@ -16,7 +16,6 @@
 
 package net.folivo.lognity.api.backend
 
-import kotlinx.io.files.Path
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.Logger
 import net.folivo.lognity.api.Marker
@@ -99,7 +98,7 @@ interface Backend {
      * @param path The file path where log messages will be written.
      * @return A new file appender instance.
      */
-    fun createFileAppender(pattern: String, formatter: Formatter, filter: Filter, path: Path): Appender
+    fun createFileAppender(pattern: String, formatter: Formatter, filter: Filter, path: String): Appender
 
     /**
      * Creates a new console appender that writes log messages to the standard output.

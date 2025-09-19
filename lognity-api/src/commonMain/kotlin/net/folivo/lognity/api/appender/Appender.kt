@@ -17,8 +17,8 @@
 package net.folivo.lognity.api.appender
 
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.format.Formatter
 
 /**
@@ -42,6 +42,12 @@ interface Appender {
      * The pattern is processed by the formatter to produce the final formatted message.
      */
     val pattern: String
+
+    /**
+     * The filter applied to all messages passed into this appender instance.
+     * This should drop any unwanted messages from actually being written by this appender.
+     */
+    val filter: Filter get() = Filter.always
 
     /**
      * Appends a log message to the appender's destination.

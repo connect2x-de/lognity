@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.api.appender
 
-import android.util.Log
 import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
+import net.folivo.lognity.api.format.Formatter
 
-val Level.logcatLevel: Int
-    get() = when (this) {
-        Level.TRACE -> Log.VERBOSE
-        Level.DEBUG -> Log.DEBUG
-        Level.INFO -> Log.INFO
-        Level.WARN -> Log.WARN
-        Level.ERROR -> Log.ERROR
-        Level.FATAL -> Log.ASSERT
-    }
+object NoopAppender : Appender {
+    override val formatter: Formatter = Formatter.identity
+    override val pattern: String = ""
+
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = Unit
+}

@@ -25,7 +25,7 @@ import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.appender.LogcatAppender
 
 internal actual fun getDefaultLogLevel(): Level {
-    return System.getProperty("skroll.default.level")?.let { levelName ->
+    return System.getProperty("lognity.default.level")?.let { levelName ->
         Level.entries.find { it.name == levelName }
     } ?: Level.INFO
 }
@@ -34,6 +34,4 @@ internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
     filter: Filter
-): Appender { // @formatter:on
-    return LogcatAppender(pattern, formatter, filter)
-}
+): Appender = LogcatAppender(pattern, formatter, filter) // @formatter:on

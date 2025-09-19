@@ -17,14 +17,13 @@
 package net.folivo.lognity.api.backend
 
 import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
-import kotlinx.io.files.Path
 import net.folivo.lognity.api.format.Formatter
 
 private object NoopMarker : Marker {
@@ -79,7 +78,7 @@ object NoopBackend : Backend {
     override fun createLogger(name: String, configSpec: ConfigBuilder.() -> Unit): Logger = NoopLogger
 
     override fun createFileAppender(
-        pattern: String, formatter: Formatter, filter: Filter, path: Path
+        pattern: String, formatter: Formatter, filter: Filter, path: String
     ): Appender = NoopAppender
 
     override fun createConsoleAppender(

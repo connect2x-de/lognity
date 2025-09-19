@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.folivo.lognity.util
+package net.folivo.lognity.config
 
-import android.util.Log
+import kotlinx.serialization.Serializable
 import net.folivo.lognity.api.Level
 
-val Level.logcatLevel: Int
-    get() = when (this) {
-        Level.TRACE -> Log.VERBOSE
-        Level.DEBUG -> Log.DEBUG
-        Level.INFO -> Log.INFO
-        Level.WARN -> Log.WARN
-        Level.ERROR -> Log.ERROR
-        Level.FATAL -> Log.ASSERT
-    }
+@Serializable
+internal data class SerializableConfig( // @formatter:off
+    val level: Level = Level.default(),
+    val enabled: Boolean = true,
+    val appenders: List<SerializableAppender> = emptyList()
+) // @formatter:on

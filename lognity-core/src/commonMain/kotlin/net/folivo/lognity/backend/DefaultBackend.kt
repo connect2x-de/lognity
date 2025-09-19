@@ -16,7 +16,6 @@
 
 package net.folivo.lognity.backend
 
-import kotlinx.io.files.Path
 import net.folivo.lognity.DefaultLogger
 import net.folivo.lognity.DefaultMarker
 import net.folivo.lognity.api.Level
@@ -28,7 +27,6 @@ import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.appender.ConsoleAppender
-import net.folivo.lognity.appender.FileAppender
 import net.folivo.lognity.format.SimpleFormatter
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -40,6 +38,13 @@ internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always
+): Appender // @formatter:on
+
+internal expect fun createSystemFileAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    path: String
 ): Appender // @formatter:on
 
 // TODO: document this
@@ -54,12 +59,12 @@ object DefaultBackend : Backend {
         )
         fileAppender(
             pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
-            path = Path("latest.log"),
+            path = "latest.log",
             filter = Filter.levelsExcept(Level.DEBUG, Level.TRACE)
         )
         fileAppender(
             pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
-            path = Path("debug.log"),
+            path = "debug.log",
             filter = Filter.levels(Level.DEBUG)
         )
     }
@@ -73,33 +78,23 @@ object DefaultBackend : Backend {
     @OptIn(ExperimentalTime::class)
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
-    override fun createMarker(
-        key: String, name: String, isEnabled: Boolean
-    ): Marker {
+    override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker {
         return DefaultMarker(key, name, isEnabled)
     }
 
-    override fun createLogger(
-        name: String, configSpec: ConfigBuilder.() -> Unit
-    ): Logger {
+    override fun createLogger(name: String, configSpec: ConfigBuilder.() -> Unit): Logger {
         return DefaultLogger(name, ConfigBuilder().apply(configSpec).build())
     }
 
-    override fun createFileAppender(
-        pattern: String, formatter: Formatter, filter: Filter, path: Path
-    ): Appender {
-        return FileAppender(pattern, formatter, path, filter)
+    override fun createFileAppender(pattern: String, formatter: Formatter, filter: Filter, path: String): Appender {
+        return createSystemFileAppender(pattern, formatter, filter, path)
     }
 
-    override fun createConsoleAppender(
-        pattern: String, formatter: Formatter, filter: Filter
-    ): Appender {
+    override fun createConsoleAppender(pattern: String, formatter: Formatter, filter: Filter): Appender {
         return ConsoleAppender(pattern, formatter, filter)
     }
 
-    override fun createSystemAppender(
-        pattern: String, formatter: Formatter, filter: Filter
-    ): Appender {
+    override fun createSystemAppender(pattern: String, formatter: Formatter, filter: Filter): Appender {
         return createSystemLogAppender(pattern, formatter, filter)
     }
 }

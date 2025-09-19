@@ -25,13 +25,12 @@ import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.backend.withBlockingLock
 
-@PublishedApi
-internal class ConsoleAppender( // @formatter:off
+open class ConsoleAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    private val filter: Filter
+    override val filter: Filter
 ) : Appender { // @formatter:on
-    private val mutex: Mutex = Mutex()
+    protected val mutex: Mutex = Mutex()
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return

@@ -17,13 +17,13 @@
 package net.folivo.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.util.osLogType
 import kotlinx.cinterop.ExperimentalForeignApi
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.util.osLogType
 import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
 import platform.darwin.os_log_t

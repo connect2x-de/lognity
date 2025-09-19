@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.library)
 }
 
@@ -27,9 +28,6 @@ configureJava(rootProject.libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
     mingwX64()
     linuxX64()
     linuxArm64()
@@ -75,17 +73,18 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.lognityApi)
-                api(libs.ktor.server.core)
+                api(libs.kotlinx.io.bytestring)
+                api(libs.kotlinx.io.core)
+                implementation(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
-        val jvmAndAndroidMain by creating {
-            dependsOn(commonMain)
+        commonTest {
             dependencies {
-                api(projects.lognitySlf4j)
+                implementation(libs.kotlin.test)
+                implementation(projects.lognityCore)
             }
         }
-        androidMain { dependsOn(jvmAndAndroidMain) }
-        jvmMain { dependsOn(jvmAndAndroidMain) }
     }
 }
 
@@ -98,5 +97,5 @@ android {
 }
 
 publishing {
-    setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
+    setProjectInfo("Lognity Config", "Lightweight logging configuration for Kotlin/Multiplatform")
 }
