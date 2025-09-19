@@ -25,9 +25,10 @@ import kotlinx.cinterop.toKStringFromUtf8
 import platform.linux.PR_GET_NAME
 import platform.linux.SYS_gettid
 import platform.linux.prctl
+import platform.posix.PATH_MAX
 import platform.posix.syscall
 
-private const val MAX_NAME_LENGTH: Int = 16
+private const val MAX_NAME_LENGTH: Int = PATH_MAX
 
 @OptIn(ExperimentalForeignApi::class)
 internal actual fun getThreadName(): String = memScoped {
