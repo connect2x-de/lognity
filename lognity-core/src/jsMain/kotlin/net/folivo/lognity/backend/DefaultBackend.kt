@@ -22,7 +22,7 @@ import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.appender.NoopAppender
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.appender.ConsoleAppender
+import net.folivo.lognity.appender.ExtendedConsoleAppender
 import org.w3c.dom.url.URLSearchParams
 
 @PublishedApi
@@ -36,7 +36,7 @@ internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
     filter: Filter
-): Appender = ConsoleAppender(pattern, formatter, filter) // @formatter:on
+): Appender = ExtendedConsoleAppender(pattern, formatter, filter) // @formatter:on
 
 internal actual fun createSystemFileAppender( // @formatter:off
     pattern: String,
