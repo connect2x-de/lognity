@@ -29,7 +29,9 @@ internal class DefaultMarker( // @formatter:off
     private val _isEnabled: AtomicBoolean = AtomicBoolean(isEnabled)
     override var isEnabled: Boolean
         get() = _isEnabled.load()
-        set(value) { _isEnabled.store(value) }
+        set(value) {
+            _isEnabled.store(value)
+        }
 
     override fun equals(other: Any?): Boolean {
         return when (other) {

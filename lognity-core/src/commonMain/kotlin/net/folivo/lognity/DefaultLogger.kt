@@ -16,11 +16,11 @@
 
 package net.folivo.lognity
 
+import net.folivo.lognity.api.Level
+import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.config.Config
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.Logger
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -34,12 +34,16 @@ internal class DefaultLogger( // @formatter:off
     private val _level: AtomicInt = AtomicInt(config.initialLevel.ordinal)
     override var level: Level
         get() = Level.entries[_level.load()]
-        set(value) { _level.store(value.ordinal) }
+        set(value) {
+            _level.store(value.ordinal)
+        }
 
     private val _isEnabled: AtomicBoolean = AtomicBoolean(config.initialEnableState)
     override var isEnabled: Boolean
         get() = _isEnabled.load()
-        set(value) { _isEnabled.store(value) }
+        set(value) {
+            _isEnabled.store(value)
+        }
 
     override fun log(level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level) return

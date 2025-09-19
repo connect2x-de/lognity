@@ -22,7 +22,7 @@ internal class MultiMap<K, V>(
     constructor(initialSize: Int) : this(HashMap(initialSize))
 
     constructor(vararg pairs: Pair<K, V>) : this(HashMap<K, MutableList<V>>().apply {
-        for((key, value) in pairs) {
+        for ((key, value) in pairs) {
             getOrPut(key) { ArrayList() } += value
         }
     })

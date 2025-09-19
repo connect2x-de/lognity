@@ -22,8 +22,5 @@ import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.NoopLogger
 
 internal data class FormatterContext(
-    var logger: Logger = NoopLogger,
-    var level: Level = Level.INFO,
-    var content: Any = "",
-    var marker: Marker? = null
+    var logger: Logger = NoopLogger, var level: Level = Level.INFO, var content: Any = "", var marker: Marker? = null
 )

@@ -29,7 +29,7 @@ import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.appender.ConsoleAppender
 import net.folivo.lognity.appender.FileAppender
-import net.folivo.lognity.format.DefaultFormatter
+import net.folivo.lognity.format.SimpleFormatter
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.ExperimentalTime
@@ -71,7 +71,7 @@ object DefaultBackend : Backend {
         }
 
     @OptIn(ExperimentalTime::class)
-    override val defaultFormatter: Formatter get() = DefaultFormatter
+    override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
     override fun createMarker(
         key: String, name: String, isEnabled: Boolean
