@@ -31,15 +31,15 @@ class LognitySlf4jLogger(
     override fun isTraceEnabled(marker: Marker?): Boolean = isTraceEnabled
     override fun trace(message: String) = delegate.trace { message }
 
-    override fun trace(format: String, arg: Any) = delegate.trace {
+    override fun trace(format: String, arg: Any?) = delegate.trace {
         MessageFormatter.format(format, arg)
     }
 
-    override fun trace(format: String, arg1: Any, arg2: Any) = delegate.trace {
+    override fun trace(format: String, arg1: Any?, arg2: Any?) = delegate.trace {
         MessageFormatter.format(format, arg1, arg2)
     }
 
-    override fun trace(format: String?, vararg arguments: Any) = delegate.trace {
+    override fun trace(format: String?, vararg arguments: Any?) = delegate.trace {
         MessageFormatter.arrayFormat(format, arguments)
     }
 
@@ -49,16 +49,16 @@ class LognitySlf4jLogger(
 
     override fun trace(marker: Marker, message: String) = delegate.trace(marker.asLognityMarker()) { message }
 
-    override fun trace(marker: Marker, format: String, arg: Any) = delegate.trace(marker.asLognityMarker()) {
+    override fun trace(marker: Marker, format: String, arg: Any?) = delegate.trace(marker.asLognityMarker()) {
         MessageFormatter.format(format, arg)
     }
 
-    override fun trace(marker: Marker, format: String, arg1: Any, arg2: Any) =
+    override fun trace(marker: Marker, format: String, arg1: Any?, arg2: Any?) =
         delegate.trace(marker.asLognityMarker()) {
             MessageFormatter.format(format, arg1, arg2)
         }
 
-    override fun trace(marker: Marker, format: String, vararg argArray: Any) =
+    override fun trace(marker: Marker, format: String, vararg argArray: Any?) =
         delegate.trace(marker.asLognityMarker()) {
             MessageFormatter.arrayFormat(format, argArray)
         }
@@ -71,15 +71,15 @@ class LognitySlf4jLogger(
     override fun isDebugEnabled(marker: Marker?): Boolean = isDebugEnabled
     override fun debug(message: String) = delegate.debug { message }
 
-    override fun debug(format: String, arg: Any) = delegate.debug {
+    override fun debug(format: String, arg: Any?) = delegate.debug {
         MessageFormatter.format(format, arg)
     }
 
-    override fun debug(format: String, arg1: Any, arg2: Any) = delegate.debug {
+    override fun debug(format: String, arg1: Any?, arg2: Any?) = delegate.debug {
         MessageFormatter.format(format, arg1, arg2)
     }
 
-    override fun debug(format: String?, vararg arguments: Any) = delegate.debug {
+    override fun debug(format: String?, vararg arguments: Any?) = delegate.debug {
         MessageFormatter.arrayFormat(format, arguments)
     }
 
@@ -89,16 +89,16 @@ class LognitySlf4jLogger(
 
     override fun debug(marker: Marker, message: String) = delegate.debug(marker.asLognityMarker()) { message }
 
-    override fun debug(marker: Marker, format: String, arg: Any) = delegate.debug(marker.asLognityMarker()) {
+    override fun debug(marker: Marker, format: String, arg: Any?) = delegate.debug(marker.asLognityMarker()) {
         MessageFormatter.format(format, arg)
     }
 
-    override fun debug(marker: Marker, format: String, arg1: Any, arg2: Any) =
+    override fun debug(marker: Marker, format: String, arg1: Any?, arg2: Any?) =
         delegate.debug(marker.asLognityMarker()) {
             MessageFormatter.format(format, arg1, arg2)
         }
 
-    override fun debug(marker: Marker, format: String, vararg argArray: Any) =
+    override fun debug(marker: Marker, format: String, vararg argArray: Any?) =
         delegate.debug(marker.asLognityMarker()) {
             MessageFormatter.arrayFormat(format, argArray)
         }
@@ -111,15 +111,15 @@ class LognitySlf4jLogger(
     override fun isInfoEnabled(marker: Marker?): Boolean = isInfoEnabled
     override fun info(message: String) = delegate.info { message }
 
-    override fun info(format: String, arg: Any) = delegate.info {
+    override fun info(format: String, arg: Any?) = delegate.info {
         MessageFormatter.format(format, arg)
     }
 
-    override fun info(format: String, arg1: Any, arg2: Any) = delegate.info {
+    override fun info(format: String, arg1: Any?, arg2: Any?) = delegate.info {
         MessageFormatter.format(format, arg1, arg2)
     }
 
-    override fun info(format: String?, vararg arguments: Any) = delegate.info {
+    override fun info(format: String?, vararg arguments: Any?) = delegate.info {
         MessageFormatter.arrayFormat(format, arguments)
     }
 
@@ -129,15 +129,16 @@ class LognitySlf4jLogger(
 
     override fun info(marker: Marker, message: String) = delegate.info(marker.asLognityMarker()) { message }
 
-    override fun info(marker: Marker, format: String, arg: Any) = delegate.info(marker.asLognityMarker()) {
+    override fun info(marker: Marker, format: String, arg: Any?) = delegate.info(marker.asLognityMarker()) {
         MessageFormatter.format(format, arg)
     }
 
-    override fun info(marker: Marker, format: String, arg1: Any, arg2: Any) = delegate.info(marker.asLognityMarker()) {
-        MessageFormatter.format(format, arg1, arg2)
-    }
+    override fun info(marker: Marker, format: String, arg1: Any?, arg2: Any?) =
+        delegate.info(marker.asLognityMarker()) {
+            MessageFormatter.format(format, arg1, arg2)
+        }
 
-    override fun info(marker: Marker, format: String, vararg argArray: Any) = delegate.info(marker.asLognityMarker()) {
+    override fun info(marker: Marker, format: String, vararg argArray: Any?) = delegate.info(marker.asLognityMarker()) {
         MessageFormatter.arrayFormat(format, argArray)
     }
 
@@ -149,15 +150,15 @@ class LognitySlf4jLogger(
     override fun isWarnEnabled(marker: Marker?): Boolean = isWarnEnabled
     override fun warn(message: String) = delegate.info { message }
 
-    override fun warn(format: String, arg: Any) = delegate.warn {
+    override fun warn(format: String, arg: Any?) = delegate.warn {
         MessageFormatter.format(format, arg)
     }
 
-    override fun warn(format: String, arg1: Any, arg2: Any) = delegate.warn {
+    override fun warn(format: String, arg1: Any?, arg2: Any?) = delegate.warn {
         MessageFormatter.format(format, arg1, arg2)
     }
 
-    override fun warn(format: String?, vararg arguments: Any) = delegate.warn {
+    override fun warn(format: String?, vararg arguments: Any?) = delegate.warn {
         MessageFormatter.arrayFormat(format, arguments)
     }
 
@@ -167,15 +168,16 @@ class LognitySlf4jLogger(
 
     override fun warn(marker: Marker, message: String) = delegate.warn(marker.asLognityMarker()) { message }
 
-    override fun warn(marker: Marker, format: String, arg: Any) = delegate.warn(marker.asLognityMarker()) {
+    override fun warn(marker: Marker, format: String, arg: Any?) = delegate.warn(marker.asLognityMarker()) {
         MessageFormatter.format(format, arg)
     }
 
-    override fun warn(marker: Marker, format: String, arg1: Any, arg2: Any) = delegate.warn(marker.asLognityMarker()) {
-        MessageFormatter.format(format, arg1, arg2)
-    }
+    override fun warn(marker: Marker, format: String, arg1: Any?, arg2: Any?) =
+        delegate.warn(marker.asLognityMarker()) {
+            MessageFormatter.format(format, arg1, arg2)
+        }
 
-    override fun warn(marker: Marker, format: String, vararg argArray: Any) = delegate.warn(marker.asLognityMarker()) {
+    override fun warn(marker: Marker, format: String, vararg argArray: Any?) = delegate.warn(marker.asLognityMarker()) {
         MessageFormatter.arrayFormat(format, argArray)
     }
 
@@ -187,15 +189,15 @@ class LognitySlf4jLogger(
     override fun isErrorEnabled(marker: Marker?): Boolean = isErrorEnabled
     override fun error(message: String) = delegate.info { message }
 
-    override fun error(format: String, arg: Any) = delegate.error {
+    override fun error(format: String, arg: Any?) = delegate.error {
         MessageFormatter.format(format, arg)
     }
 
-    override fun error(format: String, arg1: Any, arg2: Any) = delegate.error {
+    override fun error(format: String, arg1: Any?, arg2: Any?) = delegate.error {
         MessageFormatter.format(format, arg1, arg2)
     }
 
-    override fun error(format: String?, vararg arguments: Any) = delegate.error {
+    override fun error(format: String?, vararg arguments: Any?) = delegate.error {
         MessageFormatter.arrayFormat(format, arguments)
     }
 
@@ -205,16 +207,16 @@ class LognitySlf4jLogger(
 
     override fun error(marker: Marker, message: String) = delegate.error(marker.asLognityMarker()) { message }
 
-    override fun error(marker: Marker, format: String, arg: Any) = delegate.error(marker.asLognityMarker()) {
+    override fun error(marker: Marker, format: String, arg: Any?) = delegate.error(marker.asLognityMarker()) {
         MessageFormatter.format(format, arg)
     }
 
-    override fun error(marker: Marker, format: String, arg1: Any, arg2: Any) =
+    override fun error(marker: Marker, format: String, arg1: Any?, arg2: Any?) =
         delegate.error(marker.asLognityMarker()) {
             MessageFormatter.format(format, arg1, arg2)
         }
 
-    override fun error(marker: Marker, format: String, vararg argArray: Any) =
+    override fun error(marker: Marker, format: String, vararg argArray: Any?) =
         delegate.error(marker.asLognityMarker()) {
             MessageFormatter.arrayFormat(format, argArray)
         }
