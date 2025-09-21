@@ -23,6 +23,7 @@ import net.folivo.lognity.api.Logger
 import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.util.osLogType
 import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
@@ -31,7 +32,7 @@ import platform.darwin.os_log_t
 internal class OsAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    private val filter: Filter
+    override val filter: Filter
 ) : Appender { // @formatter:on
     companion object {
         private val delegates: SharedHashMap<Logger, os_log_t> = SharedHashMap()
