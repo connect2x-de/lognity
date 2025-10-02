@@ -27,6 +27,7 @@ plugins {
 configureJava(rootProject.libs.versions.java)
 
 kotlin {
+    withSourcesJar()
     jvm()
     androidTarget {
         publishLibraryVariants("release")

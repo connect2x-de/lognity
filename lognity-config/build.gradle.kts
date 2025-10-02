@@ -28,6 +28,7 @@ configureJava(rootProject.libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
+    withSourcesJar()
     mingwX64()
     linuxX64()
     linuxArm64()

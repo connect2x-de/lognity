@@ -27,6 +27,7 @@ configureJava(rootProject.libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
+    withSourcesJar()
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
