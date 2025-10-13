@@ -54,6 +54,9 @@ object ConfigLoader {
         formatters: Map<String, Formatter> = mapOf("default" to Backend.current.defaultFormatter)
     ): ConfigBuilder.() -> Unit {
         val config = json.decodeFromString<SerializableConfig>(source.readString())
+        check(config.version == SerializableConfig.VERSION) {
+            "Incompatible lognity config version ${config.version}, expected at least ${SerializableConfig.VERSION}"
+        }
         return {
             level = config.level
             isEnabled = config.enabled

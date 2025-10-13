@@ -21,6 +21,7 @@ import kotlinx.io.files.Path
 import kotlinx.io.writeString
 import net.folivo.lognity.api.Level
 import net.folivo.lognity.api.backend.Backend
+import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.appender.FileAppender
 import net.folivo.lognity.backend.DefaultBackend
 import kotlin.test.BeforeTest
@@ -39,7 +40,9 @@ class ConfigLoaderTest {
     fun `Empty file creates default config`() {
         val emptySource = Buffer()
         emptySource.writeString("{}")
-        val config = ConfigLoader.load(emptySource)
+        val config = ConfigBuilder().apply {
+            ConfigLoader.load(emptySource)()
+        }.build()
         assertEquals(Level.default(), config.initialLevel)
         assertTrue(config.initialEnableState)
         assertTrue(config.appenders.isEmpty())
@@ -55,7 +58,9 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigLoader.load(source)
+        val config = ConfigBuilder().apply {
+            ConfigLoader.load(source)()
+        }.build()
         assertEquals(Level.TRACE, config.initialLevel)
     }
 
@@ -69,7 +74,9 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigLoader.load(source)
+        val config = ConfigBuilder().apply {
+            ConfigLoader.load(source)()
+        }.build()
         assertTrue(config.initialEnableState)
     }
 
@@ -98,7 +105,9 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigLoader.load(source)
+        val config = ConfigBuilder().apply {
+            ConfigLoader.load(source)()
+        }.build()
         val appender = config.appenders.first()
         assertEquals("{{message}}", appender.pattern)
         assertSame(Backend.current.defaultFormatter, appender.formatter)
@@ -130,7 +139,9 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigLoader.load(source)
+        val config = ConfigBuilder().apply {
+            ConfigLoader.load(source)()
+        }.build()
         val appender = config.appenders.first()
         if (appender !is FileAppender) return
         assertEquals("{{message}}", appender.pattern)
