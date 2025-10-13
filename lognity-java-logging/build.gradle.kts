@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import net.folivo.lognity.gradle.configureJava
 import net.folivo.lognity.gradle.setProjectInfo
 
 plugins {
@@ -22,9 +21,14 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
-configureJava(rootProject.libs.versions.java)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
 
 kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     jvm()
     androidTarget {

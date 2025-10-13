@@ -21,8 +21,15 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
 @OptIn(ExperimentalKotlinGradlePluginApi::class) //
 kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
     jvm {
         binaries {
             executable {

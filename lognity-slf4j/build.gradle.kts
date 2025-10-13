@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import net.folivo.lognity.gradle.configureJava
 import net.folivo.lognity.gradle.setProjectInfo
 import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 
@@ -24,9 +23,14 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
-configureJava(rootProject.libs.versions.java)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
 
 kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     jvm()
     androidTarget {
