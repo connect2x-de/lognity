@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import dev.karmakrafts.conventions.GitLabCI
-import dev.karmakrafts.conventions.apache2License
-import dev.karmakrafts.conventions.authenticatedSonatype
-import dev.karmakrafts.conventions.defaultDependencyLocking
+import net.folivo.lognity.gradle.GitLabCI
+import net.folivo.lognity.gradle.apache2License
+import net.folivo.lognity.gradle.defaultDependencyLocking
+import net.folivo.lognity.gradle.isCI
 
 plugins {
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.karmaConventions)
     signing
     `maven-publish`
     alias(libs.plugins.gradleNexus)
@@ -39,13 +38,9 @@ subprojects {
 
     group = rootProject.group
     version = rootProject.version
-    if (GitLabCI.isCI) defaultDependencyLocking()
+    if (isCI) defaultDependencyLocking()
 
     publishing {
         apache2License()
     }
-}
-
-nexusPublishing {
-    authenticatedSonatype()
 }

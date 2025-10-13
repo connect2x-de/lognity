@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import dev.karmakrafts.conventions.configureJava
-import dev.karmakrafts.conventions.setProjectInfo
+import net.folivo.lognity.gradle.configureJava
+import net.folivo.lognity.gradle.setProjectInfo
 import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 
 plugins {
