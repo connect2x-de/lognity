@@ -41,20 +41,7 @@ variables:
   - if: $CI_PIPELINE_SOURCE == "schedule"
     when: never
 
-build:windows:
-  stage: build
-  interruptible: true
-  timeout: 2h
-  tags: [ "saas-windows-medium-amd64" ]
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew
-      clean
-      linkMingwX64
-      --stacktrace
-
-build:mac:
+build:
   stage: build
   interruptible: true
   tags: [ "trixnity-mac-internal" ]
@@ -63,24 +50,7 @@ build:mac:
   script:
     - ./gradlew
       clean
-      link{MacosX64,MacosArm64,IosArm64,IosX64,IosSimulatorArm64}
-      --stacktrace
-
-build:linux:
-  stage: build
-  interruptible: true
-  tags: [ "saas-linux-medium-amd64" ]
-  image: $BUILD_LINUX_IMAGE_NAME
-  rules:
-    - *if-merge-request-or-main
-  before_script:
-    - apt update -y
-    - apt install -y $LINUX_DEPENDENCIES
-  script:
-    - ./gradlew
-      clean
-      compile{ReleaseKotlinAndroid,KotlinJvm}
-      linkLinux{X64,Arm64}
+      buildNeeded
       --stacktrace
 
 test:linux:
@@ -93,9 +63,6 @@ test:linux:
   artifacts: *artifact-reports
   rules:
     - *if-merge-request-or-main
-  before_script:
-    - apt update -y
-    - apt install -y $LINUX_DEPENDENCIES
   script:
     - ./gradlew {jvm,linuxX64}Test --stacktrace
 
@@ -121,6 +88,8 @@ test:windows:
   rules:
     - *if-merge-request-or-main
   script:
+    - choco install -y openjdk17
+    - refreshenv
     - ./gradlew jvmTest mingwX64Test --stacktrace
 
 security:dependencies:
@@ -153,7 +122,7 @@ security:dependencies:
     - trivy repo ./ --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output report.json
     - trivy repo ./ --exit-code 1 --severity CRITICAL
 
-publish:mac:
+publish:
   stage: publish
   tags: [ "trixnity-mac-internal" ]
   rules:
@@ -161,29 +130,5 @@ publish:mac:
     - *if-release
   script:
     - ./gradlew
-      publish{MacosX64,MacosArm64,IosArm64,IosSimulatorArm64,IosX64,Jvm}PublicationToGitlabRepository
-      --stacktrace
-
-publish:linux:
-  stage: publish
-  tags: [ "saas-linux-medium-amd64" ]
-  image: $BUILD_LINUX_IMAGE_NAME
-  rules:
-    - *if-main
-    - *if-release
-  script:
-    - ./gradlew
-      publish{KotlinMultiplatform,Js,AndroidRelease}PublicationToGitlabRepository
-      --stacktrace
-
-publish:windows:
-  stage: publish
-  timeout: 2h
-  tags: [ "saas-windows-medium-amd64" ]
-  rules:
-    - *if-main
-    - *if-release
-  script:
-    - ./gradlew
-      publishMingwX64PublicationToGitlabRepository
+      publishToGitlabRepository
       --stacktrace

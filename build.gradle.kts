@@ -25,7 +25,6 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.android.library) apply false
     `maven-publish`
-    alias(libs.plugins.gradleNexus)
 }
 
 group = "net.folivo.lognity"
