@@ -44,7 +44,7 @@ variables:
 build:
   stage: build
   interruptible: true
-  tags: [ "trixnity-mac-internal" ]
+  tags: [ "saas-macos-medium-m1" ]
   rules:
     - *if-merge-request-or-main
   script:
@@ -71,7 +71,7 @@ test:mac:
   interruptible: true
   timeout: 1h
   needs: [ "build" ]
-  tags: [ "trixnity-mac-internal" ]
+  tags: [ "saas-macos-medium-m1" ]
   artifacts: *artifact-reports
   rules:
     - *if-merge-request-or-main
@@ -124,7 +124,7 @@ security:dependencies:
 
 publish:
   stage: publish
-  tags: [ "trixnity-mac-internal" ]
+  tags: [ "saas-macos-medium-m1" ]
   rules:
     - *if-main
     - *if-release
