@@ -57,7 +57,7 @@ test:linux:
   stage: test
   interruptible: true
   timeout: 1h
-  needs: [ "build:linux" ]
+  needs: [ "build" ]
   tags: [ "saas-linux-medium-amd64" ]
   image: $BUILD_LINUX_IMAGE_NAME
   artifacts: *artifact-reports
@@ -70,7 +70,7 @@ test:mac:
   stage: test
   interruptible: true
   timeout: 1h
-  needs: [ "build:mac" ]
+  needs: [ "build" ]
   tags: [ "trixnity-mac-internal" ]
   artifacts: *artifact-reports
   rules:
@@ -82,7 +82,7 @@ test:windows:
   stage: test
   interruptible: true
   timeout: 2h
-  needs: [ "build:windows" ]
+  needs: [ "build" ]
   tags: [ "saas-windows-medium-amd64" ]
   artifacts: *artifact-reports
   rules:
