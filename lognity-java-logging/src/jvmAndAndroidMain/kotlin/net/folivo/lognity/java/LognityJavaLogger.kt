@@ -1,33 +1,17 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.java
 
-import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.logger.Logger
 import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger as JavaLogger
 
-class LognityJavaLogger(
+private class LognityJavaLogger(
     private val delegate: Logger
 ) : JavaLogger(delegate.name, null) {
     override fun getLevel(): Level = delegate.level.asJavaLevel()
 
-    override fun setLevel(newLevel: Level) {
-        delegate.level = newLevel.asLognityLevel()
+    override fun setLevel(newLevel: Level?) {
+        delegate.level = newLevel?.asLognityLevel() ?: return
     }
 
     override fun log(record: LogRecord) {
@@ -35,4 +19,15 @@ class LognityJavaLogger(
     }
 }
 
-fun Logger.asJavaLogger(): LognityJavaLogger = LognityJavaLogger(this)
+/**
+ * Expose this Lognity [Logger] as a [java.util.logging.Logger] (JUL) instance.
+ *
+ * The returned JUL logger delegates to the underlying Lognity logger:
+ * - Reading the level via [JavaLogger.getLevel] reflects the current Lognity level.
+ * - Setting the level via [JavaLogger.setLevel] updates the Lognity level using the mapping in [asLognityLevel].
+ * - Logging a [java.util.logging.LogRecord] forwards the call to Lognity with the mapped level via [asLognityLevel].
+ *
+ * This is useful when you need to pass a JUL logger to libraries expecting `java.util.logging.Logger`,
+ * while still routing logs through Lognity.
+ */
+fun Logger.asJavaLogger(): JavaLogger = LognityJavaLogger(this)
