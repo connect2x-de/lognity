@@ -1,0 +1,53 @@
+{
+    "level": "TRACE",
+    "enabled": true,
+    "appenders": [
+        {
+            "type": "console",
+            "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}{{r}}",
+            "formatter": "default",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "always"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "file",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}",
+            "formatter": "default",
+            "path": "latest-info.log",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "level",
+                        "condition": "ABOVE",
+                        "value": "DEBUG"
+                    },
+                    {
+                        "type": "level",
+                        "condition": "BELOW",
+                        "value": "ERROR"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "file",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}",
+            "formatter": "default",
+            "path": "latest-error.log",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "level",
+                        "condition": "ABOVE",
+                        "value": "WARN"
+                    }
+                ]
+            }
+        }
+    ]
+}

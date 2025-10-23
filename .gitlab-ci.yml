@@ -1,0 +1,163 @@
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+stages:
+  - build
+  - test
+  - security
+  - publish
+
+variables:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+  KONAN_DATA_DIR: $CI_PROJECT_DIR/.konan
+  BUILD_LINUX_IMAGE_NAME: registry.gitlab.com/trixnity/kmp-dockerfiles/kmp-dockerfiles-base:latest
+
+.artifact-reports: &artifact-reports
+  name: reports
+  when: always
+  paths: [ "**/build/reports" ]
+  reports:
+    junit: "**/build/test-results/**/TEST-*.xml"
+
+.if-merge-request-or-main: &if-merge-request-or-main
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+
+.if-main: &if-main
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+
+.if-release: &if-release
+  - if: '$CI_COMMIT_TAG =~ /^v\d+.\d+.\d+.*/'
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+
+build:linux:
+  stage: build
+  interruptible: true
+  tags: [ "saas-linux-medium-amd64" ]
+  image: $BUILD_LINUX_IMAGE_NAME
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew
+      compileKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
+      compileReleaseKotlinAndroid
+      compileTestKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
+      compileReleaseUnitTestKotlinAndroid
+      --stacktrace
+
+build:mac:
+  stage: build
+  interruptible: true
+  tags: [ "trixnity-mac-internal" ]
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew
+      compileKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
+      compileTestKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
+      --stacktrace
+
+test:linux:
+  stage: test
+  interruptible: true
+  timeout: 1h
+  needs: [ "build:linux", "build:mac" ]
+  tags: [ "saas-linux-medium-amd64" ]
+  image: $BUILD_LINUX_IMAGE_NAME
+  artifacts: *artifact-reports
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew {jvm,linuxX64}Test --stacktrace
+
+test:mac:
+  stage: test
+  interruptible: true
+  timeout: 1h
+  needs: [ "build:linux", "build:mac" ]
+  tags: [ "trixnity-mac-internal" ]
+  artifacts: *artifact-reports
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew {jvm,macosX64}Test --stacktrace
+
+test:windows:
+  stage: test
+  interruptible: true
+  timeout: 2h
+  needs: [ "build:linux", "build:mac" ]
+  tags: [ "saas-windows-medium-amd64" ]
+  artifacts: *artifact-reports
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew jvmTest mingwX64Test --stacktrace
+
+security:dependencies:
+  stage: security
+  interruptible: true
+  timeout: 30m
+  needs: [ ]
+  tags: [ "saas-linux-medium-amd64" ]
+  image:
+    name: "aquasec/trivy"
+    entrypoint: [ "" ]
+  variables:
+    TRIVY_CACHE_DIR: ".trivycache/"
+  cache:
+    paths:
+      - .trivycache/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: '$CI_COMMIT_TAG =~ /^v\d+.\d+.\d+.*/'
+      allow_failure: false
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      allow_failure: false
+  artifacts:
+    when: always
+    reports:
+      dependency_scanning: report.json
+  script:
+    - trivy repo ./ --exit-code 0
+    - trivy repo ./ --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output report.json
+    - trivy repo ./ --exit-code 1 --severity CRITICAL
+
+publish:linux:
+  stage: publish
+  tags: [ "saas-linux-medium-amd64" ]
+  needs: [ "test:linux", "test:mac", "test:windows" ]
+  image: $BUILD_LINUX_IMAGE_NAME
+  rules:
+    - *if-main
+    - *if-release
+  script:
+    - ./gradlew
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToGitlabRepository
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToCentralRepository
+      --stacktrace
+
+publish:mac:
+  stage: publish
+  tags: [ "trixnity-mac-internal" ]
+  needs: [ "test:linux", "test:mac", "test:windows" ]
+  rules:
+    - *if-main
+    - *if-release
+  script:
+    - ./gradlew
+      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToGitlabRepository
+      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToCentralRepository
+      --stacktrace

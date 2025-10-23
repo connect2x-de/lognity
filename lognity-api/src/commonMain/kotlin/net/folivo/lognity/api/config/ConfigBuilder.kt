@@ -1,0 +1,53 @@
+package net.folivo.lognity.api.config
+
+import net.folivo.lognity.api.appender.Appender
+import net.folivo.lognity.api.logger.Level
+
+/**
+ * A builder class for creating a new [Config] instance
+ * using a simple DSL.
+ */
+class ConfigBuilder {
+    /**
+     * The initial log level used by the logger instance(s)
+     * using this config.
+     */
+    var level: Level = Level.default()
+
+    /**
+     * The initial enable state applied to the logger instance(s)
+     * using this config.
+     */
+    var isEnabled: Boolean = true
+
+    @PublishedApi
+    internal val appenders: ArrayList<Appender> = ArrayList()
+
+    /**
+     * Copies all config properties from the given [Config] instance
+     * into this builder instance.
+     *
+     * @param config The config from which to copy all properties into this builder instance.
+     * @return This builder instance.
+     */
+    fun setFrom(config: Config): ConfigBuilder {
+        level = config.initialLevel
+        isEnabled = config.initialEnableState
+        appenders += config.appenders
+        return this
+    }
+
+    /**
+     * Adds a new appender instance to this logger config if not already present.
+     *
+     * @param appender The appender instance to add to this config.
+     */
+    fun appender(appender: Appender) {
+        require(appender !in appenders) { "Appender is already present" }
+        appenders += appender
+    }
+
+    fun build(): Config = Config(level, isEnabled, appenders)
+}
+
+typealias ConfigSpec = ConfigBuilder.() -> Unit
