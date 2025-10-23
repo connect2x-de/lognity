@@ -1,25 +1,10 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.ktor
 
-import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.logger.Logger
 import io.ktor.util.logging.Logger as KtorLogger
 
-expect class LognityKtorLogger(delegate: Logger) : KtorLogger {
+@PublishedApi
+internal expect class LognityKtorLogger(delegate: Logger) : KtorLogger {
     override fun debug(message: String)
     override fun debug(message: String, cause: Throwable)
     override fun error(message: String)
@@ -32,5 +17,11 @@ expect class LognityKtorLogger(delegate: Logger) : KtorLogger {
     override fun warn(message: String, cause: Throwable)
 }
 
+/**
+ * Returns a Ktor [io.ktor.util.logging.Logger] that delegates to this Lognity [net.folivo.lognity.api.logger.Logger].
+ *
+ * This is a lightweight adapter so you can plug Lognity into Ktor APIs expecting a Ktor logger.
+ * The returned logger will forward log messages to the underlying Lognity logger implementation.
+ */
 @Suppress("NOTHING_TO_INLINE")
 inline fun Logger.asKtorLogger(): KtorLogger = LognityKtorLogger(this)

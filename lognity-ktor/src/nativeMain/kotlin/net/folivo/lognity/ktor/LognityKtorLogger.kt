@@ -1,31 +1,16 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.ktor
 
 import io.ktor.util.logging.*
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.debug
-import net.folivo.lognity.api.error
-import net.folivo.lognity.api.info
-import net.folivo.lognity.api.trace
-import net.folivo.lognity.api.warn
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.logger.debug
+import net.folivo.lognity.api.logger.error
+import net.folivo.lognity.api.logger.info
+import net.folivo.lognity.api.logger.trace
+import net.folivo.lognity.api.logger.warn
 import io.ktor.util.logging.Logger as KtorLogger
 
-actual class LognityKtorLogger actual constructor(
+@PublishedApi
+internal actual class LognityKtorLogger actual constructor(
     private val delegate: Logger
 ) : KtorLogger {
     actual override fun debug(message: String) = delegate.debug { message }
