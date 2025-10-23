@@ -22,6 +22,10 @@ dependencyResolutionManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 include("lognity-api")
 include("lognity-core")
 include("lognity-slf4j")
