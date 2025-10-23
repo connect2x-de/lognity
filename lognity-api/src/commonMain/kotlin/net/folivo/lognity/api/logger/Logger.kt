@@ -1,25 +1,10 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package net.folivo.lognity.api
+package net.folivo.lognity.api.logger
 
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.marker.Marker
 
 /**
  * An interface which provides functions to log to all appenders of
@@ -38,9 +23,9 @@ interface Logger {
          * @see ConfigBuilder
          */
         var defaultConfig: ConfigBuilder.() -> Unit
-            get() = Backend.current.defaultConfigSpec
+            get() = Backend.current.configSpec
             set(value) {
-                Backend.current.defaultConfigSpec = value
+                Backend.current.configSpec = value
             }
     }
 
@@ -54,6 +39,12 @@ interface Logger {
      * The immutable configuration of this logger instance.
      */
     val config: Config
+
+    /**
+     * The immutable context of this logger instance.
+     * Contains metadata as specified in the trailing closure of [Logger].
+     */
+    val context: Context
 
     /**
      * The current log level of this logger instance.
@@ -238,9 +229,9 @@ interface Logger {
  * Create a new [Logger] instance with the given name.
  *
  * @param name The name of the newly created logger instance.
- * @param configSpec The configuration spec applied to the newly created logger instance. See [ConfigBuilder].
+ * @param contextSpec The [Context] applied to the newly created logger instance.
  * @return A new logger instance with the given name.
  */
-fun Logger(name: String, configSpec: ConfigBuilder.() -> Unit = Backend.current.defaultConfigSpec): Logger {
-    return Backend.current.createLogger(name, configSpec)
+fun Logger(name: String, contextSpec: ContextSpec = {}): Logger {
+    return Backend.current.createLogger(name, contextSpec)
 }

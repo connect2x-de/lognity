@@ -1,34 +1,17 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.api.backend
 
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.appender.Appender
-import net.folivo.lognity.api.appender.Filter
-import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.config.ConfigSpec
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.ContextSpec
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Interface representing a logging backend implementation.
- * The backend is responsible for creating loggers, markers, and appenders,
+ * The backend is responsible for creating loggers, markers,
  * as well as providing default configuration for the logging system.
  */
 interface Backend {
@@ -68,17 +51,20 @@ interface Backend {
      * The default logger configuration specification used by this backend.
      * This is used when creating new loggers without an explicit configuration.
      */
-    var defaultConfigSpec: ConfigBuilder.() -> Unit
+    var configSpec: ConfigSpec
 
     /**
-     * Register the given shutdown hook to be invoked when [shutdown] is called.
+     * The default context specification applied to every logger created
+     * through this backend.
+     * The individual context specification of the [Logger] call is combined
+     * with this spec to create the actual context of the new logger.
      */
-    fun registerShutdownHook(hook: () -> Unit)
+    var contextSpec: ContextSpec
 
     /**
-     * Shut down the logging backend and free any held resources.
+     * Register the given shutdown hook to be invoked when the application terminates.
      */
-    fun shutdown()
+    fun addShutdownHook(hook: () -> Unit)
 
     /**
      * Creates a new log marker with the specified parameters.
@@ -97,42 +83,5 @@ interface Backend {
      * @param configSpec The configuration specification for the logger. Defaults to the backend's default configuration.
      * @return A new logger instance.
      */
-    fun createLogger(name: String, configSpec: ConfigBuilder.() -> Unit = defaultConfigSpec): Logger
-
-    /**
-     * Creates a new file appender that writes log messages to a file.
-     *
-     * @param pattern The formatting pattern to apply to all messages passed to the appender.
-     * @param formatter The formatter used to apply the pattern to each message.
-     * @param filter The filter to apply to determine whether a message should be logged.
-     * @param path The file path where log messages will be written.
-     * @return A new file appender instance.
-     */
-    fun createFileAppender(pattern: String, formatter: Formatter, filter: Filter, path: String): Appender
-
-    /**
-     * Creates a new console appender that writes log messages to the standard output.
-     *
-     * @param pattern The formatting pattern to apply to all messages passed to the appender.
-     * @param formatter The formatter used to apply the pattern to each message.
-     * @param filter The filter to apply to determine whether a message should be logged.
-     * @return A new console appender instance.
-     */
-    fun createConsoleAppender(pattern: String, formatter: Formatter, filter: Filter): Appender
-
-    /**
-     * Creates a platform-specific console appender that writes log messages to the
-     * appropriate console for the current platform.
-     *
-     * The default implementation simply calls [createConsoleAppender], but platform-specific
-     * implementations may override this to provide better integration with the platform's
-     * native logging facilities.
-     *
-     * @param pattern The formatting pattern to apply to all messages passed to the appender.
-     * @param formatter The formatter used to apply the pattern to each message.
-     * @param filter The filter to apply to determine whether a message should be logged.
-     * @return A new platform-specific console appender instance.
-     */
-    fun createSystemAppender(pattern: String, formatter: Formatter, filter: Filter): Appender =
-        createConsoleAppender(pattern, formatter, filter)
+    fun createLogger(name: String, contextSpec: ContextSpec = {}): Logger
 }
