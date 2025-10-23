@@ -41,7 +41,22 @@ variables:
   - if: $CI_PIPELINE_SOURCE == "schedule"
     when: never
 
-build:
+build:linux:
+  stage: build
+  interruptible: true
+  tags: [ "saas-linux-medium-amd64" ]
+  image: $BUILD_LINUX_IMAGE_NAME
+  rules:
+    - *if-merge-request-or-main
+  script:
+    - ./gradlew
+      compileKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
+      compileReleaseKotlinAndroid
+      compileTestKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
+      compileReleaseUnitTestKotlinAndroid
+      --stacktrace
+
+build:mac:
   stage: build
   interruptible: true
   tags: [ "saas-macos-medium-m1" ]
@@ -49,15 +64,15 @@ build:
     - *if-merge-request-or-main
   script:
     - ./gradlew
-      clean
-      buildNeeded
+      compileKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
+      compileTestKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
       --stacktrace
 
 test:linux:
   stage: test
   interruptible: true
   timeout: 1h
-  needs: [ "build" ]
+  needs: [ "build:linux", "build:mac" ]
   tags: [ "saas-linux-medium-amd64" ]
   image: $BUILD_LINUX_IMAGE_NAME
   artifacts: *artifact-reports
@@ -70,7 +85,7 @@ test:mac:
   stage: test
   interruptible: true
   timeout: 1h
-  needs: [ "build" ]
+  needs: [ "build:linux", "build:mac" ]
   tags: [ "saas-macos-medium-m1" ]
   artifacts: *artifact-reports
   rules:
@@ -82,7 +97,7 @@ test:windows:
   stage: test
   interruptible: true
   timeout: 2h
-  needs: [ "build" ]
+  needs: [ "build:linux", "build:mac" ]
   tags: [ "saas-windows-medium-amd64" ]
   artifacts: *artifact-reports
   rules:
@@ -120,14 +135,29 @@ security:dependencies:
     - trivy repo ./ --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output report.json
     - trivy repo ./ --exit-code 1 --severity CRITICAL
 
-publish:
+publish:linux:
   stage: publish
-  tags: [ "saas-macos-medium-m1" ]
+  tags: [ "saas-linux-medium-amd64" ]
+  needs: [ "test:linux", "test:mac", "test:windows" ]
+  image: $BUILD_LINUX_IMAGE_NAME
   rules:
     - *if-main
     - *if-release
   script:
     - ./gradlew
-      publishToGitlabRepository
-      publishToCentralRepository
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToGitlabRepository
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToCentralRepository
+      --stacktrace
+
+publish:mac:
+  stage: publish
+  tags: [ "saas-macos-medium-m1" ]
+  needs: [ "test:linux", "test:mac", "test:windows" ]
+  rules:
+    - *if-main
+    - *if-release
+  script:
+    - ./gradlew
+      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToGitlabRepository
+      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToCentralRepository
       --stacktrace
