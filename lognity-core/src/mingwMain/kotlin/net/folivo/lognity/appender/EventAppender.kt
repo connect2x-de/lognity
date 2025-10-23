@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
@@ -21,12 +5,13 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValuesOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.wcstr
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
+import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.util.eventType
 import platform.windows.DeregisterEventSource
 import platform.windows.HANDLE
@@ -42,6 +27,10 @@ class EventAppender( // @formatter:off
     override val filter: Filter
 ) : Appender { // @formatter:on
     private val eventSources: SharedHashMap<Logger, HANDLE> = SharedHashMap()
+
+    init {
+        Backend.current.addShutdownHook(::dispose)
+    }
 
     private fun getOrCreateEventSource(logger: Logger): HANDLE {
         return eventSources.getOrPut(logger) {
@@ -59,7 +48,7 @@ class EventAppender( // @formatter:off
         ReportEventW(eventSource, level.eventType, 0U, eventId, null, 1U, 0U, cValuesOf(message.wcstr.ptr), null)
     }
 
-    override fun dispose() {
+    private fun dispose() {
         for ((_, handle) in eventSources) {
             DeregisterEventSource(handle)
         }

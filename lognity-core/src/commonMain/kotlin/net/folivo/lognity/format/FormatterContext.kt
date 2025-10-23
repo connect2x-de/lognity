@@ -1,26 +1,25 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.format
 
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
-import net.folivo.lognity.api.NoopLogger
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.logger.NoopLogger
+import net.folivo.lognity.api.marker.Marker
 
+/**
+ * Context object provided to formatters when rendering log messages.
+ *
+ * It bundles together commonly used data about the logging event so that
+ * formatter implementations can produce strings without having to reach back
+ * into the logger or framework.
+ *
+ * Typical usage: a [CompiledFormat] can be created for [FormatterContext] and
+ * later invoked with an instance of this class to render a message.
+ *
+ * @property logger The originating [Logger]. Defaults to [NoopLogger] as a safe placeholder.
+ * @property level The effective log [Level] for this event. Defaults to [Level.default].
+ * @property content The log message content or payload. Often a [String] but may be any type.
+ * @property marker Optional [Marker] attached to the event for additional context or routing.
+ */
 data class FormatterContext( // @formatter:off
     var logger: Logger = NoopLogger,
     var level: Level = Level.default(),

@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
@@ -23,14 +7,14 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.toAnsi
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.backend.withBlockingLock
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -60,6 +44,20 @@ private data class RefCountedSink(
     }
 }
 
+/**
+ * Appender that writes log messages to a file.
+ *
+ * This implementation
+ * - reuses a shared buffered Sink per file path across instances using simple reference counting,
+ * - is thread-safe via a Mutex around writes,
+ * - strips ANSI escape sequences from messages before writing to keep the file clean, and
+ * - registers a shutdown hook with the Backend to flush and close the file handle when the process ends.
+ *
+ * @property pattern The formatting pattern string used by this appender. Passed to and interpreted by [formatter].
+ * @property formatter The formatter that produced the final message from [pattern] and log context.
+ * @property filter A filter that decides whether a given message should be written.
+ * @property path The file system path to which log lines will be appended. The file is opened in append mode.
+ */
 class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
@@ -71,7 +69,7 @@ class FileAppender( // @formatter:off
     }
 
     init {
-        Backend.current.registerShutdownHook(::dispose)
+        Backend.current.addShutdownHook(::dispose)
     }
 
     private val sink: RefCountedSink = sinks.getOrPut(path) {
@@ -80,6 +78,19 @@ class FileAppender( // @formatter:off
 
     private val mutex: Mutex = Mutex()
 
+    /**
+     * Appends the given message to the configured [path] as a single line.
+     *
+     * Behavior:
+     * - Respects [filter]; returns immediately if it rejects the message.
+     * - Removes ANSI escape sequences from [message] to ensure clean file output.
+     * - Performs the write under a mutex to guarantee thread-safety across concurrent loggers.
+     *
+     * @param logger The logger that produced the message.
+     * @param level The log level of the message.
+     * @param message The formatted log message to write.
+     * @param marker Optional marker associated with the message.
+     */
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         // Make sure to strip out any ANSI codes when writing to file
@@ -88,7 +99,7 @@ class FileAppender( // @formatter:off
         }
     }
 
-    override fun dispose() {
+    private fun dispose() {
         sink.value.flush()
         sink.release { sinks -= path }
     }

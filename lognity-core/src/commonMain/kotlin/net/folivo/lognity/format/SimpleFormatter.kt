@@ -1,36 +1,37 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.format
 
 import co.touchlab.stately.collections.SharedHashMap
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiSequence
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.backend.getThreadId
 import net.folivo.lognity.backend.getThreadName
+import net.folivo.lognity.format.SimpleFormatter.Companion.default
 import net.folivo.lognity.util.ThreadLocal
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * A simple, fast log message formatter that compiles format strings once and reuses them.
+ *
+ * The formatter resolves placeholders (variables) in a format string against a provided
+ * [FormatterContext]. Placeholders are defined by name and mapped to a [CompiledFormat.Segment]
+ * implementation supplied via [variables].
+ *
+ * Usage notes:
+ * - Format strings are compiled on first use and cached for subsequent calls.
+ * - A lightweight thread-local [FormatterContext] is reused to minimize allocations.
+ * - See [default] for a preconfigured instance with common variables like time, level, thread, etc.
+ *
+ * @param variables Mapping of variable names to [CompiledFormat.Segment]s used during compilation of
+ *   format strings. The keys represent placeholder names that can be used in format strings and the
+ *   values define how those placeholders are rendered from a [FormatterContext].
+ */
 class SimpleFormatter(
     private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
 ) : Formatter {
@@ -54,6 +55,25 @@ class SimpleFormatter(
             DateTimeComponents.Format { secondFraction(3, 3) }
 
         @OptIn(ExperimentalTime::class)
+            /**
+             * A preconfigured [SimpleFormatter] that exposes a useful set of variables commonly needed in log output.
+             *
+             * Available variables in format strings:
+             * - r: ANSI reset sequence
+             * - levelColor: ANSI color sequence for the log [Level]
+             * - marker: optional [Marker] name
+             * - message: log message content
+             * - thread: current thread name
+             * - threadId: current thread id
+             * - level: fixed-width level name padded to the longest level
+             * - levelSymbol: short symbol representing the level
+             * - name: [Logger] name
+             * - yyyy, MM, dd, hh, mm, ss, SSS: current date-time components
+             *
+             * Notes:
+             * - Date/time variables are evaluated at call time using [Clock.System.now].
+             * - ANSI sequences depend on the chosen [Level] configuration.
+             */
         val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off
             "r" to CompiledFormat.Text(AnsiSequence.reset.toString()),
             "levelColor" to CompiledFormat.Variable { ctx -> ctx.level.ansi.toString() },
@@ -76,6 +96,20 @@ class SimpleFormatter(
 
     private val formats: SharedHashMap<String, CompiledFormat<FormatterContext>> = SharedHashMap()
 
+    /**
+     * Formats a log entry according to the provided format string [s].
+     *
+     * The format string may reference any variables known to this formatter (see [default] for
+     * the built-in set). The format is compiled on first use and cached for subsequent calls.
+     * This method is thread-safe and optimized to minimize allocations.
+     *
+     * @param logger The source [Logger].
+     * @param level The [Level] of the log entry.
+     * @param content The log message or object to be rendered.
+     * @param marker Optional [Marker] for additional classification.
+     * @param s The format string containing placeholders to resolve.
+     * @return The formatted log line.
+     */
     override operator fun invoke(logger: Logger, level: Level, content: Any, marker: Marker?, s: String): String {
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
         return format(context.get().apply {

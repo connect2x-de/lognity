@@ -1,30 +1,24 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.appender
 
 import kotlinx.coroutines.sync.Mutex
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.backend.withBlockingLock
 
+/**
+ * Appender that prints formatted log messages to the standard output.
+ *
+ * This appender is cross-platform and keeps console output readable by serializing
+ * writes to the console using a [Mutex] guarded section.
+ *
+ * @param pattern Defines the format template interpreted by the provided [formatter].
+ * @param formatter Renders the final message string from a log event.
+ * @param filter Decides whether a log event should be emitted at all.
+ */
 open class ConsoleAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
@@ -32,6 +26,14 @@ open class ConsoleAppender( // @formatter:off
 ) : Appender { // @formatter:on
     protected val mutex: Mutex = Mutex()
 
+    /**
+     * Appends a log message to the standard output (println).
+     *
+     * @param logger The source [Logger] issuing the message.
+     * @param level The [Level] of this log event.
+     * @param message The already formatted message produced by the [formatter] using [pattern].
+     * @param marker Optional [Marker] attached to the log event.
+     */
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {
