@@ -46,11 +46,11 @@ object ConfigLoader {
             isEnabled = config.enabled
             for(appender in config.appenders) when(appender) {
                 is SerializableAppender.Console -> {
-                    val formatter = formatters[appender.formatter]!!
+                    val formatter = requireNotNull(formatters[appender.formatter])
                     platformConsoleAppender(appender.pattern, formatter, appender.filter)
                 }
                 is SerializableAppender.File -> {
-                    val formatter = formatters[appender.formatter]!!
+                    val formatter = requireNotNull(formatters[appender.formatter])
                     fileAppender(appender.pattern, formatter, appender.filter, appender.path)
                 }
             }

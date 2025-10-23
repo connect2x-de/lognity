@@ -8,11 +8,12 @@ internal class ThreadLocal<T>(
     private val ref: ThreadLocalRef<T> = ThreadLocalRef()
 
     fun get(): T {
-        var value = ref.get()
-        if (value == null) {
-            value = initializer()
-            ref.set(value)
+        val oldValue = ref.get()
+        return if (oldValue == null) {
+            val newValue = initializer()
+            ref.set(newValue)
+            newValue
         }
-        return value!!
+        else oldValue
     }
 }
