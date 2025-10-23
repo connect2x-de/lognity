@@ -1,5 +1,10 @@
 package net.folivo.lognity.api.marker
 
+import net.folivo.lognity.api.marker.NoopMarker.isEnabled
+import net.folivo.lognity.api.marker.NoopMarker.key
+import net.folivo.lognity.api.marker.NoopMarker.name
+
+
 /**
  * A no-op implementation of [Marker].
  *

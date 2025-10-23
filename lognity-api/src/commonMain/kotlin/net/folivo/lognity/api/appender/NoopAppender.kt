@@ -1,5 +1,8 @@
 package net.folivo.lognity.api.appender
 
+import net.folivo.lognity.api.appender.NoopAppender.append
+import net.folivo.lognity.api.appender.NoopAppender.formatter
+import net.folivo.lognity.api.appender.NoopAppender.pattern
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
