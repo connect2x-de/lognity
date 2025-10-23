@@ -15,7 +15,8 @@ internal actual object ShutdownHandler {
     init {
         atexit(staticCFunction<Unit> {
             // Need full qualifier here because of volatile closure
-            ShutdownHandler.invokeAll()
+            val handler = ShutdownHandler // To prevent formatter from removing ref
+            handler.invokeAll()
         })
     }
 

@@ -1,20 +1,17 @@
 package net.folivo.lognity.backend
 
+@Suppress("UNUSED_PARAMETER")
+private fun registerUnloadHandler(block: () -> Unit) {
+    js("window.addEventListener('unload', (_) => { block(); });")
+}
+
 internal actual object ShutdownHandler {
     private val hooks: ArrayList<() -> Unit> = ArrayList()
 
     init {
-        @Suppress("UNUSED") val hooks = this.hooks // Guarantee hooks being captured into shared JS scope
-        js(
-            """
-            window.addEventListener('unload', (_) => {
-                const n = hooks.size;
-                for(let i = 0; i < n; i++) {
-                    hooks.get(i)();
-                }
-            });
-        """.trimIndent()
-        )
+        registerUnloadHandler {
+            for (hook in hooks) hook()
+        }
     }
 
     actual fun register(block: () -> Unit) {
