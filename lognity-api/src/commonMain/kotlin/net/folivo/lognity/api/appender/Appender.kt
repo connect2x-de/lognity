@@ -42,12 +42,4 @@ interface Appender {
      * @param marker An optional marker that can be used for additional filtering or processing.
      */
     fun append(logger: Logger, level: Level, message: String, marker: Marker?)
-
-    /**
-     * A function which may be explicitly invoked to free all underlying
-     * resources associated with this log appender instance.
-     * If not called explicitly, will be called automatically by the parent logger
-     * at the end of the program lifecycle.
-     */
-    fun dispose() {}
 }

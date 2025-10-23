@@ -59,14 +59,6 @@ interface Logger {
     var isEnabled: Boolean
 
     /**
-     * A function which may be explicitly invoked to free all underlying
-     * resources associated with this logger instance.
-     * If not called explicitly, will be called automatically by the backend
-     * at the end of the program lifecycle.
-     */
-    fun dispose() {}
-
-    /**
      * Log a message at the given level to all appenders.
      * If the given level is less than [Logger.level], the message will be omitted.
      *
