@@ -88,8 +88,6 @@ test:windows:
   rules:
     - *if-merge-request-or-main
   script:
-    - choco install -y openjdk17
-    - refreshenv
     - ./gradlew jvmTest mingwX64Test --stacktrace
 
 security:dependencies:
@@ -131,4 +129,5 @@ publish:
   script:
     - ./gradlew
       publishToGitlabRepository
+      publishToCentralRepository
       --stacktrace
