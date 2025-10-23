@@ -1,35 +1,21 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.slf4j
 
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
-import net.folivo.lognity.api.Marker
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.logger.Context
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.marker.Marker
 import org.slf4j.Logger as Slf4jLogger
 
-class Slf4jLognityLogger(
+internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {
     override val name: String get() = delegate.name
-    override val config: Config = ConfigBuilder().apply(Backend.current.defaultConfigSpec).build()
+    override val config: Config = ConfigBuilder().apply(Backend.current.configSpec).build()
+    override val context: Context = Context()
     override var level: Level = Backend.current.defaultLevel
     override var isEnabled: Boolean = true
 
@@ -40,8 +26,7 @@ class Slf4jLognityLogger(
     override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level || marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
-        val formattedMessage =
-            Backend.current.defaultFormatter(this, level, messageContent, marker, formatPattern)
+        val formattedMessage = Backend.current.defaultFormatter(this, level, messageContent, marker, formatPattern)
         when (level) {
             Level.TRACE -> delegate.trace(formattedMessage)
             Level.DEBUG -> delegate.debug(formattedMessage)
@@ -52,6 +37,11 @@ class Slf4jLognityLogger(
     }
 }
 
+/**
+ * Converts an SLF4J [org.slf4j.Logger] to a Lognity [Logger].
+ *
+ * If the given logger is already a bridged instance, the underlying Lognity logger is returned.
+ */
 fun Slf4jLogger.asLognityLogger(): Logger = when (this) {
     is LognitySlf4jLogger -> delegate
     else -> Slf4jLognityLogger(this)

@@ -1,35 +1,30 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.slf4j
 
-import net.folivo.lognity.api.Marker
+import net.folivo.lognity.api.marker.Marker
 import org.slf4j.IMarkerFactory
 import java.util.concurrent.ConcurrentHashMap
+import org.slf4j.Marker as Slf4jMarker
 
+/**
+ * SLF4J [IMarkerFactory] implementation backed by Lognity markers.
+ *
+ * It provides and caches SLF4J [org.slf4j.Marker] instances and bridges them to
+ * Lognity's [net.folivo.lognity.api.marker.Marker].
+ */
 object LognitySlf4jMarkerFactory : IMarkerFactory {
     private val markers: ConcurrentHashMap<String, LognitySlf4jMarker> = ConcurrentHashMap()
 
-    override fun getMarker(name: String): LognitySlf4jMarker {
+    /** Returns a bridged SLF4J marker for the given [name]. */
+    override fun getMarker(name: String): Slf4jMarker {
         return markers.getOrPut(name) {
             LognitySlf4jMarker(Marker(name))
         }
     }
 
+    /** Whether a marker with [name] exists in the local cache. */
     override fun exists(name: String): Boolean = markers.containsKey(name)
+    /** No-op detach, kept for SLF4J API compatibility. Always returns true. */
     override fun detachMarker(name: String): Boolean = true
-    override fun getDetachedMarker(name: String): LognitySlf4jMarker = getMarker(name)
+    /** Returns a non-cached marker instance for [name]. */
+    override fun getDetachedMarker(name: String): Slf4jMarker = getMarker(name)
 }

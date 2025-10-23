@@ -1,28 +1,12 @@
-/*
- * Copyright 2025 Trixnity
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.folivo.lognity.slf4j
 
-import net.folivo.lognity.api.Level
-import net.folivo.lognity.api.Logger
+import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.api.logger.Logger
 import org.slf4j.Marker
 import org.slf4j.helpers.MessageFormatter
 import org.slf4j.Logger as Slf4jLogger
 
-class LognitySlf4jLogger(
+internal class LognitySlf4jLogger(
     val delegate: Logger
 ) : Slf4jLogger {
     override fun getName(): String = delegate.name
@@ -226,6 +210,11 @@ class LognitySlf4jLogger(
     }
 }
 
+/**
+ * Converts a Lognity [net.folivo.lognity.api.logger.Logger] to an SLF4J [org.slf4j.Logger].
+ *
+ * If the given logger is already a bridged instance, the underlying SLF4J logger is returned.
+ */
 fun Logger.asSlf4jLogger(): Slf4jLogger = when (this) {
     is Slf4jLognityLogger -> delegate
     else -> LognitySlf4jLogger(this)
