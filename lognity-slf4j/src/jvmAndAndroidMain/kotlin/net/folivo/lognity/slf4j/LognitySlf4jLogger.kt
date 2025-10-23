@@ -6,8 +6,8 @@ import org.slf4j.Marker
 import org.slf4j.helpers.MessageFormatter
 import org.slf4j.Logger as Slf4jLogger
 
-internal class LognitySlf4jLogger(
-    val delegate: Logger
+class LognitySlf4jLogger(
+    internal val delegate: Logger
 ) : Slf4jLogger {
     override fun getName(): String = delegate.name
 
