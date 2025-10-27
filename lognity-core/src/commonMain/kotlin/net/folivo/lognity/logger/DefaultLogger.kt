@@ -3,6 +3,7 @@ package net.folivo.lognity.logger
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.logger.Context
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
@@ -13,7 +14,6 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 @OptIn(ExperimentalAtomicApi::class)
 @PublishedApi
 internal class DefaultLogger( // @formatter:off
-    override val name: String,
     override val config: Config,
     override val context: Context
 ) : Logger { // @formatter:on
@@ -33,16 +33,20 @@ internal class DefaultLogger( // @formatter:off
 
     override fun log(level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level) return
+        val marker = context[ContextKeys.defaultMarker]
+        if (marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, null, appender.pattern), null
+                this, level, appender.formatter(this, level, messageContent, marker, appender.pattern), null
             )
         }
     }
 
     override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
-        if (level < this.level || marker?.isEnabled == false) return
+        if (level < this.level) return
+        val actualMarker = marker ?: context[ContextKeys.defaultMarker]
+        if (actualMarker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
             appender.append(

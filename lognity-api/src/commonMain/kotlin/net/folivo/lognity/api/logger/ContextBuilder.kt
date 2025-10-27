@@ -56,6 +56,13 @@ class ContextBuilder {
         values[Context.Key.create<T>(name)] = value
     }
 
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any> get(key: Context.Key<T>): T? = values[key] as? T
+
+    operator fun <T : Any> set(key: Context.Key<T>, value: T) {
+        values[key] = value
+    }
+
     /**
      * Builds an immutable [Context] from the values currently stored in this builder.
      *

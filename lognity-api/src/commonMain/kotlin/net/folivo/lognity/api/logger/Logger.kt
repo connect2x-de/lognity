@@ -30,12 +30,6 @@ interface Logger {
     }
 
     /**
-     * The name of this logger instance.
-     * This value is expanded into {{name}} in the formatting pattern.
-     */
-    val name: String
-
-    /**
      * The immutable configuration of this logger instance.
      */
     val config: Config

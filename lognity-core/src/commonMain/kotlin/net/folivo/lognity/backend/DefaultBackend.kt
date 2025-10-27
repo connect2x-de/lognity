@@ -7,6 +7,7 @@ import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.config.ConfigSpec
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.api.logger.ContextBuilder
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.ContextSpec
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
@@ -81,12 +82,11 @@ object DefaultBackend : Backend {
 
     override fun createLogger(name: String, contextSpec: ContextSpec): Logger {
         val config = ConfigBuilder().apply(configSpec).build()
-        // @formatter:off
-        val context = ContextBuilder()
-            .apply(this.contextSpec)
-            .apply(contextSpec)
-            .build()
-        // @formatter:on
-        return DefaultLogger(name, config, context)
+        val context = ContextBuilder().apply {
+            this@DefaultBackend.contextSpec(this)
+            contextSpec()
+            this[ContextKeys.name] = name
+        }.build()
+        return DefaultLogger(config, context)
     }
 }

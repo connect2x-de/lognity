@@ -6,6 +6,7 @@ import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
 import net.folivo.lognity.api.ansi.AnsiSequence
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
@@ -83,7 +84,7 @@ class SimpleFormatter(
             "threadId" to CompiledFormat.Variable { getThreadId().toString() },
             "level" to CompiledFormat.Variable { ctx -> paddedLevelNames[ctx.level.ordinal] },
             "levelSymbol" to CompiledFormat.Variable { ctx -> ctx.level.symbol },
-            "name" to CompiledFormat.Variable { ctx -> ctx.logger.name },
+            "name" to CompiledFormat.Variable { ctx -> ctx.logger.context[ContextKeys.name] ?: "" },
             "yyyy" to CompiledFormat.Variable { Clock.System.now().format(yearFormat) },
             "MM" to CompiledFormat.Variable { Clock.System.now().format(monthFormat) },
             "dd" to CompiledFormat.Variable { Clock.System.now().format(dayFormat) },

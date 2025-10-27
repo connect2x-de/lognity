@@ -12,7 +12,6 @@ import net.folivo.lognity.api.marker.Marker
  * safe default when no actual backend should be used.
  */
 object NoopLogger : Logger {
-    override val name: String = "NoopLogger"
     override val config: Config = Config()
     override val context: Context = Context()
     override var level: Level = Level.INFO
