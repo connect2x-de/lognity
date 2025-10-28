@@ -10,7 +10,7 @@ import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
-import net.folivo.lognity.backend.getThreadId
+import net.folivo.lognity.backend.getNativeThreadId
 import net.folivo.lognity.backend.getThreadName
 import net.folivo.lognity.format.SimpleFormatter.Companion.default
 import net.folivo.lognity.util.ThreadLocal
@@ -81,7 +81,7 @@ class SimpleFormatter(
             "marker" to CompiledFormat.Variable { ctx -> ctx.marker?.name ?: "" },
             "message" to CompiledFormat.Variable { ctx -> ctx.content.toString() },
             "thread" to CompiledFormat.Variable { getThreadName() },
-            "threadId" to CompiledFormat.Variable { getThreadId().toString() },
+            "threadId" to CompiledFormat.Variable { getNativeThreadId().toString() },
             "level" to CompiledFormat.Variable { ctx -> paddedLevelNames[ctx.level.ordinal] },
             "levelSymbol" to CompiledFormat.Variable { ctx -> ctx.level.symbol },
             "name" to CompiledFormat.Variable { ctx -> ctx.logger.context[ContextKeys.name] ?: "" },

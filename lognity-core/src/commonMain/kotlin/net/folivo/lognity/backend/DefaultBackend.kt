@@ -12,7 +12,6 @@ import net.folivo.lognity.api.logger.ContextSpec
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
-import net.folivo.lognity.config.fileAppender
 import net.folivo.lognity.config.platformConsoleAppender
 import net.folivo.lognity.format.SimpleFormatter
 import net.folivo.lognity.logger.DefaultLogger
@@ -43,17 +42,7 @@ object DefaultBackend : Backend {
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         platformConsoleAppender(
-            "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}{{r}}"
-        )
-        fileAppender(
-            pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
-            path = "latest.log",
-            filter = Filter.levelsExcept(Level.DEBUG, Level.TRACE)
-        )
-        fileAppender(
-            pattern = "[{{level}}][{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}] ({{name}} @ {{thread}}) {{message}}",
-            path = "debug.log",
-            filter = Filter.levels(Level.DEBUG)
+            "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}"
         )
     }
 

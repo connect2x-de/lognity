@@ -9,6 +9,7 @@ import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
@@ -34,7 +35,8 @@ class EventAppender( // @formatter:off
 
     private fun getOrCreateEventSource(logger: Logger): HANDLE {
         return eventSources.getOrPut(logger) {
-            requireNotNull(RegisterEventSourceW(null, logger.name)) {
+            val name = logger.context[ContextKeys.name] ?: logger.toString()
+            requireNotNull(RegisterEventSourceW(null, name)) {
                 "Could not create event source for logger $logger"
             }
         }

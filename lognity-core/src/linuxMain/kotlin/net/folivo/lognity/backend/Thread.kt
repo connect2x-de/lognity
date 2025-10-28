@@ -22,4 +22,4 @@ internal actual fun getThreadName(): String = memScoped {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-internal actual fun getThreadId(): ULong = syscall(SYS_gettid.convert()).toULong()
+internal actual fun getNativeThreadId(): ULong = syscall(SYS_gettid.convert()).toULong()

@@ -1,3 +1,4 @@
+import net.folivo.lognity.gradle.asAAR
 import net.folivo.lognity.gradle.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
@@ -78,8 +79,19 @@ kotlin {
             }
         }
         val jvmAndAndroidMain by creating { dependsOn(commonMain) }
-        jvmMain { dependsOn(jvmAndAndroidMain) }
-        androidMain { dependsOn(jvmAndAndroidMain) }
+        jvmMain {
+            dependsOn(jvmAndAndroidMain)
+            dependencies {
+                implementation(libs.jna)
+                implementation(libs.jna.platform)
+            }
+        }
+        androidMain {
+            dependsOn(jvmAndAndroidMain)
+            dependencies {
+                implementation(libs.jna.asProvider().asAAR())
+            }
+        }
         val webMain by creating { dependsOn(commonMain) }
         jsMain { dependsOn(webMain) }
         wasmJsMain { dependsOn(webMain) }

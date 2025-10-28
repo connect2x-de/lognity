@@ -25,7 +25,7 @@ internal actual fun getThreadName(): String = memScoped {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-internal actual fun getThreadId(): ULong = memScoped {
+internal actual fun getNativeThreadId(): ULong = memScoped {
     val id = alloc<uint64_tVar>()
     pthread_threadid_np(pthread_self(), id.ptr)
     id.value
