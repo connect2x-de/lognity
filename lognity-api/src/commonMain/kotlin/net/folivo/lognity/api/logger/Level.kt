@@ -14,12 +14,12 @@ enum class Level( // @formatter:off
     val ansi: AnsiSequence
 ) { // @formatter:on
     // @formatter:off
-    TRACE("\uD83D\uDD0E", AnsiBg.default..AnsiFg.hiPurple),
-    DEBUG("\uD83E\uDEB2", AnsiBg.default..AnsiFg.hiGreen),
-    INFO ("\uD83D\uDCDC", AnsiBg.default..AnsiFg.default),
-    WARN ("\u26A0\uFE0F", AnsiBg.default..AnsiFg.hiYellow),
-    ERROR("\uD83D\uDD25", AnsiBg.default..AnsiFg.hiRed),
-    FATAL("\uD83D\uDC80", AnsiBg.default..<AnsiFg.hiRed);
+    TRACE("\uD83D\uDD0E", AnsiFg.hiPurple on AnsiBg.default),
+    DEBUG("\uD83E\uDEB2", AnsiFg.hiGreen on AnsiBg.default),
+    INFO ("\uD83D\uDCDC", AnsiFg.default on AnsiBg.default),
+    WARN ("\u26A0\uFE0F", AnsiFg.hiYellow on AnsiBg.default),
+    ERROR("\uD83D\uDD25", AnsiFg.hiRed on AnsiBg.default),
+    FATAL("\uD83D\uDC80", AnsiFg.hiRed boldOn AnsiBg.default);
     // @formatter:on
 
     companion object {

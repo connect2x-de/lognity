@@ -221,3 +221,33 @@ interface Logger {
 fun Logger(name: String, contextSpec: ContextSpec = {}): Logger {
     return Backend.current.createLogger(name, contextSpec)
 }
+
+/**
+ * Create a new Logger that derives from this logger's context.
+ *
+ * The returned logger keeps the same name as this logger (taken from this context via [ContextKeys.name]),
+ * copies all current context values, and then applies the additional [contextSpec] on top. When keys overlap,
+ * values defined inside [contextSpec] override the copied values.
+ *
+ * This is useful for creating scoped/child loggers that share most metadata but add or override a few context
+ * entries (e.g., request IDs, module information, markers-related data).
+ *
+ * Example:
+ * ```kotlin
+ * val base = Logger("App") { value(ContextKeys.module, "core") }
+ * val requestLogger = with(base) {
+ *     derive { value(ContextKeys.requestId, "42") }
+ * }
+ * // requestLogger has the same name as base and contains module + requestId
+ * ```
+ *
+ * @param contextSpec A context builder that can add or override values on top of this logger's context.
+ * @return A new Logger instance with the same name and an augmented context.
+ */
+inline fun Logger.derive(crossinline contextSpec: ContextSpec): Logger {
+    val name = context[ContextKeys.name]
+    return Backend.current.createLogger(name) {
+        valuesFrom(context)
+        contextSpec()
+    }
+}

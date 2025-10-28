@@ -32,5 +32,5 @@ object NoopBackend : Backend {
 
     override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker = NoopMarker
 
-    override fun createLogger(name: String, contextSpec: ContextSpec): Logger = NoopLogger
+    override fun createLogger(name: String?, contextSpec: ContextSpec): Logger = NoopLogger
 }

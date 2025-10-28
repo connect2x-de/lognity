@@ -83,5 +83,5 @@ interface Backend {
      * @param configSpec The configuration specification for the logger. Defaults to the backend's default configuration.
      * @return A new logger instance.
      */
-    fun createLogger(name: String, contextSpec: ContextSpec = {}): Logger
+    fun createLogger(name: String? = null, contextSpec: ContextSpec = {}): Logger
 }

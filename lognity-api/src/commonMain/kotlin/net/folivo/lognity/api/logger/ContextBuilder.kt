@@ -56,9 +56,25 @@ class ContextBuilder {
         values[Context.Key.create<T>(name)] = value
     }
 
+    /**
+     * Retrieves a value previously stored for the given [key].
+     *
+     * If no value exists or the stored value cannot be cast to the requested type [T], `null` is returned.
+     *
+     * @param key The strongly typed [Context.Key] to look up.
+     * @return The value associated with [key], or `null` if none is present.
+     */
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Any> get(key: Context.Key<T>): T? = values[key] as? T
 
+    /**
+     * Stores the given [value] under the provided [key].
+     *
+     * If an entry with the same [key] already exists, it will be overwritten.
+     *
+     * @param key The strongly typed [Context.Key] to associate the value with.
+     * @param value The value to store.
+     */
     operator fun <T : Any> set(key: Context.Key<T>, value: T) {
         values[key] = value
     }
