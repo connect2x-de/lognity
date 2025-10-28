@@ -3,12 +3,15 @@ package net.folivo.lognity.config
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.marker.Marker
 
 @Serializable
-internal data class SerializableFilter(
+data class SerializableFilter(
     val conditions: List<Condition> = listOf(AlwaysCondition)
 ) : Filter {
     override operator fun invoke(level: Level, message: String, marker: Marker?): Boolean {
@@ -18,6 +21,17 @@ internal data class SerializableFilter(
     @Serializable
     @Polymorphic
     sealed interface Condition {
+        companion object {
+            val serializersModule: SerializersModule = SerializersModule {
+                polymorphic(Condition::class) {
+                    subclass(AlwaysCondition::class)
+                    subclass(MarkerCondition::class)
+                    subclass(MessageCondition::class)
+                    subclass(LevelCondition::class)
+                }
+            }
+        }
+
         operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
     }
 

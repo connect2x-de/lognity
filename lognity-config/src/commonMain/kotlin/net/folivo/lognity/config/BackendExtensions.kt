@@ -12,7 +12,9 @@ fun Backend.loadDefaultConfig( // @formatter:off
     source: Source,
     formatters: Map<String, Formatter> = mapOf("default" to SimpleFormatter.default)
 ) { // @formatter:on
-    configSpec = ConfigLoader.load(source, formatters)
+    val config = SerializableConfig.load(source)
+    configSpec = { config.applyConfig(formatters) }
+    contextSpec = { config.applyContext() }
 }
 
 fun Backend.loadDefaultConfig( // @formatter:off

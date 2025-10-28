@@ -4,7 +4,6 @@ import kotlinx.io.Buffer
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
 import net.folivo.lognity.api.backend.Backend
-import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.appender.FileAppender
 import net.folivo.lognity.backend.DefaultBackend
@@ -24,9 +23,7 @@ class ConfigLoaderTest {
     fun `Empty file creates default config`() {
         val emptySource = Buffer()
         emptySource.writeString("{}")
-        val config = ConfigBuilder().apply {
-            ConfigLoader.load(emptySource)()
-        }.build()
+        val config = SerializableConfig.load(emptySource).createConfig()
         assertEquals(Level.default(), config.initialLevel)
         assertTrue(config.initialEnableState)
         assertTrue(config.appenders.isEmpty())
@@ -42,9 +39,7 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigBuilder().apply {
-            ConfigLoader.load(source)()
-        }.build()
+        val config = SerializableConfig.load(source).createConfig()
         assertEquals(Level.TRACE, config.initialLevel)
     }
 
@@ -58,9 +53,7 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigBuilder().apply {
-            ConfigLoader.load(source)()
-        }.build()
+        val config = SerializableConfig.load(source).createConfig()
         assertTrue(config.initialEnableState)
     }
 
@@ -89,9 +82,7 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigBuilder().apply {
-            ConfigLoader.load(source)()
-        }.build()
+        val config = SerializableConfig.load(source).createConfig()
         val appender = config.appenders.first()
         assertEquals("{{message}}", appender.pattern)
         assertSame(Backend.current.defaultFormatter, appender.formatter)
@@ -123,9 +114,7 @@ class ConfigLoaderTest {
             }
         """.trimIndent()
         )
-        val config = ConfigBuilder().apply {
-            ConfigLoader.load(source)()
-        }.build()
+        val config = SerializableConfig.load(source).createConfig()
         val appender = config.appenders.first()
         if (appender !is FileAppender) return
         assertEquals("{{message}}", appender.pattern)
