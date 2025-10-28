@@ -1,5 +1,6 @@
 import net.folivo.lognity.gradle.GitLabCI
 import net.folivo.lognity.gradle.apache2License
+import net.folivo.lognity.gradle.authenticatedPackageRegistry
 import net.folivo.lognity.gradle.defaultDependencyLocking
 import net.folivo.lognity.gradle.isCI
 
@@ -22,6 +23,9 @@ subprojects {
     if (isCI) defaultDependencyLocking()
 
     publishing {
+        repositories {
+            authenticatedPackageRegistry()
+        }
         apache2License()
     }
 }
