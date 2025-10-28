@@ -5,6 +5,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
@@ -26,7 +27,8 @@ internal class OsAppender( // @formatter:off
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         _os_log_internal(null, delegates.getOrPut(logger) {
-            os_log_create(logger.name, null)
+            val name = logger.context[ContextKeys.name] ?: logger.toString()
+            os_log_create(name, null)
         }, level.osLogType, message)
     }
 }
