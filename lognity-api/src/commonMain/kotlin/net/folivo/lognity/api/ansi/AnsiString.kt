@@ -2,59 +2,40 @@ package net.folivo.lognity.api.ansi
 
 import kotlin.jvm.JvmInline
 
+/**
+ * A string that may contain ANSI escape sequences.
+ *
+ * Provides helpers to manipulate and compose ANSI-decorated strings safely.
+ */
 @JvmInline
-value class AnsiString @PublishedApi internal constructor(@PublishedApi internal val value: String) {
+value class AnsiString @PublishedApi internal constructor(@PublishedApi internal val value: String) : CharSequence by value {
     companion object {
+        /** Pattern for matching ANSI escape sequences in a string. */
         private val pattern: Regex = Regex("""${AnsiSequence.ESC}\[[\w;]+?[ABCDEFGHIJKLm]""")
     }
 
     /**
-     * Strips all ANSI escape codes from this ANSI string
-     * using a RegEx pattern and returns the stripped string value.
-     *
-     * @return The raw string value of this ANSI string without any escape codes.
+     * Remove all ANSI escape sequences and return a plain string.
      */
     fun cleanString(): String = value.replace(pattern, "")
 
-    /**
-     * Concatenate the value of this ANSI string with the given string
-     * and returns the result as a new [AnsiString].
-     *
-     * @param s The string to append to this ANSI string.
-     * @return A new [AnsiString] which contains the data of this ANSI string followed by the given string.
-     */
+    /** Append a plain [String] to this [AnsiString]. */
     @Suppress("NOTHING_TO_INLINE")
     inline operator fun plus(s: String): AnsiString = AnsiString("$value$s")
 
-    /**
-     * Concatenate the value of this ANSI string with the given ANSI string
-     * and returns the result as a new [AnsiString].
-     *
-     * @param s The ANSI string to append to this ANSI string.
-     * @return A new [AnsiString] which contains the data of this ANSI string followed by the given ANSI string.
-     */
+    /** Append another [AnsiString] to this [AnsiString]. */
     @Suppress("NOTHING_TO_INLINE")
     inline operator fun plus(s: AnsiString): AnsiString = AnsiString("$value$s")
 
-    /**
-     * Insert the given ANSI sequence before this ANSI string and return
-     * the newly created [AnsiString].
-     *
-     * @param sequence The ANSI sequence to insert before this ANSI string.
-     * @return A new [AnsiString] containing the given sequence followed by the data of this ANSI string.
-     */
+    /** Prefix this [AnsiString] with an [AnsiSequence]. */
     @Suppress("NOTHING_TO_INLINE")
     inline infix fun with(sequence: AnsiSequence): AnsiString = AnsiString("$sequence$value")
 
-    /**
-     * Insert a reset ANSI escape code after this ANSI string and return
-     * the newly created ANSI string.
-     *
-     * @return A new ANSI string containing the data of this ANSI string followed by a reset escape code.
-     */
+    /** Append [AnsiSequence.reset] to this [AnsiString]. */
     @Suppress("NOTHING_TO_INLINE")
     inline fun reset(): AnsiString = AnsiString("$value${AnsiSequence.reset}")
 
+    /** Return the underlying string, including ANSI sequences. */
     override fun toString(): String = value
 }
 
