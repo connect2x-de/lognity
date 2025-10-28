@@ -40,6 +40,13 @@ class ContextBuilder {
      * @param T The type associated with the [key].
      */
     fun <T : Any> value(key: Context.Key<T>, value: T) {
+        val name = key.name
+        val existingKey = values.keys.find { key -> key.name == name }
+        if (existingKey != null) {
+            check(existingKey.type == key.type) {
+                "Key $name already exists with type ${existingKey.type} and cannot be overriden by a value of type ${key.type}"
+            }
+        }
         values[key] = value
     }
 
@@ -75,9 +82,7 @@ class ContextBuilder {
      * @param key The strongly typed [Context.Key] to associate the value with.
      * @param value The value to store.
      */
-    operator fun <T : Any> set(key: Context.Key<T>, value: T) {
-        values[key] = value
-    }
+    operator fun <T : Any> set(key: Context.Key<T>, value: T) = value(key, value)
 
     /**
      * Builds an immutable [Context] from the values currently stored in this builder.
