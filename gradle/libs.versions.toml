@@ -17,6 +17,7 @@ gradleNexus = "2.0.0" # https://github.com/gradle-nexus/publish-plugin/releases
 slf4j = "2.0.17"
 autoService = "1.1.1" # https://github.com/google/auto/releases
 kotlinxSerialization = "1.9.0"
+jna = "5.18.1"
 
 [libraries]
 
@@ -32,6 +33,8 @@ stately-common = { module = "co.touchlab:stately-common", version.ref = "stately
 stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 autoService = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
 
 [plugins]
 
