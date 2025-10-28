@@ -38,7 +38,7 @@ internal expect fun createSystemFileAppender( // @formatter:off
 
 @OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
-    override val name: String = "Skroll"
+    override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
@@ -80,12 +80,12 @@ object DefaultBackend : Backend {
         return DefaultMarker(key, name, isEnabled)
     }
 
-    override fun createLogger(name: String, contextSpec: ContextSpec): Logger {
+    override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
         val config = ConfigBuilder().apply(configSpec).build()
         val context = ContextBuilder().apply {
             this@DefaultBackend.contextSpec(this)
             contextSpec()
-            this[ContextKeys.name] = name
+            if (name != null) this[ContextKeys.name] = name
         }.build()
         return DefaultLogger(config, context)
     }

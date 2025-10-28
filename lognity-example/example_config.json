@@ -1,4 +1,6 @@
 {
+    "$schema": "../schema/Lognity Config V1.json",
+    "version": 1,
     "level": "TRACE",
     "enabled": true,
     "appenders": [
@@ -49,5 +51,11 @@
                 ]
             }
         }
-    ]
+    ],
+    "context": {
+        "name": {
+            "type": "string",
+            "value": "MyDefaultLoggerName"
+        }
+    }
 }

@@ -6,14 +6,20 @@ import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.backend.DefaultBackend
 import net.folivo.lognity.config.loadDefaultConfig
 
+private fun Logger.printTestMessages() {
+    trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    debug { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    info { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    warn { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    error { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    fatal { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+}
+
 fun main() {
     Backend.current = DefaultBackend
     Backend.current.loadDefaultConfig(Path("example_config.json"))
-    val logger = Logger("My Logger")
-    logger.trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    logger.debug { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    logger.info { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    logger.warn { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    logger.error { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    logger.fatal { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    // Explicitly named logger
+    Logger("My Logger").printTestMessages()
+    // Implicitly named logger (default defined in example_config.json)
+    Logger().printTestMessages()
 }

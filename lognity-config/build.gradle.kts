@@ -15,6 +15,9 @@ java {
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
     jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     mingwX64()
@@ -37,7 +40,7 @@ kotlin {
     androidNativeArm32()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
     js {
         browser {
