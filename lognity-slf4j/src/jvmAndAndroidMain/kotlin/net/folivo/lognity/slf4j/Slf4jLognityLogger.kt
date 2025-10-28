@@ -13,7 +13,6 @@ import org.slf4j.Logger as Slf4jLogger
 internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {
-    override val name: String get() = delegate.name
     override val config: Config = ConfigBuilder().apply(Backend.current.configSpec).build()
     override val context: Context = Context()
     override var level: Level = Backend.current.defaultLevel

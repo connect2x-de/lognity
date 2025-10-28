@@ -1,5 +1,6 @@
 package net.folivo.lognity.slf4j
 
+import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import org.slf4j.Marker
@@ -9,7 +10,7 @@ import org.slf4j.Logger as Slf4jLogger
 class LognitySlf4jLogger(
     internal val delegate: Logger
 ) : Slf4jLogger {
-    override fun getName(): String = delegate.name
+    override fun getName(): String = delegate.context[ContextKeys.name] ?: delegate.toString()
 
     override fun isTraceEnabled(): Boolean = delegate.level == Level.TRACE
     override fun isTraceEnabled(marker: Marker?): Boolean = isTraceEnabled
