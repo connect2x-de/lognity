@@ -42,7 +42,7 @@ data class SerializableConfig( // @formatter:off
         fun load(source: Source): SerializableConfig {
             val config = json.decodeFromString<SerializableConfig>(source.readString())
             check(config.version == VERSION) {
-                "Incompatible lognity config version ${config.version}, expected at least ${VERSION}"
+                "Incompatible lognity config version ${config.version}, expected at least $VERSION"
             }
             return config
         }
