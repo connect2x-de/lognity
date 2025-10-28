@@ -6,7 +6,7 @@
     "appenders": [
         {
             "type": "console",
-            "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}{{r}}",
+            "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
             "formatter": "default",
             "filter": {
                 "conditions": [
@@ -18,7 +18,7 @@
         },
         {
             "type": "file",
-            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
             "formatter": "default",
             "path": "latest-info.log",
             "filter": {
@@ -38,7 +38,7 @@
         },
         {
             "type": "file",
-            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{thread}}) {{message}}",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
             "formatter": "default",
             "path": "latest-error.log",
             "filter": {
@@ -55,7 +55,7 @@
     "context": {
         "name": {
             "type": "string",
-            "value": "MyDefaultLoggerName"
+            "value": "My Default Logger"
         }
     }
 }
