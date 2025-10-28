@@ -209,6 +209,16 @@ interface Logger {
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
     fun fatal(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.FATAL, message)
+
+    /**
+     * Flushed all appenders that are associated with this logger instance.
+     * See [net.folivo.lognity.api.appender.Appender.flush].
+     */
+    fun flush() {
+        for (appender in config.appenders) {
+            appender.flush()
+        }
+    }
 }
 
 /**
@@ -218,7 +228,7 @@ interface Logger {
  * @param contextSpec The [Context] applied to the newly created logger instance.
  * @return A new logger instance with the given name.
  */
-fun Logger(name: String, contextSpec: ContextSpec = {}): Logger {
+fun Logger(name: String? = null, contextSpec: ContextSpec = {}): Logger {
     return Backend.current.createLogger(name, contextSpec)
 }
 

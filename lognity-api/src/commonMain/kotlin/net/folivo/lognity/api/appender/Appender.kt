@@ -42,4 +42,10 @@ interface Appender {
      * @param marker An optional marker that can be used for additional filtering or processing.
      */
     fun append(logger: Logger, level: Level, message: String, marker: Marker?)
+
+    /**
+     * Allows flushing the underlying IO of this appender implementation if present.
+     * Will be invoked when calling [Logger.flush].
+     */
+    fun flush() {}
 }
