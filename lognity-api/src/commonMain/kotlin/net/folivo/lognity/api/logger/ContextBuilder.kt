@@ -1,101 +1,28 @@
 package net.folivo.lognity.api.logger
 
-/**
- * Builder for creating immutable [Context] instances.
- *
- * The builder collects key/value pairs and finally produces a [Context] via [build].
- * Use it together with [ContextSpec] or a DSL-like block when configuring a [Logger].
- */
-class ContextBuilder {
-    @PublishedApi
-    internal val values: HashMap<Context.Key<*>, Any> = HashMap()
+class ContextBuilder @PublishedApi internal constructor() {
+    private val values: HashMap<Context.Key<*>, HashSet<Context.Element>> = HashMap()
 
-    /**
-     * Adds all values contained in the given [context] to this builder.
-     *
-     * Existing entries with the same key will be overwritten by the values from [context].
-     *
-     * @param context The source context whose values should be copied into this builder.
-     */
     fun valuesFrom(context: Context) {
-        values += context.values
-    }
-
-    /**
-     * Adds all provided [values] to this builder.
-     *
-     * Existing entries with the same key are overwritten by the provided values.
-     *
-     * @param values A map of [Context.Key] to value that will be merged into this builder.
-     */
-    fun values(values: Map<Context.Key<*>, Any>) {
-        this.values += values
-    }
-
-    /**
-     * Adds a single [value] addressed by a typed [key].
-     *
-     * @param key The strongly typed key under which the value is stored.
-     * @param value The value to store.
-     * @param T The type associated with the [key].
-     */
-    fun <T : Any> value(key: Context.Key<T>, value: T) {
-        val name = key.name
-        val existingKey = values.keys.find { key -> key.name == name }
-        if (existingKey != null) {
-            check(existingKey.type == key.type) {
-                "Key $name already exists with type ${existingKey.type} and cannot be overriden by a value of type ${key.type}"
-            }
+        context.fold(Unit) { _, element ->
+            values.getOrPut(element.key) { HashSet() } += element
         }
-        values[key] = value
     }
 
-    /**
-     * Adds a single [value] using a key identified by its [name] and inferred type [T].
-     *
-     * Convenience overload that internally creates a [Context.Key] via [Context.Key.create].
-     *
-     * @param name The name of the key under which the value is stored.
-     * @param value The value to store.
-     * @param T The type of the value, inferred from the call site.
-     */
-    inline fun <reified T : Any> value(name: String, value: T) {
-        values[Context.Key.create<T>(name)] = value
+    fun values(values: Map<Context.Key<*>, Collection<Context.Element>>) {
+        this.values += values.mapValues { (_, elements) -> elements.toHashSet() }
     }
 
-    /**
-     * Retrieves a value previously stored for the given [key].
-     *
-     * If no value exists or the stored value cannot be cast to the requested type [T], `null` is returned.
-     *
-     * @param key The strongly typed [Context.Key] to look up.
-     * @return The value associated with [key], or `null` if none is present.
-     */
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: Context.Key<T>): T? = values[key] as? T
+    fun <T : Context.Element?> value(key: Context.Key<T>, value: T) {
+        values.getOrPut(key) { HashSet() } += value ?: return
+    }
 
-    /**
-     * Stores the given [value] under the provided [key].
-     *
-     * If an entry with the same [key] already exists, it will be overwritten.
-     *
-     * @param key The strongly typed [Context.Key] to associate the value with.
-     * @param value The value to store.
-     */
-    operator fun <T : Any> set(key: Context.Key<T>, value: T) = value(key, value)
+    operator fun <T : Context.Element?> set(key: Context.Key<T>, value: T) = value(key, value)
 
-    /**
-     * Builds an immutable [Context] from the values currently stored in this builder.
-     *
-     * @return A new [Context] instance containing all collected entries.
-     */
-    fun build(): Context = Context(values)
+    @PublishedApi
+    internal fun build(): Context = DefaultContext(values)
 }
 
-/**
- * A specification block used to configure a [ContextBuilder] in a DSL-like manner.
- *
- * Example:
- * `val ctx = ContextBuilder().apply { value("requestId", "123") }.build()`
- */
 typealias ContextSpec = ContextBuilder.() -> Unit
+
+inline fun context(spec: ContextSpec): Context = ContextBuilder().apply(spec).build()

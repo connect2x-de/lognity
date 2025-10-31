@@ -7,12 +7,12 @@ import net.folivo.lognity.api.logger.Level
  * A builder class for creating a new [Config] instance
  * using a simple DSL.
  */
-class ConfigBuilder {
+class ConfigBuilder @PublishedApi internal constructor() {
     /**
      * The initial log level used by the logger instance(s)
      * using this config.
      */
-    var level: Level = Level.default()
+    var level: Level = Level.default
 
     /**
      * The initial enable state applied to the logger instance(s)
@@ -47,7 +47,10 @@ class ConfigBuilder {
         appenders += appender
     }
 
-    fun build(): Config = Config(level, isEnabled, appenders)
+    @PublishedApi
+    internal fun build(): Config = Config(level, isEnabled, appenders)
 }
 
 typealias ConfigSpec = ConfigBuilder.() -> Unit
+
+inline fun config(spec: ConfigSpec): Config = ConfigBuilder().apply(spec).build()

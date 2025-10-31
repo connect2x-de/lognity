@@ -9,7 +9,7 @@ import net.folivo.lognity.api.logger.Level
  */
 @ConsistentCopyVisibility
 data class Config internal constructor( // @formatter:off
-    val initialLevel: Level = Level.default(),
+    val initialLevel: Level = Level.default,
     val initialEnableState: Boolean = true,
     val appenders: List<Appender> = emptyList()
 )

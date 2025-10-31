@@ -13,7 +13,7 @@ import net.folivo.lognity.api.marker.Marker
  */
 object NoopLogger : Logger {
     override val config: Config = Config()
-    override val context: Context = Context()
+    override val context: Context = context { }
     override var level: Level = Level.INFO
     override var isEnabled: Boolean = false
 

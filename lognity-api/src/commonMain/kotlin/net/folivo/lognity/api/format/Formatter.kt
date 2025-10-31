@@ -22,8 +22,7 @@ fun interface Formatter {
         /**
          * The default formatter provided by the current log backend.
          */
-        inline val default: Formatter
-            get() = Backend.current.defaultFormatter
+        inline val default: Formatter get() = Backend.defaultFormatter
     }
 
     /**

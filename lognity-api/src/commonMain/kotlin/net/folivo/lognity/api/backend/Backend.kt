@@ -1,5 +1,6 @@
 package net.folivo.lognity.api.backend
 
+import net.folivo.lognity.api.backend.Backend.Companion.configSpec
 import net.folivo.lognity.api.config.ConfigSpec
 import net.folivo.lognity.api.format.Formatter
 import net.folivo.lognity.api.logger.ContextSpec
@@ -9,6 +10,11 @@ import net.folivo.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+// This could be private, but capturing a private top level field in a public companion object triggers a compiler bug
+@OptIn(ExperimentalAtomicApi::class)
+@PublishedApi
+internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
+
 /**
  * Interface representing a logging backend implementation.
  * The backend is responsible for creating loggers, markers,
@@ -16,18 +22,39 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  */
 interface Backend {
     @OptIn(ExperimentalAtomicApi::class)
-    companion object {
-        private val _current: AtomicReference<Backend> = AtomicReference(NoopBackend)
-
+    companion object : Backend {
         /**
-         * The current active logging backend instance.
-         * This property allows getting and setting the global logging backend.
+         * Set the backend implementation used for logging.
          */
-        var current: Backend
-            get() = _current.load()
+        fun set(backend: Backend) {
+            currentBackend.store(backend)
+        }
+
+        override val name: String get() = currentBackend.load().name
+        override val defaultLevel: Level get() = currentBackend.load().defaultLevel
+        override val defaultFormatter: Formatter get() = currentBackend.load().defaultFormatter
+
+        override var configSpec: ConfigSpec
+            get() = currentBackend.load().configSpec
             set(value) {
-                _current.store(value)
+                currentBackend.load().configSpec = value
             }
+
+        override var contextSpec: ContextSpec
+            get() = currentBackend.load().contextSpec
+            set(value) {
+                currentBackend.load().contextSpec = value
+            }
+
+        override fun addShutdownHook(hook: () -> Unit) = currentBackend.load().addShutdownHook(hook)
+
+        override fun createMarker(
+            key: String, name: String, isEnabled: Boolean
+        ): Marker = currentBackend.load().createMarker(key, name, isEnabled)
+
+        override fun createLogger(
+            name: String?, contextSpec: ContextSpec
+        ): Logger = currentBackend.load().createLogger(name, contextSpec)
     }
 
     /**

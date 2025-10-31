@@ -23,11 +23,23 @@ interface Logger {
          * @see ConfigBuilder
          */
         var defaultConfig: ConfigBuilder.() -> Unit
-            get() = Backend.current.configSpec
+            get() = Backend.configSpec
             set(value) {
-                Backend.current.configSpec = value
+                Backend.configSpec = value
             }
     }
+
+    /** The name of any given [Logger] instance */
+    data class Name(val name: String) : Context.Element { // @formatter:off
+        companion object : Context.Key<Name>
+        override val key: Context.Key<*> = Name
+    } // @formatter:on
+
+    /** The default marker of all messages logged by a given [Logger] */
+    data class DefaultMarker(val marker: Marker) : Context.Element { // @formatter:off
+        companion object : Context.Key<DefaultMarker>
+        override val key: Context.Key<*> = DefaultMarker
+    } // @formatter:on
 
     /**
      * The immutable configuration of this logger instance.
@@ -229,34 +241,25 @@ interface Logger {
  * @return A new logger instance with the given name.
  */
 fun Logger(name: String? = null, contextSpec: ContextSpec = {}): Logger {
-    return Backend.current.createLogger(name, contextSpec)
+    return Backend.createLogger(name, contextSpec)
 }
 
 /**
- * Create a new Logger that derives from this logger's context.
+ * Create a new Logger that derives from this instance.
  *
- * The returned logger keeps the same name as this logger (taken from this context via [ContextKeys.name]),
- * copies all current context values, and then applies the additional [contextSpec] on top. When keys overlap,
- * values defined inside [contextSpec] override the copied values.
+ * The derived logger keeps the same name as this logger (if any) and starts with a copy
+ * of this logger's Context. The provided contextSpec is then applied on top, allowing you
+ * to add or override context values for the derived instance without mutating the original.
  *
- * This is useful for creating scoped/child loggers that share most metadata but add or override a few context
- * entries (e.g., request IDs, module information, markers-related data).
+ * Typical use-cases are scoping loggers with request/operation specific metadata while
+ * preserving the base logger's configuration and name.
  *
- * Example:
- * ```kotlin
- * val base = Logger("App") { value(ContextKeys.module, "core") }
- * val requestLogger = with(base) {
- *     derive { value(ContextKeys.requestId, "42") }
- * }
- * // requestLogger has the same name as base and contains module + requestId
- * ```
- *
- * @param contextSpec A context builder that can add or override values on top of this logger's context.
- * @return A new Logger instance with the same name and an augmented context.
+ * @param contextSpec A Context builder that augments the copied context for the derived logger.
+ * @return A new Logger sharing the same name and configuration, with an extended Context.
  */
 inline fun Logger.derive(crossinline contextSpec: ContextSpec): Logger {
-    val name = context[ContextKeys.name]
-    return Backend.current.createLogger(name) {
+    val name = context[Logger.Name]?.name
+    return Backend.createLogger(name) {
         valuesFrom(context)
         contextSpec()
     }

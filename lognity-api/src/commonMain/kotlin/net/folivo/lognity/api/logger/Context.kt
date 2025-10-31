@@ -1,61 +1,127 @@
 package net.folivo.lognity.api.logger
 
-import kotlin.reflect.KClass
+import net.folivo.lognity.api.logger.Context.Key
+
 
 /**
- * Immutable, type-safe key/value container used to attach additional information to [Logger] instances.
+ * A lightweight container that carries structured context information for log events.
  *
- * Entries are addressed by [Key] instances which carry both a human-readable [Key.name] and the
- * value [Key.type]. This enables safe retrieval without unchecked casts at call sites.
+ * Context is immutable. Operations like [plus] and [fold] create derived values without
+ * mutating the original. A [Context] can hold multiple [Element]s for the same [Key];
+ * use [fold] to traverse all of them. The order of traversal is not guaranteed and
+ * should not be relied upon.
  *
- * Contexts can be combined using the plus operator: `left + right` returns a new Context where
- * values from the right-hand side override values from the left when keys collide.
- *
- * This class is safe to share across threads. It does not mutate its internal state; combining
- * contexts creates new instances.
+ * This concept is inspired by Kotlin's CoroutineContext but adapted to logging needs:
+ * - Multiple elements per key are allowed (e.g., multiple tags).
+ * - [get] returns the first element for the key if present; prefer [fold] if you care
+ *   about all values.
  */
-data class Context(
-    internal val values: Map<Key<*>, Any> = HashMap()
-) {
+interface Context {
     /**
-     * Strongly-typed key used to store and retrieve values from a [Context].
+     * A single piece of context information.
      *
-     * @param name The name of the context value.
-     * @param type The reflection type of the context value.
-     * @param T The type of the context value associated with this key.
+     * Each element must expose the [key] that identifies the group it belongs to.
      */
-    data class Key<T : Any>( // @formatter:off
-        val name: String,
-        val type: KClass<T>
-    ) { // @formatter:on
-        companion object {
-            /**
-             * Creates a typed [Key] for values of type [T].
-             *
-             * @param name The name of the context value.
-             * @param T The type of the context value associated with the created key.
-             * @return A new [Key] instance with [name] and type [T].
-             */
-            inline fun <reified T : Any> create(name: String): Key<T> = Key(name, T::class)
-        }
+    interface Element {
+        /** The key that identifies this element's group within the context. */
+        val key: Key<*>
     }
 
     /**
-     * Returns the value associated with the given [key] or null if it is not present.
+     * A type-safe key used to group and retrieve [Element]s of the same conceptual kind.
      *
-     * @param key The strongly typed key of the context value to retrieve.
-     * @param T The type of the context value associated with the given key.
-     * @return The context value of type [T] if present, otherwise `null`.
+     * A typical implementation is an `object` declaration per key, for example:
+     *
+     * object UserIdKey : Context.Key<UserId?>
      */
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: Key<T>): T? = values[key] as? T
+    interface Key<T : Element?>
 
     /**
-     * Returns a new [Context] that contains all entries from this context and [other].
-     * If both contain the same [Key], the value from [other] wins.
+     * Accumulates a value across all [Element]s contained in this context.
      *
-     * @param other The context with which to combine this context.
-     * @return A new immutable context instance with all duplicate keys overwritten by [other].
+     * Note: The iteration order is unspecified. Do not depend on it.
      */
-    operator fun plus(other: Context): Context = Context(values + other.values)
+    fun <R> fold(initial: R, transform: (R, Element) -> R): R
+
+    /**
+     * Accumulates a value across all elements associated with the given [key].
+     *
+     * Elements are provided to [transform] in an unspecified order.
+     */
+    fun <T : Element?, R> fold(key: Key<T>, initial: R, transform: (R, T) -> R): R
+
+    /**
+     * Returns the first element associated with [key] or null if none exist.
+     *
+     * If you expect multiple values, prefer [fold] to process them all.
+     */
+    operator fun <T : Element?> get(key: Key<T>): T?
+
+    /**
+     * Creates a new context that contains the elements of this context plus those
+     * from [other]. If the same [Key] appears in both, elements are merged; duplicates
+     * (by equality) are de-duplicated.
+     */
+    operator fun plus(other: Context): Context
+}
+
+/**
+ * A [Context] with no elements.
+ */
+object EmptyContext : Context {
+    override fun <R> fold(initial: R, transform: (R, Context.Element) -> R): R = initial
+
+    override fun <T : Context.Element?, R> fold(
+        key: Key<T>, initial: R, transform: (R, T) -> R
+    ): R = initial
+
+    override fun <T : Context.Element?> get(key: Key<T>): T? = null
+    override fun plus(other: Context): Context = other
+}
+
+/**
+ * Default immutable [Context] implementation used internally.
+ *
+ * It stores elements in sets per [Key] to avoid duplicates while allowing multiple
+ * elements per key. The iteration order is not guaranteed.
+ */
+internal data class DefaultContext(
+    private val values: Map<Key<*>, Set<Context.Element>>
+) : Context {
+    override fun <R> fold(initial: R, transform: (R, Context.Element) -> R): R {
+        var value = initial
+        for ((_, elements) in values) {
+            val elementsList = elements.toList()
+            for (element in elementsList) {
+                value = transform(value, element)
+            }
+        }
+        return value
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Context.Element?, R> fold(
+        key: Key<T>, initial: R, transform: (R, T) -> R
+    ): R {
+        val elements = values[key]?.toList() ?: return initial
+        var value = initial
+        for (element in elements) {
+            value = transform(value, element as? T ?: continue)
+        }
+        return value
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Context.Element?> get(key: Key<T>): T? {
+        return values[key]?.firstOrNull() as? T
+    }
+
+    override fun plus(other: Context): Context = DefaultContext( // @formatter:off
+        other.fold(values.mapValues { (_, elements) ->
+            elements.toMutableSet()
+        }.toMutableMap()) { map, element ->
+            map.getOrPut(element.key) { HashSet() } += element
+            map
+        }
+    ) // @formatter:on
 }

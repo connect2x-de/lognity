@@ -25,10 +25,7 @@ enum class Level( // @formatter:off
     companion object {
         /**
          * Retrieves the default log level as determined by the application.
-         *
-         * @return The global default log level.
          */
-        @Suppress("NOTHING_TO_INLINE")
-        inline fun default(): Level = Backend.current.defaultLevel
+        inline val default: Level get() = Backend.defaultLevel
     }
 }
