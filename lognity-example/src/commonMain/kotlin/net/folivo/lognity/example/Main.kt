@@ -16,8 +16,8 @@ private fun Logger.printTestMessages() {
 }
 
 fun main() {
-    Backend.current = DefaultBackend
-    Backend.current.loadDefaultConfig(Path("example_config.json"))
+    Backend.set(DefaultBackend)
+    Backend.loadDefaultConfig(Path("example_config.json"))
     // Explicitly named logger
     Logger("My Logger").printTestMessages()
     // Implicitly named logger (default defined in example_config.json)

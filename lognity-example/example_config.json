@@ -51,11 +51,5 @@
                 ]
             }
         }
-    ],
-    "context": {
-        "name": {
-            "type": "string",
-            "value": "My Default Logger"
-        }
-    }
+    ]
 }
