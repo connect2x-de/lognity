@@ -5,10 +5,10 @@ import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.config
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.Context
+import net.folivo.lognity.api.context.Context
+import net.folivo.lognity.api.context.EmptyContext
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
-import net.folivo.lognity.api.logger.context
 import net.folivo.lognity.api.marker.Marker
 import org.slf4j.Logger as Slf4jLogger
 
@@ -16,7 +16,7 @@ internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {
     override val config: Config = config(Backend.configSpec)
-    override val context: Context = context { }
+    override val context: Context = EmptyContext
     override var level: Level = Level.default
     override var isEnabled: Boolean = true
 
