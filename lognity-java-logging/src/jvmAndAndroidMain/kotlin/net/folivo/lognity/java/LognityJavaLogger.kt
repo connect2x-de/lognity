@@ -1,6 +1,5 @@
 package net.folivo.lognity.java
 
-import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Logger
 import java.util.logging.Level
 import java.util.logging.LogRecord
@@ -8,7 +7,7 @@ import java.util.logging.Logger as JavaLogger
 
 private class LognityJavaLogger(
     private val delegate: Logger
-) : JavaLogger(delegate.context[ContextKeys.name] ?: delegate.toString(), null) {
+) : JavaLogger(delegate.context[Logger.Name]?.name ?: delegate.toString(), null) {
     override fun getLevel(): Level = delegate.level.asJavaLevel()
 
     override fun setLevel(newLevel: Level?) {
