@@ -3,14 +3,13 @@ package net.folivo.lognity.backend
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.backend.Backend
-import net.folivo.lognity.api.config.ConfigBuilder
 import net.folivo.lognity.api.config.ConfigSpec
+import net.folivo.lognity.api.config.config
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.ContextBuilder
-import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.ContextSpec
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
+import net.folivo.lognity.api.logger.context
 import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.config.platformConsoleAppender
 import net.folivo.lognity.format.SimpleFormatter
@@ -18,7 +17,6 @@ import net.folivo.lognity.logger.DefaultLogger
 import net.folivo.lognity.logger.DefaultMarker
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlin.time.ExperimentalTime
 
 internal expect fun getDefaultLogLevel(): Level
 
@@ -60,7 +58,6 @@ object DefaultBackend : Backend {
             _contextSpec.store(value)
         }
 
-    @OptIn(ExperimentalTime::class)
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)
@@ -70,12 +67,10 @@ object DefaultBackend : Backend {
     }
 
     override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
-        val config = ConfigBuilder().apply(configSpec).build()
-        val context = ContextBuilder().apply {
+        return DefaultLogger(config(configSpec), context {
             this@DefaultBackend.contextSpec(this)
             contextSpec()
-            if (name != null) this[ContextKeys.name] = name
-        }.build()
-        return DefaultLogger(config, context)
+            if (name != null) this[Logger.Name] = Logger.Name(name)
+        })
     }
 }

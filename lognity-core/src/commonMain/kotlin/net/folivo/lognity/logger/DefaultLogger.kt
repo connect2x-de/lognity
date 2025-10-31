@@ -3,7 +3,6 @@ package net.folivo.lognity.logger
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.logger.Context
-import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
@@ -33,7 +32,7 @@ internal class DefaultLogger( // @formatter:off
 
     override fun log(level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level) return
-        val marker = context[ContextKeys.defaultMarker]
+        val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {
@@ -45,7 +44,7 @@ internal class DefaultLogger( // @formatter:off
 
     override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level) return
-        val actualMarker = marker ?: context[ContextKeys.defaultMarker]
+        val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
         for (appender in config.appenders) {

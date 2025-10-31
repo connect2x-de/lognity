@@ -22,7 +22,7 @@ import net.folivo.lognity.api.marker.Marker
  */
 data class FormatterContext( // @formatter:off
     var logger: Logger = NoopLogger,
-    var level: Level = Level.default(),
+    var level: Level = Level.default,
     var content: Any = "",
     var marker: Marker? = null
 ) // @formatter:on

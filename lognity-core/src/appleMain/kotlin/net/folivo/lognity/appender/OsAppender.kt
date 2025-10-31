@@ -5,7 +5,6 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import net.folivo.lognity.api.appender.Appender
 import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.ContextKeys
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
