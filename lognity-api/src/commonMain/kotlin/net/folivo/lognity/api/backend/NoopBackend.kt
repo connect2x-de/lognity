@@ -1,8 +1,8 @@
 package net.folivo.lognity.api.backend
 
 import net.folivo.lognity.api.config.ConfigSpec
+import net.folivo.lognity.api.context.ContextSpec
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.ContextSpec
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.logger.NoopLogger

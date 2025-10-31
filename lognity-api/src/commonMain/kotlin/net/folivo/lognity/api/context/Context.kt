@@ -1,6 +1,6 @@
-package net.folivo.lognity.api.logger
+package net.folivo.lognity.api.context
 
-import net.folivo.lognity.api.logger.Context.Key
+import net.folivo.lognity.api.context.Context.Key
 
 
 /**

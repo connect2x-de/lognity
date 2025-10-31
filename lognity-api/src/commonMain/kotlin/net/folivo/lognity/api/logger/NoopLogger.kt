@@ -2,6 +2,8 @@ package net.folivo.lognity.api.logger
 
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.config.Config
+import net.folivo.lognity.api.context.Context
+import net.folivo.lognity.api.context.EmptyContext
 import net.folivo.lognity.api.marker.Marker
 
 /**
@@ -13,7 +15,7 @@ import net.folivo.lognity.api.marker.Marker
  */
 object NoopLogger : Logger {
     override val config: Config = Config()
-    override val context: Context = context { }
+    override val context: Context = EmptyContext
     override var level: Level = Level.INFO
     override var isEnabled: Boolean = false
 

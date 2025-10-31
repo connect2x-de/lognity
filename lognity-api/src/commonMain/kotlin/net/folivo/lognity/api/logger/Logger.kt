@@ -4,6 +4,8 @@ import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.context.Context
+import net.folivo.lognity.api.context.ContextSpec
 import net.folivo.lognity.api.marker.Marker
 
 /**

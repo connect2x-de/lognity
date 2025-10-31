@@ -51,6 +51,12 @@ class ConfigBuilder @PublishedApi internal constructor() {
     internal fun build(): Config = Config(level, isEnabled, appenders)
 }
 
+/**
+ * Type alias for a Config builder specification used by [config].
+ */
 typealias ConfigSpec = ConfigBuilder.() -> Unit
 
+/**
+ * Creates a new immutable [Config] using the provided [spec] DSL.
+ */
 inline fun config(spec: ConfigSpec): Config = ConfigBuilder().apply(spec).build()
