@@ -6,23 +6,39 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.plus
-import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.Config
 import net.folivo.lognity.api.config.ConfigBuilder
+import net.folivo.lognity.api.config.config
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.Context
-import net.folivo.lognity.api.logger.ContextBuilder
 import net.folivo.lognity.api.logger.Level
+import net.folivo.lognity.config.SerializableConfig.Companion.VERSION
 
+/**
+ * Serializable representation of the Lognity configuration.
+ *
+ * This mirrors the JSON schema used to configure Lognity. It can be loaded from
+ * a JSON source and then applied to a ConfigBuilder or converted into a Config.
+ *
+ * @property version configuration format version. Must match [VERSION].
+ * @property level default log level.
+ * @property enabled whether logging is enabled globally.
+ * @property appenders list of configured appenders.
+ */
 @Serializable
 data class SerializableConfig( // @formatter:off
     val version: Int = VERSION,
-    val level: Level = Level.default(),
+    val level: Level = Level.default,
     val enabled: Boolean = true,
     val appenders: List<SerializableAppender> = emptyList(),
-    val context: Map<String, SerializableValue<*>> = emptyMap()
 ) { // @formatter:on
+    /**
+     * Companion for utilities and constants related to [SerializableConfig].
+     */
     companion object {
+        /**
+         * Configuration format version supported by this library.
+         * Config files must specify the same version to be accepted.
+         */
         const val VERSION: Int = 1
 
         @OptIn(ExperimentalSerializationApi::class)
@@ -34,11 +50,18 @@ data class SerializableConfig( // @formatter:off
             allowTrailingComma = true
             // @formatter:off
             serializersModule = SerializableAppender.serializersModule +
-                SerializableFilter.Condition.serializersModule +
-                SerializableValue.serializersModule
+                SerializableFilter.Condition.serializersModule
             // @formatter:on
         }
 
+        /**
+         * Loads and decodes a [SerializableConfig] from the given Source.
+         *
+         * The content must be JSON following the Lognity configuration schema. Unknown
+         * keys and comments are allowed. The [version] is validated against [VERSION].
+         *
+         * @throws IllegalStateException when the version in the file is incompatible.
+         */
         fun load(source: Source): SerializableConfig {
             val config = json.decodeFromString<SerializableConfig>(source.readString())
             check(config.version == VERSION) {
@@ -48,8 +71,17 @@ data class SerializableConfig( // @formatter:off
         }
     }
 
+    /**
+     * Applies this configuration to the given ConfigBuilder.
+     *
+     * - Sets builder-level properties like level and isEnabled.
+     * - Registers appenders defined in this config, resolving formatter names
+     *   using the provided [formatters] map.
+     *
+     * @param formatters map that resolves formatter identifiers used by this config
+     */
     context(builder: ConfigBuilder) fun applyConfig(
-        formatters: Map<String, Formatter> = mapOf("default" to Backend.current.defaultFormatter)
+        formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
     ) {
         builder.level = level
         builder.isEnabled = enabled
@@ -66,16 +98,14 @@ data class SerializableConfig( // @formatter:off
         }
     }
 
+    /**
+     * Creates an immutable Config from this serializable configuration.
+     *
+     * This is a convenience wrapper around config { applyConfig(...) }.
+     *
+     * @param formatters map that resolves formatter identifiers used by this config
+     */
     fun createConfig(
-        formatters: Map<String, Formatter> = mapOf("default" to Backend.current.defaultFormatter)
-    ): Config = ConfigBuilder().apply { applyConfig(formatters) }.build()
-
-    @Suppress("UNCHECKED_CAST")
-    context(builder: ContextBuilder) fun applyContext() {
-        for ((name, value) in context) {
-            builder.value(value.createKey(name) as Context.Key<Any>, value.value)
-        }
-    }
-
-    fun createContext(): Context = ContextBuilder().apply { applyContext() }.build()
+        formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
+    ): Config = config { applyConfig(formatters) }
 }

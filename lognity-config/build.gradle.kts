@@ -77,6 +77,9 @@ kotlin {
                 implementation(libs.kotlin.test)
             }
         }
+        val jvmAndAndroidMain by creating { dependsOn(commonMain) }
+        val jvmMain by getting { dependsOn(jvmAndAndroidMain) }
+        val androidMain by getting { dependsOn(jvmAndAndroidMain) }
     }
 }
 

@@ -10,6 +10,14 @@ import net.folivo.lognity.api.appender.Filter
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.marker.Marker
 
+/**
+ * Serializable filter that decides whether a log entry should be passed to an appender.
+ *
+ * The filter holds a list of [conditions]; all conditions must evaluate to true for
+ * a message to be accepted (logical AND).
+ *
+ * @property conditions list of conditions evaluated in order; defaults to a single [AlwaysCondition].
+ */
 @Serializable
 data class SerializableFilter(
     val conditions: List<Condition> = listOf(AlwaysCondition)
@@ -18,9 +26,18 @@ data class SerializableFilter(
         return conditions.all { cond -> cond(level, message, marker) }
     }
 
+    /**
+     * Base type for all filter conditions used by [SerializableFilter].
+     *
+     * Implementations decide based on the log [Level], message text, and optional [Marker].
+     */
     @Serializable
     @Polymorphic
     sealed interface Condition {
+        /**
+         * Serializer module enabling polymorphic deserialization of [Condition]
+         * implementations from JSON.
+         */
         companion object {
             val serializersModule: SerializersModule = SerializersModule {
                 polymorphic(Condition::class) {
@@ -35,6 +52,9 @@ data class SerializableFilter(
         operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
     }
 
+    /**
+     * Condition that always evaluates to true.
+     */
     @SerialName("always")
     @Serializable
     data object AlwaysCondition : Condition {
@@ -43,6 +63,12 @@ data class SerializableFilter(
         }
     }
 
+    /**
+     * Filters by properties of the optional Marker attached to the log entry.
+     *
+     * @property condition how to evaluate the [value] against marker key/name
+     * @property value string to compare with marker key or name
+     */
     @SerialName("marker")
     @Serializable
     data class MarkerCondition( // @formatter:off
@@ -67,6 +93,12 @@ data class SerializableFilter(
         }
     }
 
+    /**
+     * Filters by the content of the log message string.
+     *
+     * @property condition how to evaluate the [value] against the message
+     * @property value string to compare with the message
+     */
     @SerialName("message")
     @Serializable
     data class MessageCondition( // @formatter:off
@@ -85,6 +117,12 @@ data class SerializableFilter(
         }
     }
 
+    /**
+     * Filters by comparing the log [Level] against a reference value.
+     *
+     * @property condition comparison to apply between the current level and [value]
+     * @property value the reference log level
+     */
     @SerialName("level")
     @Serializable
     data class LevelCondition( // @formatter:off
