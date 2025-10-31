@@ -6,10 +6,10 @@ import net.folivo.lognity.api.backend.Backend
 import net.folivo.lognity.api.config.ConfigSpec
 import net.folivo.lognity.api.config.config
 import net.folivo.lognity.api.format.Formatter
-import net.folivo.lognity.api.logger.ContextSpec
+import net.folivo.lognity.api.context.ContextSpec
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
-import net.folivo.lognity.api.logger.context
+import net.folivo.lognity.api.context.context
 import net.folivo.lognity.api.marker.Marker
 import net.folivo.lognity.config.platformConsoleAppender
 import net.folivo.lognity.format.SimpleFormatter

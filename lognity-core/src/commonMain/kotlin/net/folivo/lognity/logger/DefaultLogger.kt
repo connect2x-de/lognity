@@ -2,7 +2,7 @@ package net.folivo.lognity.logger
 
 import net.folivo.lognity.api.ansi.AnsiScope
 import net.folivo.lognity.api.config.Config
-import net.folivo.lognity.api.logger.Context
+import net.folivo.lognity.api.context.Context
 import net.folivo.lognity.api.logger.Level
 import net.folivo.lognity.api.logger.Logger
 import net.folivo.lognity.api.marker.Marker
