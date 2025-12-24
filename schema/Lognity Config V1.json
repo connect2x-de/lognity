@@ -64,7 +64,23 @@
                     },
                     "path": {
                         "type": "string",
-                        "description": "The relative path to the log file."
+                        "description": "The relative path to the log file for file appenders."
+                    },
+                    "platforms": {
+                        "type": "array",
+                        "description": "The platforms this appender is supposed to act upon.",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "LINUX",
+                                "WINDOWS",
+                                "MACOS",
+                                "IOS",
+                                "ANDROID",
+                                "UNKNOWN_JVM",
+                                "UNKNOWN"
+                            ]
+                        }
                     }
                 },
                 "required": [

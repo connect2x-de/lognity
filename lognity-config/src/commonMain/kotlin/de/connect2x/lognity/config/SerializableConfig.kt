@@ -85,18 +85,18 @@ data class SerializableConfig( // @formatter:off
     context(builder: ConfigBuilder)
     fun applyConfig(
         formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
-    ) {
-        builder.level = level
-        builder.isEnabled = enabled
-        for (appender in appenders) when (appender) {
-            is SerializableAppender.Console -> {
-                val formatter = requireNotNull(formatters[appender.formatter])
-                builder.platformConsoleAppender(appender.pattern, formatter, appender.filter)
-            }
+    ) = with(builder) {
+        level = this@SerializableConfig.level
+        isEnabled = enabled
+        for (appender in appenders) onlyIn(appender.platforms) {
+            when (appender) {
+                is SerializableAppender.Console -> platformConsoleAppender(
+                    appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter
+                )
 
-            is SerializableAppender.File -> {
-                val formatter = requireNotNull(formatters[appender.formatter])
-                builder.fileAppender(appender.pattern, formatter, appender.filter, appender.path)
+                is SerializableAppender.File -> fileAppender(
+                    appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
+                )
             }
         }
     }
