@@ -3,6 +3,7 @@ package de.connect2x.lognity.api.context
 /**
  * Builder used to create a [Context] via a small DSL.
  */
+@ContextDsl
 class ContextBuilder @PublishedApi internal constructor() {
     private val values: HashMap<Context.Key<*>, Context.Element> = HashMap()
 

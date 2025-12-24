@@ -2,6 +2,7 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigBuilder
+import de.connect2x.lognity.api.config.ConfigDsl
 import de.connect2x.lognity.api.config.config
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
@@ -80,6 +81,7 @@ data class SerializableConfig( // @formatter:off
      *
      * @param formatters map that resolves formatter identifiers used by this config
      */
+    @ConfigDsl
     context(builder: ConfigBuilder)
     fun applyConfig(
         formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)

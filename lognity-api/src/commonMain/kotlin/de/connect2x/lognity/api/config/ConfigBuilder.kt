@@ -7,6 +7,7 @@ import de.connect2x.lognity.api.logger.Level
  * A builder class for creating a new [Config] instance
  * using a simple DSL.
  */
+@ConfigDsl
 class ConfigBuilder @PublishedApi internal constructor() {
     /**
      * The initial log level used by the logger instance(s)
