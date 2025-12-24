@@ -17,7 +17,12 @@ private fun Logger.printTestMessages() {
 
 fun main() {
     Backend.set(DefaultBackend)
+    // Load the JSON based config using the lognity-config module
     Backend.loadDefaultConfig(Path("example_config.json"))
+    // Overwrite the default context created for every new Logger instance
+    Backend.contextSpec = {
+        value(Logger.Name("My Default Logger"))
+    }
     // Explicitly named logger
     Logger("My Logger").printTestMessages()
     // Implicitly named logger (default defined in example_config.json)
