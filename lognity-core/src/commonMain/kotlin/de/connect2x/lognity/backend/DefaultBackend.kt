@@ -70,7 +70,7 @@ object DefaultBackend : Backend {
         return DefaultLogger(config(configSpec), context {
             this@DefaultBackend.contextSpec(this)
             contextSpec()
-            if (name != null) this[Logger.Name] = Logger.Name(name)
+            if (name != null) this += Logger.Name(name)
         })
     }
 }

@@ -30,16 +30,16 @@ class ContextBuilder @PublishedApi internal constructor() {
     }
 
     /**
-     * Adds a single [value] for the given [key]. If [value] is null, the call is ignored.
+     * Adds a single [value] for the given element's key. If [value] is null, the call is ignored.
      */
-    fun <T : Context.Element> value(key: Context.Key<T>, value: T) {
-        values[key] = value
+    fun <T : Context.Element> value(value: T) {
+        values[value.key] = value
     }
 
     /**
-     * DSL setter alias for [value].
+     * DSL alias for [value].
      */
-    operator fun <T : Context.Element> set(key: Context.Key<T>, value: T) = value(key, value)
+    operator fun <T : Context.Element> plusAssign(value: T) = value(value)
 
     @PublishedApi
     internal fun build(): Context = DefaultContext(values)
