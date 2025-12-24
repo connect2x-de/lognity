@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import de.connect2x.conventions.configureJava
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -72,22 +75,27 @@ kotlin {
             }
         }
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withAndroidTarget()
+            }
+        }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.lognityApi)
                 api(libs.ktor.server.core)
             }
         }
-        val jvmAndAndroidMain by creating {
-            dependsOn(commonMain)
+        @Suppress("UNUSED") //
+        val jvmAndAndroidMain by getting {
             dependencies {
                 api(projects.lognitySlf4j)
             }
         }
-        androidMain { dependsOn(jvmAndAndroidMain) }
-        jvmMain { dependsOn(jvmAndAndroidMain) }
     }
 }
 
