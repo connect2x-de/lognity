@@ -70,6 +70,7 @@ class FileAppender( // @formatter:off
 
     init {
         Backend.addShutdownHook(::dispose)
+        SystemFileSystem.delete(path, mustExist = false)
     }
 
     private val sink: RefCountedSink = sinks.getOrPut(path) {
