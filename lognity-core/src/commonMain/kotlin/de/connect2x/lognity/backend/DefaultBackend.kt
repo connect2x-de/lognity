@@ -3,6 +3,7 @@ package de.connect2x.lognity.backend
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.backend.Backend
+import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.config.ConfigSpec
 import de.connect2x.lognity.api.config.config
 import de.connect2x.lognity.api.context.ContextSpec
@@ -34,6 +35,8 @@ internal expect fun createSystemFileAppender( // @formatter:off
     path: String
 ): Appender // @formatter:on
 
+internal expect fun getCurrentPlatform(): Platform
+
 @OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
     override val name: String = "Lognity"
@@ -59,6 +62,7 @@ object DefaultBackend : Backend {
             _contextSpec.store(value)
         }
 
+    override val platform: Platform = getCurrentPlatform()
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)

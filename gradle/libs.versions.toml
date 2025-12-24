@@ -12,6 +12,7 @@ gradleNexus = "2.0.0" # https://github.com/gradle-nexus/publish-plugin/releases
 slf4j = "2.0.17"
 autoService = "1.1.1" # https://github.com/google/auto/releases
 kotlinxBrowser = "0.5.0"
+oshi = "6.9.2"
 
 [libraries]
 
@@ -23,6 +24,7 @@ stately-common = { module = "co.touchlab:stately-common", version.ref = "stately
 stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 autoService = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
+oshi-core = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
 
 [plugins]
 

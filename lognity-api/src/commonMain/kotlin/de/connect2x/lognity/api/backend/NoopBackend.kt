@@ -19,6 +19,7 @@ object NoopBackend : Backend {
     override val name: String = "NOOP"
     override val defaultLevel: Level = Level.WARN
     override val defaultFormatter: Formatter = Formatter.identity
+    override val platform: Platform = Platform.UNKNOWN
 
     override var configSpec: ConfigSpec
         get() = {}

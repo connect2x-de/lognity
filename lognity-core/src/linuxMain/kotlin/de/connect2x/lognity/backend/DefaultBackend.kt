@@ -6,6 +6,7 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ConsoleAppender
 import de.connect2x.lognity.appender.FileAppender
 import kotlinx.io.files.Path
+import de.connect2x.lognity.api.backend.Platform as LognityPlatform
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
@@ -19,3 +20,5 @@ internal actual fun createSystemFileAppender( // @formatter:off
     filter: Filter,
     path: String
 ): Appender = FileAppender(pattern, formatter, filter, Path(path)) // @formatter:on
+
+internal actual fun getCurrentPlatform(): LognityPlatform = LognityPlatform.LINUX

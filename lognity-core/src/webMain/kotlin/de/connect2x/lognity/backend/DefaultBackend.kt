@@ -5,6 +5,7 @@ package de.connect2x.lognity.backend
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.appender.NoopAppender
+import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.appender.ExtendedConsoleAppender
@@ -32,3 +33,5 @@ internal actual fun createSystemFileAppender( // @formatter:off
     filter: Filter,
     path: String
 ): Appender = NoopAppender // @formatter:on
+
+internal actual fun getCurrentPlatform(): Platform = Platform.WEB

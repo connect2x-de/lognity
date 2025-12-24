@@ -99,6 +99,7 @@ kotlin {
             dependencies {
                 implementation(sharedLibs.jna)
                 implementation(sharedLibs.jna.platform)
+                implementation(libs.oshi.core)
             }
         }
         androidMain {

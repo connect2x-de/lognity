@@ -46,6 +46,9 @@ interface Backend {
                 currentBackend.load().contextSpec = value
             }
 
+        override val platform: Platform
+            get() = currentBackend.load().platform
+
         override fun addShutdownHook(hook: () -> Unit) = currentBackend.load().addShutdownHook(hook)
 
         override fun createMarker(
@@ -61,6 +64,11 @@ interface Backend {
      * The name of this logging backend implementation.
      */
     val name: String
+
+    /**
+     * The current platform this backend implementation.
+     */
+    val platform: Platform
 
     /**
      * The default log level used by this backend when not explicitly specified.
