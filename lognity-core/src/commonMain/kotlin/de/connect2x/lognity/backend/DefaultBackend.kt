@@ -10,6 +10,7 @@ import de.connect2x.lognity.api.context.context
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.logger.Logger.Name
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.platformConsoleAppender
 import de.connect2x.lognity.format.SimpleFormatter
@@ -70,7 +71,7 @@ object DefaultBackend : Backend {
         return DefaultLogger(config(configSpec), context {
             this@DefaultBackend.contextSpec(this)
             contextSpec()
-            if (name != null) this += Logger.Name(name)
+            name?.let(::Name)?.let(::value)
         })
     }
 }

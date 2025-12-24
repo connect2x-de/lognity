@@ -2,10 +2,6 @@ package de.connect2x.lognity.api.context
 
 /**
  * Builder used to create a [Context] via a small DSL.
- *
- * The builder collects [Context.Element]s grouped by their [Context.Key] and builds an
- * immutable [Context] that can hold multiple elements per key. Duplicates (by equality)
- * are de-duplicated.
  */
 class ContextBuilder @PublishedApi internal constructor() {
     private val values: HashMap<Context.Key<*>, Context.Element> = HashMap()
@@ -21,16 +17,32 @@ class ContextBuilder @PublishedApi internal constructor() {
 
     /**
      * Adds multiple elements grouped by key.
-     *
-     * If a key already exists in this builder, the given elements are merged into the
-     * existing set and duplicates are removed.
      */
     fun values(values: Map<Context.Key<*>, Context.Element>) {
         this.values += values
     }
 
     /**
-     * Adds a single [value] for the given element's key. If [value] is null, the call is ignored.
+     * DSL alias for [values].
+     */
+    operator fun plusAssign(values: Map<Context.Key<*>, Context.Element>) = values(values)
+
+    /**
+     * Adds all given elements by their associated key.
+     */
+    fun values(values: Iterable<Context.Element>) {
+        for (value in values) {
+            this += value
+        }
+    }
+
+    /**
+     * DSL alias for [values].
+     */
+    operator fun plusAssign(values: Iterable<Context.Element>) = values(values)
+
+    /**
+     * Adds the given [value].
      */
     fun <T : Context.Element> value(value: T) {
         values[value.key] = value

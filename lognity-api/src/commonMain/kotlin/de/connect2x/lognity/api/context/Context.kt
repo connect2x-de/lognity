@@ -2,19 +2,8 @@ package de.connect2x.lognity.api.context
 
 import de.connect2x.lognity.api.context.Context.Key
 
-
 /**
  * A lightweight container that carries structured context information for log events.
- *
- * Context is immutable. Operations like [plus] and [fold] create derived values without
- * mutating the original. A [Context] can hold multiple [Element]s for the same [Key];
- * use [fold] to traverse all of them. The order of traversal is not guaranteed and
- * should not be relied upon.
- *
- * This concept is inspired by Kotlin's CoroutineContext but adapted to logging needs:
- * - Multiple elements per key are allowed (e.g., multiple tags).
- * - [get] returns the first element for the key if present; prefer [fold] if you care
- *   about all values.
  */
 interface Context {
     /**
@@ -42,9 +31,7 @@ interface Context {
     val elements: Map<Key<*>, Element>
 
     /**
-     * Returns the first element associated with [key] or null if none exist.
-     *
-     * If you expect multiple values, prefer [fold] to process them all.
+     * Returns the element associated with [key] or null if none exist.
      */
     operator fun <T : Element> get(key: Key<T>): T?
 
@@ -65,12 +52,6 @@ object EmptyContext : Context {
     override fun plus(other: Context): Context = other
 }
 
-/**
- * Default immutable [Context] implementation used internally.
- *
- * It stores elements in sets per [Key] to avoid duplicates while allowing multiple
- * elements per key. The iteration order is not guaranteed.
- */
 internal data class DefaultContext(
     override val elements: Map<Key<*>, Context.Element>
 ) : Context {
