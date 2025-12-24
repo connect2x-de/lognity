@@ -1,19 +1,15 @@
+import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class) //
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
     jvm {
         binaries {
             executable {

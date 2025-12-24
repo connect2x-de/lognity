@@ -1,20 +1,17 @@
-import net.folivo.lognity.gradle.setProjectInfo
+import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.android.library)
+    `maven-publish`
+    signing
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -39,10 +36,18 @@ kotlin {
     androidNativeArm32()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
     js {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -51,7 +56,15 @@ kotlin {
         }
     }
     wasmJs {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -80,12 +93,12 @@ kotlin {
 
 android {
     namespace = "$group.${rootProject.name}"
-    compileSdk = libs.versions.androidCompileSDK.get().toInt()
+    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinimalSDK.get().toInt()
+        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
 publishing {
-    setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
+    //setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
 }
