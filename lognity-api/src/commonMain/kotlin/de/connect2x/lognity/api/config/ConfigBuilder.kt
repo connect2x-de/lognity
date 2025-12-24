@@ -53,7 +53,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
     /**
      * Applies the given configuration only for the given platform.
      */
-    inline fun onlyIn(platform: Platform, spec: ConfigSpec) {
+    inline fun onlyOn(platform: Platform, spec: ConfigSpec) {
         if (platform != Backend.platform) return
         spec()
     }
@@ -61,7 +61,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
     /**
      * Applies the given configuration only for the given platform.
      */
-    inline fun onlyIn(platforms: Set<Platform>, spec: ConfigSpec) {
+    inline fun onlyOn(platforms: Set<Platform>, spec: ConfigSpec) {
         if (Backend.platform !in platforms) return
         spec()
     }

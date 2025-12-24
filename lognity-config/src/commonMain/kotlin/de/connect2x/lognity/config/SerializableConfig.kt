@@ -88,7 +88,7 @@ data class SerializableConfig( // @formatter:off
     ) = with(builder) {
         level = this@SerializableConfig.level
         isEnabled = enabled
-        for (appender in appenders) onlyIn(appender.platforms) {
+        for (appender in appenders) onlyOn(appender.platforms) {
             when (appender) {
                 is SerializableAppender.Console -> platformConsoleAppender(
                     appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter
