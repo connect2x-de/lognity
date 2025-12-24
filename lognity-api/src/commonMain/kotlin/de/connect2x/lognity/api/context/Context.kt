@@ -34,28 +34,19 @@ interface Context {
      *
      * object UserIdKey : Context.Key<UserId?>
      */
-    interface Key<T : Element?>
+    interface Key<T : Element>
 
     /**
-     * Accumulates a value across all [Element]s contained in this context.
-     *
-     * Note: The iteration order is unspecified. Do not depend on it.
+     * Returns all elements associated with this context.
      */
-    fun <R> fold(initial: R, transform: (R, Element) -> R): R
-
-    /**
-     * Accumulates a value across all elements associated with the given [key].
-     *
-     * Elements are provided to [transform] in an unspecified order.
-     */
-    fun <T : Element?, R> fold(key: Key<T>, initial: R, transform: (R, T) -> R): R
+    val elements: Map<Key<*>, Element>
 
     /**
      * Returns the first element associated with [key] or null if none exist.
      *
      * If you expect multiple values, prefer [fold] to process them all.
      */
-    operator fun <T : Element?> get(key: Key<T>): T?
+    operator fun <T : Element> get(key: Key<T>): T?
 
     /**
      * Creates a new context that contains the elements of this context plus those
@@ -69,13 +60,8 @@ interface Context {
  * A [Context] with no elements.
  */
 object EmptyContext : Context {
-    override fun <R> fold(initial: R, transform: (R, Context.Element) -> R): R = initial
-
-    override fun <T : Context.Element?, R> fold(
-        key: Key<T>, initial: R, transform: (R, T) -> R
-    ): R = initial
-
-    override fun <T : Context.Element?> get(key: Key<T>): T? = null
+    override val elements: Map<Key<*>, Context.Element> = emptyMap()
+    override fun <T : Context.Element> get(key: Key<T>): T? = null
     override fun plus(other: Context): Context = other
 }
 
@@ -86,42 +72,12 @@ object EmptyContext : Context {
  * elements per key. The iteration order is not guaranteed.
  */
 internal data class DefaultContext(
-    private val values: Map<Key<*>, Set<Context.Element>>
+    override val elements: Map<Key<*>, Context.Element>
 ) : Context {
-    override fun <R> fold(initial: R, transform: (R, Context.Element) -> R): R {
-        var value = initial
-        for ((_, elements) in values) {
-            val elementsList = elements.toList()
-            for (element in elementsList) {
-                value = transform(value, element)
-            }
-        }
-        return value
-    }
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Context.Element?, R> fold(
-        key: Key<T>, initial: R, transform: (R, T) -> R
-    ): R {
-        val elements = values[key]?.toList() ?: return initial
-        var value = initial
-        for (element in elements) {
-            value = transform(value, element as? T ?: continue)
-        }
-        return value
+    override fun <T : Context.Element> get(key: Key<T>): T? {
+        return elements[key] as? T
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Context.Element?> get(key: Key<T>): T? {
-        return values[key]?.firstOrNull() as? T
-    }
-
-    override fun plus(other: Context): Context = DefaultContext( // @formatter:off
-        other.fold(values.mapValues { (_, elements) ->
-            elements.toMutableSet()
-        }.toMutableMap()) { map, element ->
-            map.getOrPut(element.key) { HashSet() } += element
-            map
-        }
-    ) // @formatter:on
+    override fun plus(other: Context): Context = DefaultContext(elements + other.elements)
 }

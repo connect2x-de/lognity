@@ -8,7 +8,7 @@ package de.connect2x.lognity.api.context
  * are de-duplicated.
  */
 class ContextBuilder @PublishedApi internal constructor() {
-    private val values: HashMap<Context.Key<*>, HashSet<Context.Element>> = HashMap()
+    private val values: HashMap<Context.Key<*>, Context.Element> = HashMap()
 
     /**
      * Copies all elements from the given [context] into this builder.
@@ -16,9 +16,7 @@ class ContextBuilder @PublishedApi internal constructor() {
      * Elements are merged by their [Context.Key].
      */
     fun valuesFrom(context: Context) {
-        context.fold(Unit) { _, element ->
-            values.getOrPut(element.key) { HashSet() } += element
-        }
+        values += context.elements
     }
 
     /**
@@ -27,21 +25,21 @@ class ContextBuilder @PublishedApi internal constructor() {
      * If a key already exists in this builder, the given elements are merged into the
      * existing set and duplicates are removed.
      */
-    fun values(values: Map<Context.Key<*>, Collection<Context.Element>>) {
-        this.values += values.mapValues { (_, elements) -> elements.toHashSet() }
+    fun values(values: Map<Context.Key<*>, Context.Element>) {
+        this.values += values
     }
 
     /**
      * Adds a single [value] for the given [key]. If [value] is null, the call is ignored.
      */
-    fun <T : Context.Element?> value(key: Context.Key<T>, value: T) {
-        values.getOrPut(key) { HashSet() } += value ?: return
+    fun <T : Context.Element> value(key: Context.Key<T>, value: T) {
+        values[key] = value
     }
 
     /**
      * DSL setter alias for [value].
      */
-    operator fun <T : Context.Element?> set(key: Context.Key<T>, value: T) = value(key, value)
+    operator fun <T : Context.Element> set(key: Context.Key<T>, value: T) = value(key, value)
 
     @PublishedApi
     internal fun build(): Context = DefaultContext(values)

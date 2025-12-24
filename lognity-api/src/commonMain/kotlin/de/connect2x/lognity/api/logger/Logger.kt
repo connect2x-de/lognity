@@ -34,14 +34,14 @@ interface Logger {
 
     /** The name of any given [Logger] instance */
     data class Name(val name: String) : Context.Element { // @formatter:off
-        companion object : Context.Key<Name>
-        override val key: Context.Key<*> = Name
+        companion object Key : Context.Key<Name>
+        override val key: Context.Key<*> = Key
     } // @formatter:on
 
     /** The default marker of all messages logged by a given [Logger] */
     data class DefaultMarker(val marker: Marker) : Context.Element { // @formatter:off
-        companion object : Context.Key<DefaultMarker>
-        override val key: Context.Key<*> = DefaultMarker
+        companion object Key : Context.Key<DefaultMarker>
+        override val key: Context.Key<*> = Key
     } // @formatter:on
 
     /**
