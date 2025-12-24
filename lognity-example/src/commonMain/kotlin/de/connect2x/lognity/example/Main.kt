@@ -1,6 +1,7 @@
 package de.connect2x.lognity.example
 
 import de.connect2x.lognity.api.backend.Backend
+import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.loadDefaultConfig
@@ -22,6 +23,9 @@ fun main() {
     // Overwrite the default context created for every new Logger instance
     Backend.contextSpec = {
         value(Logger.Name("My Default Logger"))
+        onlyOn(Platform.LINUX) {
+            value(Logger.Name("My Penguin"))
+        }
     }
     // Explicitly named logger
     Logger("My Logger").printTestMessages()
