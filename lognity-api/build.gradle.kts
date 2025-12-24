@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.serialization)
     `maven-publish`
     signing
 }
@@ -73,6 +74,7 @@ kotlin {
                 implementation(sharedLibs.kotlinx.datetime)
                 implementation(libs.stately.common)
                 implementation(libs.stately.collections)
+                implementation(sharedLibs.kotlinx.serialization.core)
             }
         }
     }

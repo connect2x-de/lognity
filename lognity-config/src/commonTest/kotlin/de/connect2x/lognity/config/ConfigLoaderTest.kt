@@ -2,11 +2,11 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.appender.FileAppender
+import de.connect2x.lognity.backend.DefaultBackend
 import kotlinx.io.Buffer
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
-import de.connect2x.lognity.appender.FileAppender
-import de.connect2x.lognity.backend.DefaultBackend
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -100,6 +100,7 @@ class ConfigLoaderTest {
                   "path": "latest.log", // May be absolute or relative to the executable path
                   "pattern": "{{message}}",
                   "formatter": "default",
+                  "platforms": ["LINUX", "WINDOWS", "MACOS", "UNKNOWN_JVM"],
                   "filter": {
                     "conditions": [
                       {
@@ -115,7 +116,8 @@ class ConfigLoaderTest {
         """.trimIndent()
         )
         val config = SerializableConfig.load(source).createConfig()
-        val appender = config.appenders.first()
+        // If this is null, appender is not applicable to this platform
+        val appender = config.appenders.firstOrNull() ?: return
         if (appender !is FileAppender) return
         assertEquals("{{message}}", appender.pattern)
         assertEquals(Path("latest.log"), appender.path)
