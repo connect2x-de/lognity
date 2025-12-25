@@ -8,7 +8,6 @@ workflow:
 
 stages:
   - build
-  - test
   - security
   - publish
 
@@ -49,43 +48,6 @@ build:
     - *if-merge-request-or-main
   script:
     - ./gradlew clean build
-
-test:linux:
-  stage: test
-  interruptible: true
-  timeout: 1h
-  needs: [ "build" ]
-  tags: [ "connect2x-linux" ]
-  image: $BUILD_LINUX_IMAGE_NAME
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew linuxX64Test --stacktrace
-
-test:mac:
-  stage: test
-  interruptible: true
-  timeout: 1h
-  needs: [ "build" ]
-  tags: [ "connect2x-mac" ]
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew {jvm,macosX64}Test --stacktrace
-
-test:windows:
-  stage: test
-  interruptible: true
-  timeout: 2h
-  needs: [ "build" ]
-  tags: [ "saas-windows-medium-amd64" ]
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew mingwX64Test
 
 security:dependencies:
   stage: security

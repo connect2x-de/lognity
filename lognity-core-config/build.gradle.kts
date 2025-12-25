@@ -70,20 +70,12 @@ kotlin {
             }
         }
     }
-    applyDefaultHierarchyTemplate {
-        common {
-            group("jvmAndAndroid") {
-                withJvm()
-                withAndroidTarget()
-            }
-        }
-    }
+    applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.lognityApi)
-                api(libs.kotlinx.io.bytestring)
-                api(libs.kotlinx.io.core)
+                api(projects.lognityConfig)
+                api(projects.lognityCore)
                 implementation(sharedLibs.kotlinx.serialization.core)
                 implementation(sharedLibs.kotlinx.serialization.json)
             }
@@ -91,11 +83,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(sharedLibs.kotlin.test)
-            }
-        }
-        webMain {
-            dependencies {
-                implementation(libs.kotlinx.browser)
             }
         }
     }
@@ -110,5 +97,5 @@ android {
 }
 
 publishing {
-    //setProjectInfo("Lognity Config", "Lightweight logging configuration for Kotlin/Multiplatform")
+    //setProjectInfo("Lognity Core Config", "Lightweight logging configuration for Kotlin/Multiplatform")
 }

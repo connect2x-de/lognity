@@ -7,12 +7,20 @@ import de.connect2x.lognity.api.config.config
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
+import de.connect2x.lognity.config.appender.AppenderFactory
+import de.connect2x.lognity.config.appender.SerializableAppender
+import de.connect2x.lognity.config.condition.AlwaysCondition
+import de.connect2x.lognity.config.condition.SerializableCondition
 import kotlinx.io.Source
 import kotlinx.io.readString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.plus
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+import kotlin.reflect.KClass
 
 /**
  * Serializable representation of the Lognity configuration.
@@ -42,17 +50,53 @@ data class SerializableConfig( // @formatter:off
          */
         const val VERSION: Int = 1
 
+        @PublishedApi
+        internal var appenderTypes: PolymorphicModuleBuilder<SerializableAppender>.() -> Unit = {}
+
+        @PublishedApi
+        internal val appenderFactories: HashMap<KClass<out SerializableAppender>, AppenderFactory<SerializableAppender>> =
+            HashMap()
+
+        @PublishedApi
+        internal var conditionTypes: PolymorphicModuleBuilder<SerializableCondition>.() -> Unit = {}
+
+        @Suppress("UNCHECKED_CAST")
+        inline fun <reified A : SerializableAppender> registerAppenderType(noinline factory: AppenderFactory<A>) {
+            val oldCallback = appenderTypes
+            appenderTypes = {
+                oldCallback()
+                subclass(A::class)
+            }
+            appenderFactories[A::class] = factory as AppenderFactory<SerializableAppender>
+        }
+
+        inline fun <reified C : SerializableCondition> registerConditionType() {
+            val oldCallback = conditionTypes
+            conditionTypes = {
+                oldCallback()
+                subclass(C::class)
+            }
+        }
+
+        init {
+            registerConditionType<AlwaysCondition>() // The always condition is built-in as a default
+        }
+
         @OptIn(ExperimentalSerializationApi::class)
-        private val json: Json = Json {
-            ignoreUnknownKeys = true
-            prettyPrint = true
-            prettyPrintIndent = "\t"
-            allowComments = true
-            allowTrailingComma = true
-            // @formatter:off
-            serializersModule = SerializableAppender.serializersModule +
-                SerializableFilter.Condition.serializersModule
-            // @formatter:on
+        private val json: Json by lazy {
+            Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                prettyPrintIndent = "\t"
+                allowComments = true
+                allowTrailingComma = true
+                // @formatter:off
+                serializersModule = SerializersModule {
+                    polymorphic(SerializableAppender::class) { appenderTypes() }
+                    polymorphic(SerializableCondition::class) { conditionTypes() }
+                }
+                // @formatter:on
+            }
         }
 
         /**
@@ -88,23 +132,10 @@ data class SerializableConfig( // @formatter:off
     ) = with(builder) {
         level = this@SerializableConfig.level
         isEnabled = enabled
-        for (appender in appenders) onlyOn(appender.platforms) {
-            when (appender) {
-                is SerializableAppender.Console -> platformConsoleAppender(
-                    appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter
-                )
-
-                is SerializableAppender.File -> if (appender.isRolling) {
-                    rollingFileAppender(
-                        appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
-                    )
-                }
-                else {
-                    fileAppender(
-                        appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
-                    )
-                }
-            }
+        loop@ for (appender in appenders) onlyOn(appender.platforms) {
+            val formatter = formatters[appender.formatter] ?: continue@loop
+            val factory = appenderFactories[appender::class] ?: continue@loop
+            factory(appender, formatter)
         }
     }
 

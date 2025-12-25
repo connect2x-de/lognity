@@ -4,6 +4,7 @@ import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.backend.DefaultBackend
+import de.connect2x.lognity.config.CoreConfig
 import de.connect2x.lognity.config.loadDefaultConfig
 import kotlinx.io.files.Path
 
@@ -17,6 +18,7 @@ private fun Logger.printTestMessages() {
 }
 
 fun main() {
+    CoreConfig.install() // Install all config extensions for the core module
     Backend.set(DefaultBackend)
     // Load the JSON based config using the lognity-config module
     Backend.loadDefaultConfig(Path("example_config.json"))

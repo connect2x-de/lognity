@@ -6,7 +6,6 @@ import kotlinx.io.Source
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import de.connect2x.lognity.format.SimpleFormatter
 
 /**
  * Loads a Lognity configuration from the given Source and applies it to this Backend.
@@ -23,7 +22,7 @@ import de.connect2x.lognity.format.SimpleFormatter
  */
 fun Backend.loadDefaultConfig( // @formatter:off
     source: Source,
-    formatters: Map<String, Formatter> = mapOf("default" to SimpleFormatter.default)
+    formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
     val config = SerializableConfig.load(source)
     configSpec = { config.applyConfig(formatters) }
@@ -39,7 +38,7 @@ fun Backend.loadDefaultConfig( // @formatter:off
  */
 fun Backend.loadDefaultConfig( // @formatter:off
     path: Path,
-    formatters: Map<String, Formatter> = mapOf("default" to SimpleFormatter.default)
+    formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
     SystemFileSystem.source(path).use { source ->
         loadDefaultConfig(source.buffered(), formatters)
@@ -55,4 +54,4 @@ fun Backend.loadDefaultConfig( // @formatter:off
  *
  * @param formatters a map of formatter identifiers to Formatter implementations used by the config
  */
-expect fun Backend.loadDefaultConfig(formatters: Map<String, Formatter> = mapOf("default" to SimpleFormatter.default))
+expect fun Backend.loadDefaultConfig(formatters: Map<String, Formatter> = mapOf("default" to Formatter.default))

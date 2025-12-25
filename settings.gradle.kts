@@ -77,6 +77,7 @@ plugins {
 
 include("lognity-api")
 include("lognity-core")
+include("lognity-core-config")
 include("lognity-slf4j")
 include("lognity-java-logging")
 include("lognity-ktor")

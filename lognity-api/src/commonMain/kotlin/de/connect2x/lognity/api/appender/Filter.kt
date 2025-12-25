@@ -70,13 +70,29 @@ fun interface Filter {
     operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
 
     /**
-     * Concatenates this filter with another using a short-circuit AND operation (`&&`).
+     * Combines this filter with another filter using a logical AND operation.
      *
-     * @param other The filter with which to join this filter instance.
-     * @return A new filter instance checking both, this filter and the given one
-     *  using a short-circuit AND operation.
+     * @param other The other filter to combine with.
+     * @return A new filter which only lets messages through if both filters allow it.
      */
-    operator fun plus(other: Filter): Filter = Filter { level, message, marker ->
+    infix fun and(other: Filter): Filter = Filter { level, message, marker ->
         this(level, message, marker) && other(level, message, marker)
     }
+
+    /**
+     * Combines this filter with another filter using a logical OR operation.
+     *
+     * @param other The other filter to combine with.
+     * @return A new filter which lets messages through if at least one of the filters allows it.
+     */
+    infix fun or(other: Filter): Filter = Filter { level, message, marker ->
+        this(level, message, marker) || other(level, message, marker)
+    }
+
+    /**
+     * Negates the result of this filter.
+     *
+     * @return A new filter which lets messages through if this filter does not.
+     */
+    fun not(): Filter = Filter { level, message, marker -> !this(level, message, marker) }
 }

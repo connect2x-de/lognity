@@ -34,7 +34,7 @@ kotlin {
             dependencies {
                 implementation(projects.lognityApi)
                 implementation(projects.lognityCore)
-                implementation(projects.lognityConfig)
+                implementation(projects.lognityCoreConfig)
             }
         }
     }
