@@ -10,39 +10,12 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.withBlockingLock
+import de.connect2x.lognity.util.RefCountedSink
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
-import kotlin.concurrent.atomics.AtomicInt
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlin.concurrent.atomics.decrementAndFetch
-import kotlin.concurrent.atomics.incrementAndFetch
-
-@OptIn(ExperimentalAtomicApi::class)
-private data class RefCountedSink(
-    val value: Sink
-) {
-    private var refCount: AtomicInt = AtomicInt(0)
-
-    @Suppress("NOTHING_TO_INLINE")
-    inline fun acquire(): RefCountedSink {
-        refCount.incrementAndFetch()
-        return this
-    }
-
-    inline fun release(releaseAction: () -> Unit = {}): RefCountedSink {
-        if (refCount.load() == 0) return this
-        if (refCount.decrementAndFetch() == 0) {
-            releaseAction()
-            value.close()
-            return this
-        }
-        return this
-    }
-}
 
 /**
  * Appender that writes log messages to a file.
@@ -58,22 +31,21 @@ private data class RefCountedSink(
  * @property filter A filter that decides whether a given message should be written.
  * @property path The file system path to which log lines will be appended. The file is opened in append mode.
  */
-class FileAppender( // @formatter:off
+open class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
     val path: Path
 ) : Appender { // @formatter:on
     companion object {
-        private val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
+        internal val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
     }
 
     init {
         Backend.addShutdownHook(::dispose)
-        SystemFileSystem.delete(path, mustExist = false)
     }
 
-    private val sink: RefCountedSink = sinks.getOrPut(path) {
+    internal val sink: RefCountedSink = sinks.getOrPut(path) {
         RefCountedSink(SystemFileSystem.sink(path, true).buffered())
     }.acquire()
 
@@ -100,7 +72,7 @@ class FileAppender( // @formatter:off
         }
     }
 
-    private fun dispose() {
+    protected open fun dispose() {
         sink.value.flush()
         sink.release { sinks -= path }
     }

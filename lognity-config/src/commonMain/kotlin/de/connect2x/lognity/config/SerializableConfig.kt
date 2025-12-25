@@ -94,9 +94,16 @@ data class SerializableConfig( // @formatter:off
                     appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter
                 )
 
-                is SerializableAppender.File -> fileAppender(
-                    appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
-                )
+                is SerializableAppender.File -> if (appender.isRolling) {
+                    rollingFileAppender(
+                        appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
+                    )
+                }
+                else {
+                    fileAppender(
+                        appender.pattern, requireNotNull(formatters[appender.formatter]), appender.filter, appender.path
+                    )
+                }
             }
         }
     }

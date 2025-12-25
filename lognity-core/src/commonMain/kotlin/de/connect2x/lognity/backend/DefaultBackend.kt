@@ -35,6 +35,13 @@ internal expect fun createSystemFileAppender( // @formatter:off
     path: String
 ): Appender // @formatter:on
 
+internal expect fun createSystemRollingFileAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    basePath: String
+): Appender // @formatter:on
+
 internal expect fun getCurrentPlatform(): Platform
 
 @OptIn(ExperimentalAtomicApi::class)

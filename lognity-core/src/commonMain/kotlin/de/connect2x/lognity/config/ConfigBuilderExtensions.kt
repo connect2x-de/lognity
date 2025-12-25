@@ -7,6 +7,7 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ConsoleAppender
 import de.connect2x.lognity.backend.createSystemFileAppender
 import de.connect2x.lognity.backend.createSystemLogAppender
+import de.connect2x.lognity.backend.createSystemRollingFileAppender
 
 /**
  * Adds a new console appender to this logger config.
@@ -58,4 +59,22 @@ fun ConfigBuilder.fileAppender( // @formatter:off
     path: String
 ) { // @formatter:on
     appender(createSystemFileAppender(pattern, formatter, filter, path))
+}
+
+/**
+ * Adds a new rolling file appender to this logger config.
+ *
+ * @param pattern The formatting pattern to apply to all messages passed to the new appender.
+ * @param basePath The base file path at which to save the logs.
+ * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
+ * @param filter The filter to apply for every message to determine whether it should be logged.
+ */
+@ConfigDsl
+fun ConfigBuilder.rollingFileAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    basePath: String
+) { // @formatter:on
+    appender(createSystemRollingFileAppender(pattern, formatter, filter, basePath))
 }

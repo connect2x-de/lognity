@@ -1,2 +1,2 @@
-latest-error.log
-latest-info.log
+error-*.log
+info-*.log

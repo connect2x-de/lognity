@@ -20,7 +20,14 @@
             "type": "file",
             "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
             "formatter": "default",
-            "path": "latest-info.log",
+            "path": "info.log",
+            "rolling": true,
+            "platforms": [
+                "LINUX",
+                "WINDOWS",
+                "MACOS",
+                "UNKNOWN_JVM"
+            ],
             "filter": {
                 "conditions": [
                     {
@@ -40,7 +47,8 @@
             "type": "file",
             "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
             "formatter": "default",
-            "path": "latest-error.log",
+            "path": "error.log",
+            "rolling": true,
             "platforms": [
                 "LINUX",
                 "WINDOWS",

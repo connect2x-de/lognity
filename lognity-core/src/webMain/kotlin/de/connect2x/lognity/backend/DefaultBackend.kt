@@ -20,4 +20,11 @@ internal actual fun createSystemFileAppender( // @formatter:off
     path: String
 ): Appender = NoopAppender // @formatter:on
 
+internal actual fun createSystemRollingFileAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter,
+    basePath: String
+): Appender = NoopAppender // @formatter:on
+
 internal actual fun getCurrentPlatform(): Platform = Platform.WEB
