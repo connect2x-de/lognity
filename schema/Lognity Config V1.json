@@ -66,6 +66,10 @@
                         "type": "string",
                         "description": "The relative path to the log file for file appenders."
                     },
+                    "rolling": {
+                        "type": "boolean",
+                        "description": "For file appenders, automatically adds timestamps to the log files so they don't get overwritten."
+                    },
                     "platforms": {
                         "type": "array",
                         "description": "The platforms this appender is supposed to act upon.",
