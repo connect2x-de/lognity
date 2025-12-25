@@ -67,7 +67,7 @@ sealed interface SerializableAppender {
         override val pattern: String,
         override val formatter: String,
         val path: String,
-        @SerialName("rolling") val isRolling: Boolean,
+        @SerialName("rolling") val isRolling: Boolean = false,
         override val filter: SerializableFilter = SerializableFilter(),
         override val platforms: Set<Platform> = Platform.entries.toSet()
     ) : SerializableAppender
