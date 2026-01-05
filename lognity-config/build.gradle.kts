@@ -1,21 +1,24 @@
-import net.folivo.lognity.gradle.setProjectInfo
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import de.connect2x.conventions.configureJava
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.kotlin.serialization)
+    alias(sharedLibs.plugins.android.library)
+    `maven-publish`
+    signing
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
     withSourcesJar()
     mingwX64()
     linuxX64()
@@ -25,22 +28,24 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    tvosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    watchosSimulatorArm64()
     androidNativeX64()
     androidNativeArm64()
     androidNativeArm32()
+    androidNativeX86()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
     js {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -49,6 +54,7 @@ kotlin {
         }
     }
     wasmJs {
+        useEsModules()
         browser {
             testTask {
                 useKarma {
@@ -56,22 +62,40 @@ kotlin {
                 }
             }
         }
+        nodejs {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withAndroidTarget()
+            }
+        }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.lognityApi)
-                implementation(projects.lognityCore)
                 api(libs.kotlinx.io.bytestring)
                 api(libs.kotlinx.io.core)
-                implementation(libs.kotlinx.serialization.core)
-                implementation(libs.kotlinx.serialization.json)
+                implementation(sharedLibs.kotlinx.serialization.core)
+                implementation(sharedLibs.kotlinx.serialization.json)
             }
         }
         commonTest {
             dependencies {
-                implementation(libs.kotlin.test)
+                implementation(sharedLibs.kotlin.test)
+            }
+        }
+        webMain {
+            dependencies {
+                implementation(libs.kotlinx.browser)
             }
         }
     }
@@ -79,12 +103,12 @@ kotlin {
 
 android {
     namespace = "$group.${rootProject.name}"
-    compileSdk = libs.versions.androidCompileSDK.get().toInt()
+    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinimalSDK.get().toInt()
+        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
 publishing {
-    setProjectInfo("Lognity Config", "Lightweight logging configuration for Kotlin/Multiplatform")
+    //setProjectInfo("Lognity Config", "Lightweight logging configuration for Kotlin/Multiplatform")
 }

@@ -1,20 +1,18 @@
-import net.folivo.lognity.gradle.setProjectInfo
+import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.serialization)
+    `maven-publish`
+    signing
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     mingwX64()
     linuxX64()
@@ -24,22 +22,24 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    tvosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    watchosSimulatorArm64()
     androidNativeX64()
     androidNativeArm64()
     androidNativeArm32()
+    androidNativeX86()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
     js {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -48,7 +48,15 @@ kotlin {
         }
     }
     wasmJs {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -62,10 +70,11 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.io.core)
                 api(libs.kotlinx.io.bytestring)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.datetime)
+                implementation(sharedLibs.kotlinx.coroutines.core)
+                implementation(sharedLibs.kotlinx.datetime)
                 implementation(libs.stately.common)
                 implementation(libs.stately.collections)
+                implementation(sharedLibs.kotlinx.serialization.core)
             }
         }
     }
@@ -73,12 +82,12 @@ kotlin {
 
 android {
     namespace = "$group.${rootProject.name}"
-    compileSdk = libs.versions.androidCompileSDK.get().toInt()
+    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinimalSDK.get().toInt()
+        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
 publishing {
-    setProjectInfo("Lognity API", "Lightweight logging API for Kotlin/Multiplatform")
+    //setProjectInfo("Lognity API", "Lightweight logging API for Kotlin/Multiplatform")
 }

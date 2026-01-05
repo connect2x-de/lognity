@@ -8,7 +8,6 @@ workflow:
 
 stages:
   - build
-  - test
   - security
   - publish
 
@@ -41,76 +40,21 @@ variables:
   - if: $CI_PIPELINE_SOURCE == "schedule"
     when: never
 
-build:linux:
+build:
   stage: build
   interruptible: true
-  tags: [ "saas-linux-medium-amd64" ]
-  image: $BUILD_LINUX_IMAGE_NAME
+  tags: [ "connect2x-mac" ]
   rules:
     - *if-merge-request-or-main
   script:
-    - ./gradlew
-      compileKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
-      compileReleaseKotlinAndroid
-      compileTestKotlin{Jvm,Js,WasmJs,LinuxX64,LinuxArm64,MingwX64}
-      compileReleaseUnitTestKotlinAndroid
-      --stacktrace
-
-build:mac:
-  stage: build
-  interruptible: true
-  tags: [ "trixnity-mac-internal" ]
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew
-      compileKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
-      compileTestKotlin{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}
-      --stacktrace
-
-test:linux:
-  stage: test
-  interruptible: true
-  timeout: 1h
-  needs: [ "build:linux", "build:mac" ]
-  tags: [ "saas-linux-medium-amd64" ]
-  image: $BUILD_LINUX_IMAGE_NAME
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew {jvm,linuxX64}Test --stacktrace
-
-test:mac:
-  stage: test
-  interruptible: true
-  timeout: 1h
-  needs: [ "build:linux", "build:mac" ]
-  tags: [ "trixnity-mac-internal" ]
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew {jvm,macosX64}Test --stacktrace
-
-test:windows:
-  stage: test
-  interruptible: true
-  timeout: 2h
-  needs: [ "build:linux", "build:mac" ]
-  tags: [ "saas-windows-medium-amd64" ]
-  artifacts: *artifact-reports
-  rules:
-    - *if-merge-request-or-main
-  script:
-    - ./gradlew jvmTest mingwX64Test --stacktrace
+    - ./gradlew clean build
 
 security:dependencies:
   stage: security
   interruptible: true
   timeout: 30m
   needs: [ ]
-  tags: [ "saas-linux-medium-amd64" ]
+  tags: [ "connect2x-linux" ]
   image:
     name: "aquasec/trivy"
     entrypoint: [ "" ]
@@ -135,29 +79,11 @@ security:dependencies:
     - trivy repo ./ --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output report.json
     - trivy repo ./ --exit-code 1 --severity CRITICAL
 
-publish:linux:
+publish:
   stage: publish
-  tags: [ "saas-linux-medium-amd64" ]
-  needs: [ "test:linux", "test:mac", "test:windows" ]
-  image: $BUILD_LINUX_IMAGE_NAME
+  tags: [ "connect2x-mac" ]
   rules:
     - *if-main
     - *if-release
   script:
-    - ./gradlew
-      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToGitlabRepository
-      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,MingwX64,LinuxX64,LinuxArm64}PublicationToCentralRepository
-      --stacktrace
-
-publish:mac:
-  stage: publish
-  tags: [ "trixnity-mac-internal" ]
-  needs: [ "test:linux", "test:mac", "test:windows" ]
-  rules:
-    - *if-main
-    - *if-release
-  script:
-    - ./gradlew
-      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToGitlabRepository
-      publish{IosArm64,IosSimulatorArm64,IosX64,MacosArm64,MacosX64,TvosX64,TvosSimulatorArm64,TvosArm64,WatchosX64,WatchosSimulatorArm64,WatchosArm64,WatchosArm32}PublicationToCentralRepository
-      --stacktrace
+    - ./gradlew publishToGitlabRepository

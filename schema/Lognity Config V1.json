@@ -10,7 +10,14 @@
         },
         "level": {
             "type": "string",
-            "enum": ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"],
+            "enum": [
+                "TRACE",
+                "DEBUG",
+                "INFO",
+                "WARN",
+                "ERROR",
+                "FATAL"
+            ],
             "description": "The default log level of all loggers."
         },
         "enabled": {
@@ -43,7 +50,12 @@
                                     "properties": {
                                         "type": {
                                             "type": "string",
-                                            "enum": ["always", "marker", "message", "level"]
+                                            "enum": [
+                                                "always",
+                                                "marker",
+                                                "message",
+                                                "level"
+                                            ]
                                         }
                                     }
                                 }
@@ -52,12 +64,38 @@
                     },
                     "path": {
                         "type": "string",
-                        "description": "The relative path to the log file."
+                        "description": "The relative path to the log file for file appenders."
+                    },
+                    "rolling": {
+                        "type": "boolean",
+                        "description": "For file appenders, automatically adds timestamps to the log files so they don't get overwritten."
+                    },
+                    "platforms": {
+                        "type": "array",
+                        "description": "The platforms this appender is supposed to act upon.",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "LINUX",
+                                "WINDOWS",
+                                "MACOS",
+                                "IOS",
+                                "ANDROID",
+                                "WEB",
+                                "UNKNOWN_JVM",
+                                "UNKNOWN"
+                            ]
+                        }
                     }
                 },
-                "required": ["pattern", "formatter"]
+                "required": [
+                    "pattern",
+                    "formatter"
+                ]
             }
         }
     },
-    "required": ["version"]
+    "required": [
+        "version"
+    ]
 }

@@ -1,43 +1,33 @@
 [versions]
+
 java = "17"
 
-androidGradle = "8.12.3" # https://developer.android.com/reference/tools/gradle-api
-androidCompileSDK = "36"
-androidMinimalSDK = "28"
-
 lognity = "1.0.0"
-kotlin = "2.2.10" # https://github.com/JetBrains/kotlin/releases
-kotlinxIo = "0.8.0" # https://github.com/Kotlin/kotlinx-io/releases
-kotlinxDateTime = "0.7.1" # https://github.com/Kotlin/kotlinx-datetime/releases
-kotlinxCoroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines/releases
+kotlin = "2.2.21" # https://github.com/JetBrains/kotlin/releases
+kotlinxIo = "0.8.2" # https://github.com/Kotlin/kotlinx-io/releases
 ktor = "3.2.3" # https://github.com/ktorio/ktor/releases
 stately = "2.1.0" # https://github.com/touchlab/Stately/releases
-dokka = "2.1.0-Beta" # https://github.com/Kotlin/dokka/releases
+dokka = "2.1.0" # https://github.com/Kotlin/dokka/releases
 gradleNexus = "2.0.0" # https://github.com/gradle-nexus/publish-plugin/releases
 slf4j = "2.0.17"
 autoService = "1.1.1" # https://github.com/google/auto/releases
-kotlinxSerialization = "1.9.0"
+kotlinxBrowser = "0.5.0"
+oshi = "6.9.2"
 
 [libraries]
 
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinxIo" }
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIo" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinxBrowser" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 autoService = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
+oshi-core = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
 
 [plugins]
 
-android-library = { id = "com.android.library", version.ref = "androidGradle" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 gradleNexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradleNexus" }

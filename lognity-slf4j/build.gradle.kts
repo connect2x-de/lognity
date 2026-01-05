@@ -1,41 +1,46 @@
-import net.folivo.lognity.gradle.setProjectInfo
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import de.connect2x.conventions.configureJava
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.android.library)
+    alias(libs.plugins.kotlin.kapt) // TODO: add KAPT to shared catalog
+    `maven-publish`
+    signing
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withAndroidTarget()
+            }
+        }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.lognityApi)
             }
         }
-        val jvmAndAndroidMain by creating {
-            dependsOn(commonMain)
+        @Suppress("UNUSED")
+        val jvmAndAndroidMain by getting {
             dependencies {
                 api(libs.slf4j.api)
                 implementation(libs.autoService)
             }
         }
-        val androidMain by getting { dependsOn(jvmAndAndroidMain) }
-        val jvmMain by getting { dependsOn(jvmAndAndroidMain) }
     }
 }
 
@@ -47,12 +52,12 @@ dependencies {
 
 android {
     namespace = "$group.${rootProject.name}"
-    compileSdk = libs.versions.androidCompileSDK.get().toInt()
+    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinimalSDK.get().toInt()
+        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
 publishing {
-    setProjectInfo("Lognity SLF4j", "SLF4j integration for the Lognity logging API")
+    //setProjectInfo("Lognity SLF4j", "SLF4j integration for the Lognity logging API")
 }

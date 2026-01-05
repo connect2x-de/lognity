@@ -1,20 +1,20 @@
-import net.folivo.lognity.gradle.setProjectInfo
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import de.connect2x.conventions.configureJava
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(sharedLibs.plugins.kotlin.multiplatform)
+    alias(sharedLibs.plugins.android.library)
+    `maven-publish`
+    signing
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
-}
+configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
     withSourcesJar()
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -27,22 +27,24 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    tvosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    watchosSimulatorArm64()
     androidNativeX64()
     androidNativeArm64()
     androidNativeArm32()
+    androidNativeX86()
     jvm()
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("debug", "release")
     }
     js {
+        useEsModules()
         browser {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -51,6 +53,7 @@ kotlin {
         }
     }
     wasmJs {
+        useEsModules()
         browser {
             testTask {
                 useKarma {
@@ -58,34 +61,46 @@ kotlin {
                 }
             }
         }
+        nodejs {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withAndroidTarget()
+            }
+        }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.lognityApi)
                 api(libs.ktor.server.core)
             }
         }
-        val jvmAndAndroidMain by creating {
-            dependsOn(commonMain)
+        @Suppress("UNUSED") //
+        val jvmAndAndroidMain by getting {
             dependencies {
                 api(projects.lognitySlf4j)
             }
         }
-        androidMain { dependsOn(jvmAndAndroidMain) }
-        jvmMain { dependsOn(jvmAndAndroidMain) }
     }
 }
 
 android {
     namespace = "$group.${rootProject.name}"
-    compileSdk = libs.versions.androidCompileSDK.get().toInt()
+    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinimalSDK.get().toInt()
+        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
 publishing {
-    setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
+    //setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
 }
