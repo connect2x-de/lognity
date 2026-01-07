@@ -5,6 +5,10 @@ import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.appender.NoopAppender
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ExtendedConsoleAppender
+import de.connect2x.lognity.appender.FileAppender
+import de.connect2x.lognity.appender.RollingFileAppender
+import de.connect2x.lognity.util.isNode
+import kotlinx.io.files.Path
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
@@ -19,7 +23,7 @@ internal actual fun createSystemFileAppender( // @formatter:off
     formatter: Formatter,
     filter: Filter,
     name: String?
-): Appender = NoopAppender // @formatter:on
+): Appender = if (isNode) FileAppender(pattern, formatter, filter, Path(path), name) else NoopAppender // @formatter:on
 
 internal actual fun createSystemRollingFileAppender( // @formatter:off
     basePath: String,
@@ -27,4 +31,4 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
     formatter: Formatter,
     filter: Filter,
     name: String?
-): Appender = NoopAppender // @formatter:on
+): Appender = if(isNode) RollingFileAppender(pattern, formatter, filter, Path(basePath), name) else NoopAppender // @formatter:on

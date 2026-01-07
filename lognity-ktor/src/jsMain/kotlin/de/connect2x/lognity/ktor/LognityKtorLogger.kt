@@ -6,7 +6,7 @@ import de.connect2x.lognity.api.logger.error
 import de.connect2x.lognity.api.logger.info
 import de.connect2x.lognity.api.logger.trace
 import de.connect2x.lognity.api.logger.warn
-import io.ktor.util.logging.LogLevel
+import io.ktor.util.logging.*
 import io.ktor.util.logging.Logger as KtorLogger
 
 @PublishedApi
