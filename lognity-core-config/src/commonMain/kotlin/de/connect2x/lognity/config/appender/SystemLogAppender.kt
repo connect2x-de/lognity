@@ -11,6 +11,4 @@ data class SystemLogAppender(
     override val formatter: String,
     override val filter: SerializableFilter = SerializableFilter(),
     override val name: String? = null
-) : SerializableAppender {
-
-}
+) : SerializableAppender

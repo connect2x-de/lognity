@@ -13,11 +13,11 @@ object CoreConfigExtension : ConfigExtension {
     private fun ConfigExtensionRegistrar.registerAppenderTypes() {
         // Regular console appender which writes to stdout and stderr
         registerAppenderType<ConsoleAppender> { config, formatter ->
-            consoleAppender(config.pattern, formatter, config.filter)
+            consoleAppender(config.pattern, formatter, config.filter, config.name)
         }
         // System specific appender for the systems underlying log mechanism if present, console otherwise
         registerAppenderType<SystemLogAppender> { config, formatter ->
-            systemLogAppender(config.pattern, formatter, config.filter)
+            systemLogAppender(config.pattern, formatter, config.filter, config.name)
         }
         // Fixed path or rolling file appender
         registerAppenderType<FileAppender> { config, formatter ->
