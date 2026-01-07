@@ -9,6 +9,21 @@ import de.connect2x.lognity.config.condition.MessageCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 
+/**
+ * Core configuration extension for Lognity.
+ *
+ * This extension registers the default appenders and conditions provided by the core library.
+ *
+ * Registered appenders:
+ * - [ConsoleAppender]: Writes log messages to the console (stdout/stderr).
+ * - [SystemLogAppender]: Writes log messages to the system's underlying log mechanism.
+ * - [FileAppender]: Writes log messages to a file (supports rolling files).
+ *
+ * Registered conditions:
+ * - [LevelCondition]: Filters log messages based on their log level.
+ * - [MarkerCondition]: Filters log messages based on their marker.
+ * - [MessageCondition]: Filters log messages based on their content.
+ */
 object CoreConfigExtension : ConfigExtension {
     private fun ConfigExtensionRegistrar.registerAppenderTypes() {
         // Regular console appender which writes to stdout and stderr
