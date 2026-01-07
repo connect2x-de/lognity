@@ -3,10 +3,6 @@ package de.connect2x.lognity.example
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.backend.DefaultBackend
-import de.connect2x.lognity.config.CoreConfigExtension
-import de.connect2x.lognity.config.SerializableConfig
-import de.connect2x.lognity.config.loadDefaultConfig
-import kotlinx.io.files.Path
 
 private fun Logger.printTestMessages() {
     trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
@@ -17,13 +13,12 @@ private fun Logger.printTestMessages() {
     fatal { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
 }
 
+// TODO: make this example work at least on NodeJS
 fun main() {
     // Set the backend implementation
     Backend.set(DefaultBackend)
-    // Register core config extension for builtin appenders and conditions before loading any configs
-    SerializableConfig uses CoreConfigExtension
-    // Load the JSON based config using the lognity-config module
-    Backend.loadDefaultConfig(Path("example_config.json"))
+    // Configure Lognity based on platform
+    configureLognity()
     // Overwrite the default context created for every new Logger instance
     Backend.contextSpec = {
         value(Logger.Name("My Default Logger"))

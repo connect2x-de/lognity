@@ -1,5 +1,6 @@
 import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -8,7 +9,7 @@ plugins {
 
 configureJava(libs.versions.java)
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class) //
+@OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
     jvm {
         binaries {
@@ -22,10 +23,39 @@ kotlin {
     macosX64()
     macosArm64()
     mingwX64()
+    js {
+        useEsModules()
+        nodejs {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+    }
+    wasmJs {
+        useEsModules()
+        nodejs {
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+    }
     targets.withType<KotlinNativeTarget>().configureEach {
         binaries {
             executable {
                 entryPoint = "${rootProject.group}.example.main"
+            }
+        }
+    }
+    applyDefaultHierarchyTemplate {
+        common {
+            group("nonWeb") {
+                withJvm()
+                withAndroidTarget()
+                withNative()
             }
         }
     }
