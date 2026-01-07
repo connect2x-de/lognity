@@ -1,6 +1,7 @@
 import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -24,8 +25,22 @@ kotlin {
     macosArm64()
     mingwX64()
     js {
-        useEsModules()
+        compilerOptions {
+            sourceMap = true
+            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
+        }
+        useCommonJs()
         nodejs {
+            binaries.executable()
+            runTask { workingDir = layout.projectDirectory.asFile }
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        browser {
+            binaries.executable()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -36,6 +51,17 @@ kotlin {
     wasmJs {
         useEsModules()
         nodejs {
+            binaries.executable()
+            runTask { workingDir = layout.projectDirectory.asFile }
+            testTask {
+                useKarma {
+                    useFirefoxHeadless()
+                }
+            }
+        }
+        browser {
+            binaries.executable()
+            runTask {  }
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -50,15 +76,7 @@ kotlin {
             }
         }
     }
-    applyDefaultHierarchyTemplate {
-        common {
-            group("nonWeb") {
-                withJvm()
-                withAndroidTarget()
-                withNative()
-            }
-        }
-    }
+    applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
             dependencies {

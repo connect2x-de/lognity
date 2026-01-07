@@ -44,14 +44,3 @@ fun Backend.loadDefaultConfig( // @formatter:off
         loadDefaultConfig(source.buffered(), formatters)
     }
 }
-
-/**
- * Load the default configuration for Lognity using the platform's preferred
- * way of loading files.
- * - For JVM and Android JVM, `lognity.json` is loaded from the resources root
- * - For JS and WASM/JS, `lognity.json` is loaded from the web content root
- * - For native targets, `lognity.json` is loaded relative to the executable
- *
- * @param formatters a map of formatter identifiers to Formatter implementations used by the config
- */
-expect fun Backend.loadDefaultConfig(formatters: Map<String, Formatter> = mapOf("default" to Formatter.default))

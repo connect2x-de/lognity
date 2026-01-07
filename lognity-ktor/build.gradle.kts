@@ -3,6 +3,7 @@
 import de.connect2x.conventions.configureJava
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
@@ -36,15 +37,22 @@ kotlin {
         publishLibraryVariants("debug", "release")
     }
     js {
-        useEsModules()
-        browser {
+        compilerOptions {
+            sourceMap = true
+            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
+        }
+        useCommonJs()
+        nodejs {
+            binaries.executable()
+            runTask { workingDir = layout.projectDirectory.asFile }
             testTask {
                 useKarma {
                     useFirefoxHeadless()
                 }
             }
         }
-        nodejs {
+        browser {
+            binaries.executable()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
