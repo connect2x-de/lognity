@@ -45,6 +45,20 @@ fun Backend.setDefaultConfig( // @formatter:off
     }
 }
 
+/**
+ * Loads a Lognity configuration from a file or URL at the given path and applies it to this Backend.
+ *
+ * This function is platform-dependent:
+ * - On non-web platforms, it loads the configuration from the local file system.
+ * - On web platforms (browser), it fetches the configuration from the given URL.
+ * - On web platforms (Node.js), it loads the configuration from the local file system.
+ *
+ * After the configuration is loaded and applied, the [block] is executed.
+ *
+ * @param path the path to the configuration file or URL
+ * @param formatters a map of formatter identifiers used by the configuration
+ * @param block a callback to be executed after the configuration has been loaded
+ */
 expect fun Backend.withDefaultConfig( // @formatter:off
     path: String,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default),
