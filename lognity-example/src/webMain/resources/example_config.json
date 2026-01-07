@@ -1,0 +1,21 @@
+{
+    "$schema": "../../../../schema/Lognity Config V1.json",
+    "version": 1,
+    "level": "TRACE",
+    "enabled": true,
+    "appenders": [
+        {
+            "type": "console",
+            "name": "my_appender",
+            "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
+            "formatter": "default",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "always"
+                    }
+                ]
+            }
+        }
+    ]
+}

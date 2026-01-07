@@ -41,6 +41,12 @@ kotlin {
         }
         browser {
             binaries.executable()
+            runTask {
+                mainOutputFileName = "${project.name}.js"
+            }
+            webpackTask {
+                mainOutputFileName = "${project.name}.js"
+            }
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -61,7 +67,12 @@ kotlin {
         }
         browser {
             binaries.executable()
-            runTask {  }
+            runTask {
+                mainOutputFileName = "${project.name}.js"
+            }
+            webpackTask {
+                mainOutputFileName = "${project.name}.js"
+            }
             testTask {
                 useKarma {
                     useFirefoxHeadless()

@@ -20,7 +20,7 @@ import kotlinx.io.files.SystemFileSystem
  * @param source a readable source containing the JSON configuration
  * @param formatters a map of formatter identifiers to Formatter implementations used by the config
  */
-fun Backend.loadDefaultConfig( // @formatter:off
+fun Backend.setDefaultConfig( // @formatter:off
     source: Source,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
@@ -36,11 +36,17 @@ fun Backend.loadDefaultConfig( // @formatter:off
  * @param path the path to the configuration file (e.g., "lognity.json")
  * @param formatters a map of formatter identifiers used by the configuration
  */
-fun Backend.loadDefaultConfig( // @formatter:off
+fun Backend.setDefaultConfig( // @formatter:off
     path: Path,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
     SystemFileSystem.source(path).use { source ->
-        loadDefaultConfig(source.buffered(), formatters)
+        setDefaultConfig(source.buffered(), formatters)
     }
 }
+
+expect fun Backend.withDefaultConfig( // @formatter:off
+    path: String,
+    formatters: Map<String, Formatter> = mapOf("default" to Formatter.default),
+    block: () -> Unit
+) // @formatter:on

@@ -5,8 +5,7 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
-import de.connect2x.lognity.config.loadDefaultConfig
-import kotlinx.io.files.Path
+import de.connect2x.lognity.config.withDefaultConfig
 
 private fun Logger.printTestMessages() {
     trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
@@ -24,13 +23,14 @@ fun main() {
     // Register core config extension for builtin appenders and conditions before loading any configs
     SerializableConfig uses CoreConfigExtension
     // Load the JSON based config using the lognity-config module
-    Backend.loadDefaultConfig(Path("example_config.json"))
-    // Overwrite the default context created for every new Logger instance
-    Backend.contextSpec = {
-        value(Logger.Name("My Default Logger"))
+    Backend.withDefaultConfig("example_config.json") {
+        // Overwrite the default context created for every new Logger instance
+        Backend.contextSpec = {
+            value(Logger.Name("My Default Logger"))
+        }
+        // Explicitly named logger
+        Logger("My Logger").printTestMessages()
+        // Implicitly named logger (default defined in example_config.json)
+        Logger().printTestMessages()
     }
-    // Explicitly named logger
-    Logger("My Logger").printTestMessages()
-    // Implicitly named logger (default defined in example_config.json)
-    Logger().printTestMessages()
 }

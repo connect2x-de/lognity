@@ -83,6 +83,11 @@ kotlin {
                 withJvm()
                 withAndroidTarget()
             }
+            group("nonWeb") {
+                withJvm()
+                withAndroidTarget()
+                withNative()
+            }
         }
     }
     sourceSets {
@@ -93,6 +98,7 @@ kotlin {
                 api(libs.kotlinx.io.core)
                 implementation(sharedLibs.kotlinx.serialization.core)
                 implementation(sharedLibs.kotlinx.serialization.json)
+                implementation(sharedLibs.kotlinx.coroutines.core)
             }
         }
         commonTest {
