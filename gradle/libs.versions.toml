@@ -2,7 +2,7 @@
 
 java = "17"
 
-lognity = "1.0.0"
+lognity = "1.1.0"
 kotlin = "2.2.21" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.8.2" # https://github.com/Kotlin/kotlinx-io/releases
 ktor = "3.2.3" # https://github.com/ktorio/ktor/releases
@@ -11,14 +11,12 @@ dokka = "2.1.0" # https://github.com/Kotlin/dokka/releases
 gradleNexus = "2.0.0" # https://github.com/gradle-nexus/publish-plugin/releases
 slf4j = "2.0.17"
 autoService = "1.1.1" # https://github.com/google/auto/releases
-kotlinxBrowser = "0.5.0"
 oshi = "6.9.2"
 
 [libraries]
 
 kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinxIo" }
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIo" }
-kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinxBrowser" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
