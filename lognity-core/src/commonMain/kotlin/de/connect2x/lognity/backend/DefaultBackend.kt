@@ -21,6 +21,13 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 internal expect fun getDefaultLogLevel(): Level
 
+internal expect fun createSystemConsoleAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    name: String? = null
+): Appender // @formatter:on
+
 internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,

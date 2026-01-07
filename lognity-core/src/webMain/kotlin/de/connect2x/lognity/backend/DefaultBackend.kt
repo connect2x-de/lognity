@@ -17,6 +17,13 @@ internal actual fun createSystemLogAppender( // @formatter:off
     name: String?
 ): Appender = ExtendedConsoleAppender(pattern, formatter, filter, name) // @formatter:on
 
+internal actual fun createSystemConsoleAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
+): Appender = ExtendedConsoleAppender(pattern, formatter, filter, name) // @formatter:on
+
 internal actual fun createSystemFileAppender( // @formatter:off
     path: String,
     pattern: String,

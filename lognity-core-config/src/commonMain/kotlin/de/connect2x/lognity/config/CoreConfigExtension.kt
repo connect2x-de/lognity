@@ -2,6 +2,7 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.config.appender.ConsoleAppender
 import de.connect2x.lognity.config.appender.FileAppender
+import de.connect2x.lognity.config.appender.SystemConsoleAppender
 import de.connect2x.lognity.config.appender.SystemLogAppender
 import de.connect2x.lognity.config.condition.LevelCondition
 import de.connect2x.lognity.config.condition.MarkerCondition
@@ -15,7 +16,8 @@ import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
  * This extension registers the default appenders and conditions provided by the core library.
  *
  * Registered appenders:
- * - [ConsoleAppender]: Writes log messages to the console (stdout/stderr).
+ * - [ConsoleAppender]: Writes log messages to the console (stdout).
+ * - [SystemConsoleAppender]: Writes log messages to the system console (stdout & stderr) if available.
  * - [SystemLogAppender]: Writes log messages to the system's underlying log mechanism.
  * - [FileAppender]: Writes log messages to a file (supports rolling files).
  *
@@ -29,6 +31,10 @@ object CoreConfigExtension : ConfigExtension {
         // Regular console appender which writes to stdout and stderr
         registerAppenderType<ConsoleAppender> { config, formatter ->
             consoleAppender(config.pattern, formatter, config.filter, config.name)
+        }
+        // System specific console appender, which may provide additional functionality
+        registerAppenderType<SystemConsoleAppender> { config, formatter ->
+            systemConsoleAppender(config.pattern, formatter, config.filter, config.name)
         }
         // System specific appender for the systems underlying log mechanism if present, console otherwise
         registerAppenderType<SystemLogAppender> { config, formatter ->

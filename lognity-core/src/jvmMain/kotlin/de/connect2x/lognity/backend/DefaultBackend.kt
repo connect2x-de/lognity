@@ -22,3 +22,12 @@ internal actual fun createSystemLogAppender( // @formatter:off
 ): Appender { // @formatter:on
     return ExtendedConsoleAppender(pattern, formatter, filter, name)
 }
+
+internal actual fun createSystemConsoleAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
+): Appender {
+    return ExtendedConsoleAppender(pattern, formatter, filter, name) // @formatter:on
+}
