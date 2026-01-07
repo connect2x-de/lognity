@@ -10,6 +10,8 @@ import de.connect2x.lognity.config.condition.MessageCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 
+internal expect fun ConfigExtensionRegistrar.registerPlatformAppenderTypes()
+
 /**
  * Core configuration extension for Lognity.
  *
@@ -48,6 +50,7 @@ object CoreConfigExtension : ConfigExtension {
             }
             fileAppender(config.path, config.pattern, formatter, config.filter, config.name)
         }
+        registerPlatformAppenderTypes()
     }
 
     private fun ConfigExtensionRegistrar.registerConditionTypes() {

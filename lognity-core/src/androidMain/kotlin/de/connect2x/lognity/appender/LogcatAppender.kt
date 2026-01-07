@@ -10,7 +10,7 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.logcatLevel
 
-internal class LogcatAppender( // @formatter:off
+class LogcatAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,

@@ -10,7 +10,7 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.logcatLevel
 import platform.android.__android_log_write
 
-internal class LogcatAppender( // @formatter:off
+class LogcatAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
