@@ -95,7 +95,7 @@ kotlin {
         }
         webMain {
             dependencies {
-                implementation(sharedLibs.kotlin.browser)
+                implementation(libs.kotlinx.browser)
             }
         }
     }
