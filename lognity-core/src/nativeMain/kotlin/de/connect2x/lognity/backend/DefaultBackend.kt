@@ -16,15 +16,17 @@ internal actual fun getDefaultLogLevel(): Level {
 }
 
 internal actual fun createSystemFileAppender( // @formatter:off
+    path: String,
     pattern: String,
     formatter: Formatter,
     filter: Filter,
-    path: String
-): Appender = FileAppender(pattern, formatter, filter, Path(path)) // @formatter:on
+    name: String?
+): Appender = FileAppender(pattern, formatter, filter, Path(path), name) // @formatter:on
 
 internal actual fun createSystemRollingFileAppender( // @formatter:off
+    basePath: String,
     pattern: String,
     formatter: Formatter,
     filter: Filter,
-    basePath: String
-): Appender = RollingFileAppender(pattern, formatter, filter, Path(basePath)) // @formatter:on
+    name: String?
+): Appender = RollingFileAppender(pattern, formatter, filter, Path(basePath), name) // @formatter:on

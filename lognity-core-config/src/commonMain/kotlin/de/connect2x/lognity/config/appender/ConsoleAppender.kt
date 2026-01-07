@@ -1,6 +1,5 @@
 package de.connect2x.lognity.config.appender
 
-import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.config.SerializableFilter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,5 +17,5 @@ data class ConsoleAppender( // @formatter:off
     override val pattern: String,
     override val formatter: String,
     override val filter: SerializableFilter = SerializableFilter(),
-    override val platforms: Set<Platform> = Platform.entries.toSet()
+    override val name: String? = null
 ) : SerializableAppender // @formatter:on

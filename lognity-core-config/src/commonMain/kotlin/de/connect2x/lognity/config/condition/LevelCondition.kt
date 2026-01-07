@@ -15,7 +15,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LevelCondition( // @formatter:off
     val condition: Type,
-    val value: Level
+    val value: Level,
+    override val name: String? = null
 ) : SerializableCondition { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, BELOW, ABOVE }
 

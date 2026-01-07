@@ -3,7 +3,6 @@ package de.connect2x.lognity.slf4j
 import de.connect2x.lognity.api.ansi.AnsiScope
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.config.Config
-import de.connect2x.lognity.api.config.config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.context.EmptyContext
 import de.connect2x.lognity.api.format.Formatter
@@ -15,7 +14,7 @@ import org.slf4j.Logger as Slf4jLogger
 internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {
-    override val config: Config = config(Backend.configSpec)
+    override val config: Config = Config(Backend.configSpec)
     override val context: Context = EmptyContext
     override var level: Level = Level.default
     override var isEnabled: Boolean = true

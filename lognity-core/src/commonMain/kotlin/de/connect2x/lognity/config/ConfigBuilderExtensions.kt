@@ -20,9 +20,10 @@ import de.connect2x.lognity.backend.createSystemRollingFileAppender
 fun ConfigBuilder.consoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always
+    filter: Filter = Filter.always,
+    name: String? = null
 ) { // @formatter:on
-    appender(ConsoleAppender(pattern, formatter, filter))
+    appender(ConsoleAppender(pattern, formatter, filter, name))
 }
 
 /**
@@ -35,12 +36,13 @@ fun ConfigBuilder.consoleAppender( // @formatter:off
  * @param filter The filter to apply for every message to determine whether it should be logged.
  */
 @ConfigDsl
-fun ConfigBuilder.platformConsoleAppender( // @formatter:off
+fun ConfigBuilder.systemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always
+    filter: Filter = Filter.always,
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemLogAppender(pattern, formatter, filter))
+    appender(createSystemLogAppender(pattern, formatter, filter, name))
 }
 
 /**
@@ -53,12 +55,13 @@ fun ConfigBuilder.platformConsoleAppender( // @formatter:off
  */
 @ConfigDsl
 fun ConfigBuilder.fileAppender( // @formatter:off
+    path: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    path: String
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemFileAppender(pattern, formatter, filter, path))
+    appender(createSystemFileAppender(path, pattern, formatter, filter, name))
 }
 
 /**
@@ -71,10 +74,11 @@ fun ConfigBuilder.fileAppender( // @formatter:off
  */
 @ConfigDsl
 fun ConfigBuilder.rollingFileAppender( // @formatter:off
+    basePath: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    basePath: String
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemRollingFileAppender(pattern, formatter, filter, basePath))
+    appender(createSystemRollingFileAppender(basePath, pattern, formatter, filter, name))
 }

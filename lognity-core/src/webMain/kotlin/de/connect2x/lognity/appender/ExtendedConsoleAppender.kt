@@ -21,8 +21,9 @@ internal external val console: Console
 class ExtendedConsoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
-    filter: Filter
-) : ConsoleAppender(pattern, formatter, filter) { // @formatter:on
+    filter: Filter,
+    name: String? = null
+) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {

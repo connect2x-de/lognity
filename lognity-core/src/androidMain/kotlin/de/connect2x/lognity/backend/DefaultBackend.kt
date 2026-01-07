@@ -4,7 +4,6 @@ package de.connect2x.lognity.backend
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
-import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.appender.LogcatAppender
@@ -18,7 +17,6 @@ internal actual fun getDefaultLogLevel(): Level {
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
-    filter: Filter
-): Appender = LogcatAppender(pattern, formatter, filter) // @formatter:on
-
-internal actual fun getCurrentPlatform(): Platform = Platform.ANDROID
+    filter: Filter,
+    name: String?
+): Appender = LogcatAppender(pattern, formatter, filter, name) // @formatter:on

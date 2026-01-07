@@ -6,61 +6,13 @@
     "appenders": [
         {
             "type": "console",
+            "name": "my_appender",
             "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
             "formatter": "default",
             "filter": {
                 "conditions": [
                     {
                         "type": "always"
-                    }
-                ]
-            }
-        },
-        {
-            "type": "file",
-            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
-            "formatter": "default",
-            "path": "info.log",
-            "rolling": true,
-            "platforms": [
-                "LINUX",
-                "WINDOWS",
-                "MACOS",
-                "UNKNOWN_JVM"
-            ],
-            "filter": {
-                "conditions": [
-                    {
-                        "type": "level",
-                        "condition": "ABOVE",
-                        "value": "DEBUG"
-                    },
-                    {
-                        "type": "level",
-                        "condition": "BELOW",
-                        "value": "ERROR"
-                    }
-                ]
-            }
-        },
-        {
-            "type": "file",
-            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}",
-            "formatter": "default",
-            "path": "error.log",
-            "rolling": true,
-            "platforms": [
-                "LINUX",
-                "WINDOWS",
-                "MACOS",
-                "UNKNOWN_JVM"
-            ],
-            "filter": {
-                "conditions": [
-                    {
-                        "type": "level",
-                        "condition": "ABOVE",
-                        "value": "WARN"
                     }
                 ]
             }

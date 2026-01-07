@@ -15,6 +15,12 @@ import de.connect2x.lognity.api.marker.Marker
  */
 interface Appender {
     /**
+     * The internal name of this appender.
+     * This is the name used when referencing appenders in the JSON configuration.
+     */
+    val name: String?
+
+    /**
      * The formatter used by this appender to transform log messages according to a pattern.
      * The formatter applies the pattern to the raw message content before it is appended.
      */

@@ -10,11 +10,8 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class RollingFileAppender(
-    pattern: String,
-    formatter: Formatter,
-    filter: Filter,
-    private val basePath: Path,
-) : FileAppender(pattern, formatter, filter, suffixFileName(basePath, "latest")) {
+    pattern: String, formatter: Formatter, filter: Filter, private val basePath: Path, name: String? = null
+) : FileAppender(pattern, formatter, filter, suffixFileName(basePath, "latest"), name) {
     companion object {
         private fun suffixFileName(path: Path, suffix: String): Path {
             val fileName = path.name

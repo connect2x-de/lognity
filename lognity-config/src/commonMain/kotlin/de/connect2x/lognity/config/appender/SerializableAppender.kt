@@ -1,6 +1,5 @@
 package de.connect2x.lognity.config.appender
 
-import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.config.SerializableFilter
 import kotlinx.serialization.Polymorphic
 
@@ -15,5 +14,5 @@ interface SerializableAppender {
     val pattern: String
     val formatter: String
     val filter: SerializableFilter
-    val platforms: Set<Platform> // In JSON-land, appenders decide which platform(s) they want to act upon
+    val name: String?
 }

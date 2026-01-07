@@ -1,6 +1,5 @@
 package de.connect2x.lognity.config.appender
 
-import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.config.SerializableFilter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -23,5 +22,5 @@ data class FileAppender(
     val path: String,
     @SerialName("rolling") val isRolling: Boolean = false,
     override val filter: SerializableFilter = SerializableFilter(),
-    override val platforms: Set<Platform> = Platform.entries.toSet()
+    override val name: String? = null
 ) : SerializableAppender
