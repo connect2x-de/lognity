@@ -36,7 +36,10 @@
                             "console",
                             "file",
                             "system_console",
-                            "system_log"
+                            "system_log",
+                            "os_log",
+                            "logcat",
+                            "winevent"
                         ],
                         "description": "The type of appender."
                     },
