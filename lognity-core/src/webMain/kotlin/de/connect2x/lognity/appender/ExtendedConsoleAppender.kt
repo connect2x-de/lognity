@@ -8,6 +8,7 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.withBlockingLock
 import de.connect2x.lognity.util.isChrome
+import de.connect2x.lognity.util.isNode
 import kotlin.js.JsName
 
 internal external interface Console {
@@ -30,7 +31,7 @@ class ExtendedConsoleAppender( // @formatter:off
         if (!filter(level, message, marker)) return
         mutex.withBlockingLock {
             // Only Chrome supports ANSI escape codes in the JS console right now
-            val processedMessage = if (isChrome) message else message.toAnsi().cleanString()
+            val processedMessage = if (isChrome || isNode) message else message.toAnsi().cleanString()
             when (level) {
                 Level.DEBUG, Level.TRACE -> console.debug(processedMessage)
                 Level.INFO -> console.info(processedMessage)

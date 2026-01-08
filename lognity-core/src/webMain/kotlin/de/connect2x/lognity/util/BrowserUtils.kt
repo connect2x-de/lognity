@@ -1,5 +1,9 @@
 package de.connect2x.lognity.util
 
-import kotlinx.browser.window
+import kotlin.js.ExperimentalWasmJsInterop
+import kotlin.js.js
 
-internal val isChrome: Boolean = !isNode && "chrome" in window.navigator.userAgent.lowercase()
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun getUserAgent(): String = js("""window.navigator.userAgent""")
+
+internal val isChrome: Boolean = !isNode && "chrome" in getUserAgent().lowercase()

@@ -7,10 +7,10 @@ import de.connect2x.lognity.api.format.Formatter
 import kotlinx.io.files.Path
 import kotlin.jvm.JvmName
 
-actual fun Backend.withDefaultConfig( // @formatter:off
+actual suspend inline fun Backend.withDefaultConfig( // @formatter:off
     path: String,
     formatters: Map<String, Formatter>,
-    block: () -> Unit
+    crossinline block: suspend () -> Unit
 ) {  // @formatter:on
     setDefaultConfig(Path(path), formatters)
     block()

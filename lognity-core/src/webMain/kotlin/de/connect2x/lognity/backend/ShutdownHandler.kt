@@ -2,7 +2,8 @@ package de.connect2x.lognity.backend
 
 import de.connect2x.lognity.util.getProcess
 import de.connect2x.lognity.util.isNode
-import kotlinx.browser.window
+import web.events.EventHandler
+import web.window.window
 
 internal actual object ShutdownHandler {
     private val hooks: ArrayList<() -> Unit> = ArrayList()
@@ -20,7 +21,7 @@ internal actual object ShutdownHandler {
             return
         }
         // Otherwise use the browser API
-        window.onunload = { runCallbacks() }
+        window.onbeforeunload = EventHandler { runCallbacks() }
     }
 
     actual fun register(block: () -> Unit) {

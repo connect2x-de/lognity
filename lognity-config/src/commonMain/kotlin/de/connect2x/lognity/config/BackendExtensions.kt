@@ -59,8 +59,8 @@ fun Backend.setDefaultConfig( // @formatter:off
  * @param formatters a map of formatter identifiers used by the configuration
  * @param block a callback to be executed after the configuration has been loaded
  */
-expect fun Backend.withDefaultConfig( // @formatter:off
+expect suspend inline fun Backend.withDefaultConfig( // @formatter:off
     path: String,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default),
-    block: () -> Unit
+    crossinline block: suspend () -> Unit
 ) // @formatter:on
