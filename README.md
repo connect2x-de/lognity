@@ -42,7 +42,7 @@ Backend.set(DefaultBackend)
 
 > Note: if no backend is selected explicitly, a `NoopBackend` will be provided.
 
-Optionally, you may also pick a default configuration for all newly created Logger.
+Optionally, you may also pick a default configuration for all newly created Loggers.
 
 #### Programmatic configuration
 
@@ -92,7 +92,7 @@ Backend.withDefaultConfig("my_config.json") {
 
 #### Creating a Logger
 
-You should always define your loggers as the interface type `Logger` from the `lognity-api` module.
+You should always define your loggers as the interface type `Logger` from the `lognity-api` module.  
 New instances of this type may be obtained using the `Logger` pseudo-constructor.
 
 ```kotlin
