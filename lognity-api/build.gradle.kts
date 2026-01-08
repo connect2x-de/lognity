@@ -75,8 +75,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(libs.kotlinx.io.core)
-                api(libs.kotlinx.io.bytestring)
+                api(sharedLibs.kotlinx.io.core)
+                api(sharedLibs.kotlinx.io.bytestring)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
                 implementation(libs.stately.common)

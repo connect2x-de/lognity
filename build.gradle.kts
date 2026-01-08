@@ -7,7 +7,7 @@ plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform) apply false
     alias(sharedLibs.plugins.android.library) apply false
     alias(sharedLibs.plugins.c2xConventions)
-    alias(libs.plugins.kotlin.kapt) apply false // TODO: add KAPT to shared catalog
+    alias(sharedLibs.plugins.kotlin.kapt) apply false
     `maven-publish`
     signing
 }

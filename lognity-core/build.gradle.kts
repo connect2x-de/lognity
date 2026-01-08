@@ -88,8 +88,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(libs.kotlinx.io.core)
-                api(libs.kotlinx.io.bytestring)
+                api(sharedLibs.kotlinx.io.core)
+                api(sharedLibs.kotlinx.io.bytestring)
                 api(projects.lognityApi)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
@@ -106,7 +106,6 @@ kotlin {
             dependencies {
                 implementation(sharedLibs.jna)
                 implementation(sharedLibs.jna.platform)
-                implementation(libs.oshi.core)
             }
         }
         androidMain {

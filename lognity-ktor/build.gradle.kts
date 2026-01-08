@@ -89,7 +89,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.lognityApi)
-                api(libs.ktor.server.core)
+                api(sharedLibs.ktor.server.core)
             }
         }
         @Suppress("UNUSED") //

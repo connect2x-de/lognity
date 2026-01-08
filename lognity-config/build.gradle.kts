@@ -94,8 +94,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.lognityApi)
-                api(libs.kotlinx.io.bytestring)
-                api(libs.kotlinx.io.core)
+                api(sharedLibs.kotlinx.io.bytestring)
+                api(sharedLibs.kotlinx.io.core)
                 implementation(sharedLibs.kotlinx.serialization.core)
                 implementation(sharedLibs.kotlinx.serialization.json)
                 implementation(sharedLibs.kotlinx.coroutines.core)
