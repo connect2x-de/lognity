@@ -87,13 +87,22 @@ kotlin {
             }
         }
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("nonWeb") {
+                withJvm()
+                withAndroidTarget()
+                withNative()
+            }
+        }
+    }
     sourceSets {
         commonMain {
             dependencies {
                 implementation(projects.lognityApi)
                 implementation(projects.lognityCore)
                 implementation(projects.lognityCoreConfig)
+                implementation(sharedLibs.kotlinx.coroutines.core)
             }
         }
     }

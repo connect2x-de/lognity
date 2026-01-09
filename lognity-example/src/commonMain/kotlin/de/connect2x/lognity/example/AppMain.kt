@@ -16,7 +16,7 @@ private fun Logger.printTestMessages() {
     fatal { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
 }
 
-suspend fun main() {
+suspend fun appMain() {
     // Set the backend implementation
     Backend.set(DefaultBackend)
     // Configure Lognity based on platform
