@@ -1,5 +1,9 @@
 # Lognity
 
+[![](https://gitlab.com/connect2x/lognity/badges/main/pipeline.svg)](https://gitlab.com/connect2x/lognity)
+[![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F72301746%2Fpackages%2Fmaven%2Fde%2Fconnect2x%2Flognity%2Flognity-api%2Fmaven-metadata.xml&strategy=latestProperty)](https://gitlab.com/connect2x/lognity/-/packages)
+[![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F72301746%2Fpackages%2Fmaven%2Fde%2Fconnect2x%2Flognity%2Flognity-api%2Fmaven-metadata.xml&strategy=highestVersion)](https://gitlab.com/connect2x/lognity/-/packages)
+
 A lightweight logging facade and implementation for Kotlin Multiplatform.  
 It integrates with existing libraries and APIs like `java.logging`, **slf4j** and **Ktor**.
 
