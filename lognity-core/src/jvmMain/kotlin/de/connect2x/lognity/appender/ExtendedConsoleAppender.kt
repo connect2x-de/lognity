@@ -9,8 +9,9 @@ import de.connect2x.lognity.api.marker.Marker
 class ExtendedConsoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
-    filter: Filter
-) : ConsoleAppender(pattern, formatter, filter) { // @formatter:on
+    filter: Filter,
+    name: String? = null
+) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(level, message, marker)) return
         if (level >= Level.ERROR) System.err.println(message)

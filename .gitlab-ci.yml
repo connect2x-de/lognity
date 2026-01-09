@@ -24,8 +24,7 @@ variables:
   reports:
     junit: "**/build/test-results/**/TEST-*.xml"
 
-.if-merge-request-or-main: &if-merge-request-or-main
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+.if-merge-request: &if-merge-request
   - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
   - if: $CI_PIPELINE_SOURCE == "schedule"
     when: never
@@ -45,7 +44,7 @@ build:
   interruptible: true
   tags: [ "connect2x-mac" ]
   rules:
-    - *if-merge-request-or-main
+    - *if-merge-request
   script:
     - ./gradlew clean build
 
@@ -86,4 +85,4 @@ publish:
     - *if-main
     - *if-release
   script:
-    - ./gradlew publishToGitlabRepository
+    - ./gradlew publish

@@ -24,7 +24,8 @@ import kotlin.uuid.Uuid
 class EventAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    override val filter: Filter
+    override val filter: Filter,
+    override val name: String? = null
 ) : Appender { // @formatter:on
     private val eventSources: SharedHashMap<Logger, HANDLE> = SharedHashMap()
 

@@ -3,24 +3,19 @@ package de.connect2x.lognity.config
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.config.ConfigDsl
-import de.connect2x.lognity.api.config.config
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
-import de.connect2x.lognity.config.appender.AppenderFactory
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
-import de.connect2x.lognity.config.condition.SerializableCondition
+import de.connect2x.lognity.config.extension.ConfigExtension
+import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 import kotlinx.io.Source
 import kotlinx.io.readString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.PolymorphicModuleBuilder
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
-import kotlin.reflect.KClass
+import kotlin.math.max
 
 /**
  * Serializable representation of the Lognity configuration.
@@ -50,36 +45,27 @@ data class SerializableConfig( // @formatter:off
          */
         const val VERSION: Int = 1
 
-        @PublishedApi
-        internal var appenderTypes: PolymorphicModuleBuilder<SerializableAppender>.() -> Unit = {}
+        private val extensionRegistrar: ConfigExtensionRegistrar = ConfigExtensionRegistrar()
 
-        @PublishedApi
-        internal val appenderFactories: HashMap<KClass<out SerializableAppender>, AppenderFactory<SerializableAppender>> =
-            HashMap()
-
-        @PublishedApi
-        internal var conditionTypes: PolymorphicModuleBuilder<SerializableCondition>.() -> Unit = {}
-
-        @Suppress("UNCHECKED_CAST")
-        inline fun <reified A : SerializableAppender> registerAppenderType(noinline factory: AppenderFactory<A>) {
-            val oldCallback = appenderTypes
-            appenderTypes = {
-                oldCallback()
-                subclass(A::class)
-            }
-            appenderFactories[A::class] = factory as AppenderFactory<SerializableAppender>
-        }
-
-        inline fun <reified C : SerializableCondition> registerConditionType() {
-            val oldCallback = conditionTypes
-            conditionTypes = {
-                oldCallback()
-                subclass(C::class)
+        /**
+         * Registers a configuration extension.
+         *
+         * Extensions are used to register custom appender and condition types so they
+         * can be deserialized from JSON.
+         *
+         * @param extension the extension to register.
+         */
+        @SerializableConfigDsl
+        infix fun uses(extension: ConfigExtension) = with(extension) {
+            with(extensionRegistrar) {
+                register()
             }
         }
 
-        init {
-            registerConditionType<AlwaysCondition>() // The always condition is built-in as a default
+        init { // Default implementations extension
+            this uses ConfigExtension {
+                registerConditionType<AlwaysCondition>()
+            }
         }
 
         @OptIn(ExperimentalSerializationApi::class)
@@ -90,12 +76,7 @@ data class SerializableConfig( // @formatter:off
                 prettyPrintIndent = "\t"
                 allowComments = true
                 allowTrailingComma = true
-                // @formatter:off
-                serializersModule = SerializersModule {
-                    polymorphic(SerializableAppender::class) { appenderTypes() }
-                    polymorphic(SerializableCondition::class) { conditionTypes() }
-                }
-                // @formatter:on
+                serializersModule = extensionRegistrar.createSerializersModule()
             }
         }
 
@@ -105,25 +86,26 @@ data class SerializableConfig( // @formatter:off
          * The content must be JSON following the Lognity configuration schema. Unknown
          * keys and comments are allowed. The [version] is validated against [VERSION].
          *
-         * @throws IllegalStateException when the version in the file is incompatible.
+         * @return the decoded [SerializableConfig].
+         * @throws IllegalStateException when the version in the file is incompatible with [VERSION].
          */
         fun load(source: Source): SerializableConfig {
             val config = json.decodeFromString<SerializableConfig>(source.readString())
             check(config.version == VERSION) {
-                "Incompatible lognity config version ${config.version}, expected at least $VERSION"
+                "Incompatible lognity config version ${config.version}, expected $VERSION"
             }
             return config
         }
     }
 
     /**
-     * Applies this configuration to the given ConfigBuilder.
+     * Applies this configuration to the given [ConfigBuilder].
      *
-     * - Sets builder-level properties like level and isEnabled.
+     * - Sets builder-level properties like `level` and `isEnabled`.
      * - Registers appenders defined in this config, resolving formatter names
      *   using the provided [formatters] map.
      *
-     * @param formatters map that resolves formatter identifiers used by this config
+     * @param formatters map that resolves formatter identifiers used by this config.
      */
     @ConfigDsl
     context(builder: ConfigBuilder)
@@ -132,21 +114,44 @@ data class SerializableConfig( // @formatter:off
     ) = with(builder) {
         level = this@SerializableConfig.level
         isEnabled = enabled
-        loop@ for (appender in appenders) onlyOn(appender.platforms) {
-            val formatter = formatters[appender.formatter] ?: continue@loop
-            val factory = appenderFactories[appender::class] ?: continue@loop
+        for (appender in appenders) {
+            val formatter = formatters[appender.formatter] ?: continue
+            val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
             factory(appender, formatter)
         }
     }
 
     /**
-     * Creates an immutable Config from this serializable configuration.
+     * Creates an immutable [Config] from this serializable configuration.
      *
-     * This is a convenience wrapper around config { applyConfig(...) }.
+     * This is a convenience wrapper around `Config { applyConfig(formatters) }`.
      *
-     * @param formatters map that resolves formatter identifiers used by this config
+     * @param formatters map that resolves formatter identifiers used by this config.
+     * @return the created [Config] instance.
      */
     fun createConfig(
         formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
-    ): Config = config { applyConfig(formatters) }
+    ): Config = Config { applyConfig(formatters) }
+
+    /**
+     * Merges this configuration with another one.
+     *
+     * The resulting configuration will have:
+     * - The maximum version of both.
+     * - The higher log level of both.
+     * - `enabled` set to true only if both are enabled.
+     * - A combined list of appenders from both configurations.
+     *
+     * @param other the configuration to merge with.
+     * @return a new [SerializableConfig] representing the merged result.
+     */
+    operator fun plus(other: SerializableConfig): SerializableConfig = copy( // @formatter:off
+        version = max(version, other.version),
+        level = when {
+            level < other.level -> other.level
+            else -> level
+        },
+        enabled = enabled && other.enabled,
+        appenders = appenders + other.appenders
+    ) // @formatter:on
 }

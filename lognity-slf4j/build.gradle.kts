@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findK
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
-    alias(libs.plugins.kotlin.kapt) // TODO: add KAPT to shared catalog
+    alias(sharedLibs.plugins.kotlin.kapt)
     `maven-publish`
     signing
 }
@@ -37,8 +37,8 @@ kotlin {
         @Suppress("UNUSED")
         val jvmAndAndroidMain by getting {
             dependencies {
-                api(libs.slf4j.api)
-                implementation(libs.autoService)
+                api(sharedLibs.slf4j.api)
+                implementation(sharedLibs.autoService)
             }
         }
     }
@@ -47,7 +47,7 @@ kotlin {
 val kaptConfig = findKaptConfiguration("main")!!
 
 dependencies {
-    kaptConfig(libs.autoService)
+    kaptConfig(sharedLibs.autoService)
 }
 
 android {

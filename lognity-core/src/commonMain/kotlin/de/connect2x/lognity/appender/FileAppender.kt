@@ -35,7 +35,8 @@ open class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
-    val path: Path
+    val path: Path,
+    override val name: String? = null
 ) : Appender { // @formatter:on
     companion object {
         internal val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()

@@ -5,6 +5,7 @@ import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.config.ConfigDsl
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ConsoleAppender
+import de.connect2x.lognity.backend.createSystemConsoleAppender
 import de.connect2x.lognity.backend.createSystemFileAppender
 import de.connect2x.lognity.backend.createSystemLogAppender
 import de.connect2x.lognity.backend.createSystemRollingFileAppender
@@ -20,27 +21,47 @@ import de.connect2x.lognity.backend.createSystemRollingFileAppender
 fun ConfigBuilder.consoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always
+    filter: Filter = Filter.always,
+    name: String? = null
 ) { // @formatter:on
-    appender(ConsoleAppender(pattern, formatter, filter))
+    appender(ConsoleAppender(pattern, formatter, filter, name))
 }
 
 /**
- * Adds a new platform console appender to this logger config.
- * This will automatically use the appropriate console appender for the
- * underlying platform instead of raw stdio if available.
+ * Adds a new system log appender to this logger config.
+ * This will use the default log appender for the underlying platform.
+ *
+ * @param pattern The formatting pattern to apply to all messages passed to the new appender.
+ * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
+ * @param filter The filter to apply for every message to determine whether it should be logged.
+ * @param name The name of the appender.
+ */
+@ConfigDsl
+fun ConfigBuilder.systemLogAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    name: String? = null
+) { // @formatter:on
+    appender(createSystemLogAppender(pattern, formatter, filter, name))
+}
+
+/**
+ * Adds a new system console appender to this logger config.
+ * This will use the default console appender for the underlying platform.
  *
  * @param pattern The formatting pattern to apply to all messages passed to the new appender.
  * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
  * @param filter The filter to apply for every message to determine whether it should be logged.
  */
 @ConfigDsl
-fun ConfigBuilder.platformConsoleAppender( // @formatter:off
+fun ConfigBuilder.systemConsoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always
+    filter: Filter = Filter.always,
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemLogAppender(pattern, formatter, filter))
+    appender(createSystemConsoleAppender(pattern, formatter, filter, name))
 }
 
 /**
@@ -53,12 +74,13 @@ fun ConfigBuilder.platformConsoleAppender( // @formatter:off
  */
 @ConfigDsl
 fun ConfigBuilder.fileAppender( // @formatter:off
+    path: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    path: String
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemFileAppender(pattern, formatter, filter, path))
+    appender(createSystemFileAppender(path, pattern, formatter, filter, name))
 }
 
 /**
@@ -71,10 +93,11 @@ fun ConfigBuilder.fileAppender( // @formatter:off
  */
 @ConfigDsl
 fun ConfigBuilder.rollingFileAppender( // @formatter:off
+    basePath: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    basePath: String
+    name: String? = null
 ) { // @formatter:on
-    appender(createSystemRollingFileAppender(pattern, formatter, filter, basePath))
+    appender(createSystemRollingFileAppender(basePath, pattern, formatter, filter, name))
 }

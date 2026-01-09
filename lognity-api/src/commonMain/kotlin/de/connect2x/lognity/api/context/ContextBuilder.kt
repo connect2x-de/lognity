@@ -1,8 +1,5 @@
 package de.connect2x.lognity.api.context
 
-import de.connect2x.lognity.api.backend.Backend
-import de.connect2x.lognity.api.backend.Platform
-
 /**
  * Builder used to create a [Context] via a small DSL.
  */
@@ -57,28 +54,12 @@ class ContextBuilder @PublishedApi internal constructor() {
      */
     operator fun <T : Context.Element> plusAssign(value: T) = value(value)
 
-    /**
-     * Applies the given context only for the given platform.
-     */
-    inline fun onlyOn(platform: Platform, spec: ContextSpec) {
-        if (platform != Backend.platform) return
-        spec()
-    }
-
-    /**
-     * Applies the given context only for the given platforms.
-     */
-    inline fun onlyOn(platforms: Set<Platform>, spec: ContextSpec) {
-        if (Backend.platform !in platforms) return
-        spec()
-    }
-
     @PublishedApi
     internal fun build(): Context = DefaultContext(values)
 }
 
 /**
- * Type alias for a Context builder specification used by [context].
+ * Type alias for a Context builder specification used by [Context].
  */
 typealias ContextSpec = ContextBuilder.() -> Unit
 
@@ -91,4 +72,4 @@ typealias ContextSpec = ContextBuilder.() -> Unit
  *     value(UserIdKey, UserId("42"))
  * }
  */
-inline fun context(spec: ContextSpec): Context = ContextBuilder().apply(spec).build()
+inline fun Context(spec: ContextSpec): Context = ContextBuilder().apply(spec).build()

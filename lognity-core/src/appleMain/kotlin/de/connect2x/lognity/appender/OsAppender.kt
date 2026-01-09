@@ -13,10 +13,11 @@ import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
 import platform.darwin.os_log_t
 
-internal class OsAppender( // @formatter:off
+class OsAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    override val filter: Filter
+    override val filter: Filter,
+    override val name: String? = null
 ) : Appender { // @formatter:on
     companion object {
         private val delegates: SharedHashMap<Logger, os_log_t> = SharedHashMap()

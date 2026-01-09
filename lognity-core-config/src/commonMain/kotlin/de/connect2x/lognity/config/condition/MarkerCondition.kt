@@ -15,7 +15,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MarkerCondition( // @formatter:off
     val condition: Type,
-    val value: String
+    val value: String,
+    override val name: String? = null
 ) : SerializableCondition { // @formatter:on
     enum class Type {
         KEY_EQUALS, KEY_NOT_EQUALS, KEY_CONTAINS, KEY_NOT_CONTAINS, NAME_EQUALS, NAME_NOT_EQUALS, NAME_CONTAINS, NAME_NOT_CONTAINS

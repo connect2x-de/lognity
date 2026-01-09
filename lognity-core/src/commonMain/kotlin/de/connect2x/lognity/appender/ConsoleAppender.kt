@@ -22,7 +22,8 @@ import kotlinx.coroutines.sync.Mutex
 open class ConsoleAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
-    override val filter: Filter
+    override val filter: Filter,
+    override val name: String? = null
 ) : Appender { // @formatter:on
     protected val mutex: Mutex = Mutex()
 

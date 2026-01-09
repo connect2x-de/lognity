@@ -20,6 +20,7 @@ import de.connect2x.lognity.api.marker.Marker
  * - [append] performs no action and immediately returns.
  */
 object NoopAppender : Appender {
+    override val name: String = "noop"
     override val formatter: Formatter = Formatter.identity
     override val pattern: String = ""
 

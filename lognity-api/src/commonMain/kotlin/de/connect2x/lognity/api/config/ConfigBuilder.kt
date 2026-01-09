@@ -1,8 +1,6 @@
 package de.connect2x.lognity.api.config
 
 import de.connect2x.lognity.api.appender.Appender
-import de.connect2x.lognity.api.backend.Backend
-import de.connect2x.lognity.api.backend.Platform
 import de.connect2x.lognity.api.logger.Level
 
 /**
@@ -47,23 +45,11 @@ class ConfigBuilder @PublishedApi internal constructor() {
      */
     fun appender(appender: Appender) {
         require(appender !in appenders) { "Appender is already present" }
+        val name = appender.name
+        if (name != null) require(appenders.none { appender -> appender.name == name }) {
+            "Appender with name '$name' is already present"
+        }
         appenders += appender
-    }
-
-    /**
-     * Applies the given configuration only for the given platform.
-     */
-    inline fun onlyOn(platform: Platform, spec: ConfigSpec) {
-        if (platform != Backend.platform) return
-        spec()
-    }
-
-    /**
-     * Applies the given configuration only for the given platform.
-     */
-    inline fun onlyOn(platforms: Set<Platform>, spec: ConfigSpec) {
-        if (Backend.platform !in platforms) return
-        spec()
     }
 
     @PublishedApi
@@ -71,11 +57,11 @@ class ConfigBuilder @PublishedApi internal constructor() {
 }
 
 /**
- * Type alias for a Config builder specification used by [config].
+ * Type alias for a Config builder specification used by [Config].
  */
 typealias ConfigSpec = ConfigBuilder.() -> Unit
 
 /**
  * Creates a new immutable [Config] using the provided [spec] DSL.
  */
-inline fun config(spec: ConfigSpec): Config = ConfigBuilder().apply(spec).build()
+inline fun Config(spec: ConfigSpec): Config = ConfigBuilder().apply(spec).build()

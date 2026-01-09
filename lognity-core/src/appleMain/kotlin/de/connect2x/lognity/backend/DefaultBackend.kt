@@ -8,5 +8,6 @@ import de.connect2x.lognity.appender.OsAppender
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
-    filter: Filter
-): Appender = OsAppender(pattern, formatter, filter) // @formatter:on
+    filter: Filter,
+    name: String?
+): Appender = OsAppender(pattern, formatter, filter, name) // @formatter:on

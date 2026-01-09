@@ -30,6 +30,23 @@
             "items": {
                 "type": "object",
                 "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "console",
+                            "file",
+                            "system_console",
+                            "system_log",
+                            "os_log",
+                            "logcat",
+                            "winevent"
+                        ],
+                        "description": "The type of appender."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The internal name this appender may be referenced by."
+                    },
                     "pattern": {
                         "type": "string",
                         "description": "The message pattern this appender uses for formatting log messages."
@@ -69,26 +86,10 @@
                     "rolling": {
                         "type": "boolean",
                         "description": "For file appenders, automatically adds timestamps to the log files so they don't get overwritten."
-                    },
-                    "platforms": {
-                        "type": "array",
-                        "description": "The platforms this appender is supposed to act upon.",
-                        "items": {
-                            "type": "string",
-                            "enum": [
-                                "LINUX",
-                                "WINDOWS",
-                                "MACOS",
-                                "IOS",
-                                "ANDROID",
-                                "WEB",
-                                "UNKNOWN_JVM",
-                                "UNKNOWN"
-                            ]
-                        }
                     }
                 },
                 "required": [
+                    "type",
                     "pattern",
                     "formatter"
                 ]

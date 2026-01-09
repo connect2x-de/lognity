@@ -15,7 +15,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MessageCondition( // @formatter:off
     val condition: Type,
-    val value: String
+    val value: String,
+    override val name: String? = null
 ) : SerializableCondition { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS }
 

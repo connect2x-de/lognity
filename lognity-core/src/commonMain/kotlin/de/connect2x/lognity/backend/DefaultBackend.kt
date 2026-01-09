@@ -3,17 +3,16 @@ package de.connect2x.lognity.backend
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.backend.Backend
-import de.connect2x.lognity.api.backend.Platform
+import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigSpec
-import de.connect2x.lognity.api.config.config
+import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.context.ContextSpec
-import de.connect2x.lognity.api.context.context
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.Logger.Name
 import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.config.platformConsoleAppender
+import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
@@ -22,27 +21,35 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 internal expect fun getDefaultLogLevel(): Level
 
+internal expect fun createSystemConsoleAppender( // @formatter:off
+    pattern: String,
+    formatter: Formatter = Formatter.default,
+    filter: Filter = Filter.always,
+    name: String? = null
+): Appender // @formatter:on
+
 internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always
+    filter: Filter = Filter.always,
+    name: String? = null
 ): Appender // @formatter:on
 
 internal expect fun createSystemFileAppender( // @formatter:off
+    path: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    path: String
+    name: String? = null
 ): Appender // @formatter:on
 
 internal expect fun createSystemRollingFileAppender( // @formatter:off
+    basePath: String,
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    basePath: String
+    name: String? = null
 ): Appender // @formatter:on
-
-internal expect fun getCurrentPlatform(): Platform
 
 @OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
@@ -50,7 +57,7 @@ object DefaultBackend : Backend {
     override val defaultLevel: Level = getDefaultLogLevel()
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
-        platformConsoleAppender(
+        systemLogAppender(
             "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}"
         )
     }
@@ -69,7 +76,6 @@ object DefaultBackend : Backend {
             _contextSpec.store(value)
         }
 
-    override val platform: Platform = getCurrentPlatform()
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)
@@ -79,7 +85,7 @@ object DefaultBackend : Backend {
     }
 
     override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
-        return DefaultLogger(config(configSpec), context {
+        return DefaultLogger(Config(configSpec), Context {
             this@DefaultBackend.contextSpec(this)
             contextSpec()
             name?.let(::Name)?.let(::value)

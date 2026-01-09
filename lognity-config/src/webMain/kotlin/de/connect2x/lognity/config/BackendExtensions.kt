@@ -1,24 +1,44 @@
-@file:OptIn(ExperimentalWasmJsInterop::class)
-
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.format.Formatter
-import kotlinx.browser.window
+import de.connect2x.lognity.config.util.isNode
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
+import kotlinx.io.files.Path
 import kotlinx.io.writeString
-import org.w3c.fetch.RequestInit
+import web.http.Response
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsAny
+import kotlin.js.JsName
+import kotlin.js.Promise
 
-actual fun Backend.loadDefaultConfig(formatters: Map<String, Formatter>) {
-    window.fetch("./lognity.json", init = RequestInit()).then<JsAny?> { response ->
-        response.text().then<JsAny?> { text ->
+@PublishedApi
+@OptIn(ExperimentalWasmJsInterop::class)
+@JsName("fetch")
+internal external fun fetch(input: String): Promise<Response>
+
+@OptIn(ExperimentalWasmJsInterop::class, DelicateCoroutinesApi::class)
+actual suspend inline fun Backend.withDefaultConfig( // @formatter:off
+    path: String,
+    formatters: Map<String, Formatter>,
+    crossinline block: suspend () -> Unit
+) {  // @formatter:on
+    if (isNode) {
+        setDefaultConfig(Path(path), formatters)
+        block()
+        return
+    }
+    fetch(path).then<JsAny?> { response ->
+        response.textAsync().then<JsAny?> { text ->
             val buffer = Buffer()
             buffer.writeString(text.toString())
-            loadDefaultConfig(buffer, formatters)
+            setDefaultConfig(buffer, formatters)
             null
+        }.finally {
+            GlobalScope.launch { block() }
         }
-        null
     }
 }

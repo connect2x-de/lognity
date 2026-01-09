@@ -20,7 +20,7 @@ import kotlinx.io.files.SystemFileSystem
  * @param source a readable source containing the JSON configuration
  * @param formatters a map of formatter identifiers to Formatter implementations used by the config
  */
-fun Backend.loadDefaultConfig( // @formatter:off
+fun Backend.setDefaultConfig( // @formatter:off
     source: Source,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
@@ -36,22 +36,31 @@ fun Backend.loadDefaultConfig( // @formatter:off
  * @param path the path to the configuration file (e.g., "lognity.json")
  * @param formatters a map of formatter identifiers used by the configuration
  */
-fun Backend.loadDefaultConfig( // @formatter:off
+fun Backend.setDefaultConfig( // @formatter:off
     path: Path,
     formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
 ) { // @formatter:on
     SystemFileSystem.source(path).use { source ->
-        loadDefaultConfig(source.buffered(), formatters)
+        setDefaultConfig(source.buffered(), formatters)
     }
 }
 
 /**
- * Load the default configuration for Lognity using the platform's preferred
- * way of loading files.
- * - For JVM and Android JVM, `lognity.json` is loaded from the resources root
- * - For JS and WASM/JS, `lognity.json` is loaded from the web content root
- * - For native targets, `lognity.json` is loaded relative to the executable
+ * Loads a Lognity configuration from a file or URL at the given path and applies it to this Backend.
  *
- * @param formatters a map of formatter identifiers to Formatter implementations used by the config
+ * This function is platform-dependent:
+ * - On non-web platforms, it loads the configuration from the local file system.
+ * - On web platforms (browser), it fetches the configuration from the given URL.
+ * - On web platforms (Node.js), it loads the configuration from the local file system.
+ *
+ * After the configuration is loaded and applied, the [block] is executed.
+ *
+ * @param path the path to the configuration file or URL
+ * @param formatters a map of formatter identifiers used by the configuration
+ * @param block a callback to be executed after the configuration has been loaded
  */
-expect fun Backend.loadDefaultConfig(formatters: Map<String, Formatter> = mapOf("default" to Formatter.default))
+expect suspend inline fun Backend.withDefaultConfig( // @formatter:off
+    path: String,
+    formatters: Map<String, Formatter> = mapOf("default" to Formatter.default),
+    crossinline block: suspend () -> Unit
+) // @formatter:on
