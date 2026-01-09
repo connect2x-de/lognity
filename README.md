@@ -31,7 +31,7 @@ kotlin {
 }
 ```
 
-### Quickstart
+## Quickstart
 
 In order to get started with Lognity, you need to pick a backend implementation.
 
@@ -44,7 +44,11 @@ Backend.set(DefaultBackend)
 
 Optionally, you may also pick a default configuration for all newly created Loggers.
 
-#### Programmatic configuration
+---
+
+### Programmatic configuration
+
+Lognity can be configured using a type-safe DSL if no external configuration file is needed.
 
 ```kotlin
 Backend.configSpec = {
@@ -52,13 +56,32 @@ Backend.configSpec = {
 }
 ```
 
-#### File based configuration
+---
 
-You can also use the `lognity-config` module to configure logging using an external config file:
+### File based configuration
+
+You can also use the `lognity-config` module to configure logging using an external config file;  
+First you register all desired config extensions using the `SerializableConfig` DSL:
 
 ```kotlin
-Backend.withDefaultConfig("my_config.json") {
-    // Do stuff with logging in here to ensure config is loaded
+fun main() {
+    SerializableConfig uses CoreConfigExtension
+}
+```
+
+> **Note**: Config extensions are provided by the respective `*-config` modules corresponding  
+> to the underlying implementation modules. For example, in order to use config extensions for  
+> the `lognity-core` module, we need to add the `lognity-core-config` module.
+
+Then you can load a config, either using the convenience wrapper `withDefaultConfig`,  
+or one of the other provided `load*Config` functions.
+
+```kotlin
+// Make main suspend and use withDefaultConfig if you need to support web
+suspend fun main() {
+    Backend.withDefaultConfig("my_config.json") {
+        // Do stuff with logging in here to ensure config is loaded
+    }
 }
 ```
 
@@ -90,7 +113,9 @@ Backend.withDefaultConfig("my_config.json") {
 }
 ```
 
-#### Creating a Logger
+---
+
+### Creating a Logger
 
 You should always define your loggers as the interface type `Logger` from the `lognity-api` module.  
 New instances of this type may be obtained using the `Logger` pseudo-constructor.
@@ -102,6 +127,8 @@ val myLogger: Logger = Logger()
 // Creates a new logger with the specified name
 val myOtherLogger: Logger = Logger("Other")
 ```
+
+---
 
 ### Examples
 
