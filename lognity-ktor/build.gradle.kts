@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
+    alias(sharedLibs.plugins.dokka)
     `maven-publish`
     signing
 }
@@ -37,22 +38,19 @@ kotlin {
         publishLibraryVariants("debug", "release")
     }
     js {
+        useCommonJs()
         compilerOptions {
             sourceMap = true
             sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
         }
-        useCommonJs()
-        nodejs {
-            binaries.executable()
-            runTask { workingDir = layout.projectDirectory.asFile }
+        browser {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
                 }
             }
         }
-        browser {
-            binaries.executable()
+        nodejs {
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -61,7 +59,6 @@ kotlin {
         }
     }
     wasmJs {
-        useEsModules()
         browser {
             testTask {
                 useKarma {
