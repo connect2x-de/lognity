@@ -55,7 +55,6 @@ kotlin {
         }
     }
     wasmJs {
-        useEsModules()
         nodejs {
             binaries.executable()
             runTask { workingDir = layout.projectDirectory.asFile }

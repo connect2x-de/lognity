@@ -6,6 +6,7 @@ plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
     alias(sharedLibs.plugins.kotlin.serialization)
+    alias(sharedLibs.plugins.dokka)
     `maven-publish`
     signing
 }
@@ -32,12 +33,12 @@ kotlin {
         publishLibraryVariants("debug", "release")
     }
     js {
+        useCommonJs()
         compilerOptions {
             sourceMap = true
             sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
         }
         browser {
-            useCommonJs()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -45,7 +46,6 @@ kotlin {
             }
         }
         nodejs {
-            useCommonJs()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -55,7 +55,6 @@ kotlin {
     }
     wasmJs {
         browser {
-            useEsModules()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -63,7 +62,6 @@ kotlin {
             }
         }
         nodejs {
-            useEsModules()
             testTask {
                 useKarma {
                     useFirefoxHeadless()
@@ -79,8 +77,6 @@ kotlin {
                 api(sharedLibs.kotlinx.io.bytestring)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
-                implementation(libs.stately.common)
-                implementation(libs.stately.collections)
                 implementation(sharedLibs.kotlinx.serialization.core)
             }
         }
