@@ -66,7 +66,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("sharedLibs") {
-            from("de.connect2x.conventions:c2x-shared-catalog:20260113.220557")
+            from("de.connect2x.conventions:c2x-shared-catalog:20260114.024657")
         }
     }
 }
