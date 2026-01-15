@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -45,5 +46,13 @@ android {
 }
 
 publishing {
-    //setProjectInfo("Lognity SLF4j", "SLF4j integration for the Lognity logging API")
+    publications.withType<MavenPublication> {
+        pom {
+            setProjectInfo(
+                name = "Lognity Java Logging",
+                description = "Lognity API bridge for the Java logging facade",
+                repository = "https://gitlab.com/connect2x/lognity"
+            )
+        }
+    }
 }

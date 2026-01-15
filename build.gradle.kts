@@ -1,5 +1,7 @@
+import de.connect2x.conventions.apache2
 import de.connect2x.conventions.authenticatedPackageRegistry
 import de.connect2x.conventions.authenticatedSonatype
+import de.connect2x.conventions.c2xOrganization
 import de.connect2x.conventions.defaultDependencyLocking
 import de.connect2x.conventions.signPublications
 import de.connect2x.conventions.withVersionSuffix
@@ -58,6 +60,10 @@ subprojects {
         }
         publications.withType<MavenPublication> {
             artifact(javadocJar)
+            pom {
+                apache2()
+                c2xOrganization()
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -107,5 +108,13 @@ android {
 }
 
 publishing {
-    //setProjectInfo("Lognity Ktor", "Ktor integration for the Lognity logging API")
+    publications.withType<MavenPublication> {
+        pom {
+            setProjectInfo(
+                name = "Lognity Ktor",
+                description = "Lognity API bridge for Ktor",
+                repository = "https://gitlab.com/connect2x/lognity"
+            )
+        }
+    }
 }

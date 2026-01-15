@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -121,5 +122,13 @@ android {
 }
 
 publishing {
-    //setProjectInfo("Lognity Config", "Lightweight logging configuration for Kotlin/Multiplatform")
+    publications.withType<MavenPublication> {
+        pom {
+            setProjectInfo(
+                name = "Lognity Config",
+                description = "Extensible logging configuration subsystem for Kotlin/Multiplatform",
+                repository = "https://gitlab.com/connect2x/lognity"
+            )
+        }
+    }
 }

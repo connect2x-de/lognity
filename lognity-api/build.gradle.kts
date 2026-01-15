@@ -1,4 +1,5 @@
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 
@@ -92,5 +93,13 @@ android {
 }
 
 publishing {
-    //setProjectInfo("Lognity API", "Lightweight logging API for Kotlin/Multiplatform")
+    publications.withType<MavenPublication> {
+        pom {
+            setProjectInfo(
+                name = "Lognity API",
+                description = "Lightweight logging API for Kotlin/Multiplatform",
+                repository = "https://gitlab.com/connect2x/lognity"
+            )
+        }
+    }
 }
