@@ -41,6 +41,7 @@ variables:
 
 build:
   stage: build
+  timeout: 2h
   interruptible: true
   tags: [ "connect2x-mac" ]
   rules:
@@ -80,6 +81,7 @@ security:dependencies:
 
 publish:release:
   stage: publish
+  timeout: 2h
   tags: [ "connect2x-mac" ]
   rules:
     - *if-release
@@ -88,6 +90,7 @@ publish:release:
 
 publish:snapshot:
   stage: publish
+  timeout: 2h
   tags: [ "connect2x-mac" ]
   rules:
     - *if-main
