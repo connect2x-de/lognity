@@ -15,12 +15,6 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
-/**
- * A simple message aggregator to allow non-blocking logging preventing lock contention
- * around log calls.
- * A new job is created using the given [CoroutineScope] which merges all per-thread queues
- * into a single coherent output.
- */
 @OptIn(ExperimentalAtomicApi::class, ExperimentalTime::class)
 class MessageAggregator( // @formatter:off
     val coroutineScope: CoroutineScope,
