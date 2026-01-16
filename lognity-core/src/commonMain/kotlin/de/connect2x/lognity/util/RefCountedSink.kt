@@ -8,10 +8,10 @@ import kotlin.concurrent.atomics.decrementAndFetch
 import kotlin.concurrent.atomics.incrementAndFetch
 
 @OptIn(ExperimentalAtomicApi::class)
-internal data class RefCountedSink(
+internal data class RefCountedSink( // @formatter:off
     val value: Sink,
     val mutex: Mutex = Mutex()
-) {
+) { // @formatter:on
     private var refCount: AtomicInt = AtomicInt(0)
 
     @Suppress("NOTHING_TO_INLINE")
