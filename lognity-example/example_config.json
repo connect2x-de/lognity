@@ -16,6 +16,21 @@
                     }
                 ]
             }
+        },
+        {
+            "type": "file",
+            "name": "",
+            "rolling": true,
+            "path": "example.log",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
+            "formatter": "default",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "always"
+                    }
+                ]
+            }
         }
     ]
 }

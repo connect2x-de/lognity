@@ -6,7 +6,6 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.backend.withBlockingLock
 import kotlinx.coroutines.sync.Mutex
 
 /**
@@ -25,20 +24,7 @@ open class ConsoleAppender( // @formatter:off
     override val filter: Filter,
     override val name: String? = null
 ) : Appender { // @formatter:on
-    protected val mutex: Mutex = Mutex()
-
-    /**
-     * Appends a log message to the standard output (println).
-     *
-     * @param logger The source [Logger] issuing the message.
-     * @param level The [Level] of this log event.
-     * @param message The already formatted message produced by the [formatter] using [pattern].
-     * @param marker Optional [Marker] attached to the log event.
-     */
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (!filter(level, message, marker)) return
-        mutex.withBlockingLock {
-            println(message)
-        }
+        println(message)
     }
 }

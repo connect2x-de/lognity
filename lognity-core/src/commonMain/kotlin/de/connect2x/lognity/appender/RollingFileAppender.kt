@@ -23,8 +23,7 @@ class RollingFileAppender(
     }
 
     @OptIn(ExperimentalTime::class)
-    override fun dispose() {
-        sink.value.flush()
+    override fun afterAggregatorShutdown() {
         sink.release {
             sinks -= path
             val timestamp = Clock.System.now().format(DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)

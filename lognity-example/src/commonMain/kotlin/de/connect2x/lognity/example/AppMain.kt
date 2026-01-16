@@ -6,6 +6,7 @@ import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.withDefaultConfig
+import kotlinx.coroutines.launch
 
 private fun Logger.printTestMessages() {
     trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
@@ -29,8 +30,13 @@ suspend fun appMain() {
             value(Logger.Name("My Default Logger"))
         }
         // Explicitly named logger
-        Logger("My Logger").printTestMessages()
+        val namedLogger = Logger("My Logger")
+        namedLogger.printTestMessages()
         // Implicitly named logger (default defined in example_config.json)
         Logger().printTestMessages()
+
+        for(i in 0..<4) DefaultBackend.coroutineScope.launch {
+            namedLogger.printTestMessages()
+        }
     }
 }

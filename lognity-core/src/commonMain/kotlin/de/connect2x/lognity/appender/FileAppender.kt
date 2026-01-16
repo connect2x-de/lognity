@@ -2,16 +2,10 @@ package de.connect2x.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
 import de.connect2x.lognity.api.ansi.toAnsi
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
-import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.format.Formatter
-import de.connect2x.lognity.api.logger.Level
-import de.connect2x.lognity.api.logger.Logger
-import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.backend.withBlockingLock
 import de.connect2x.lognity.util.RefCountedSink
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -37,44 +31,25 @@ open class FileAppender( // @formatter:off
     override val filter: Filter,
     val path: Path,
     override val name: String? = null
-) : Appender { // @formatter:on
+) : AbstractAggregatingAppender() { // @formatter:on
     companion object {
         internal val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
-    }
-
-    init {
-        Backend.addShutdownHook(::dispose)
     }
 
     internal val sink: RefCountedSink = sinks.getOrPut(path) {
         RefCountedSink(SystemFileSystem.sink(path, true).buffered())
     }.acquire()
 
-    private val mutex: Mutex = Mutex()
-
-    /**
-     * Appends the given message to the configured [path] as a single line.
-     *
-     * Behavior:
-     * - Respects [filter]; returns immediately if it rejects the message.
-     * - Removes ANSI escape sequences from [message] to ensure clean file output.
-     * - Performs the write under a mutex to guarantee thread-safety across concurrent loggers.
-     *
-     * @param logger The logger that produced the message.
-     * @param level The log level of the message.
-     * @param message The formatted log message to write.
-     * @param marker Optional marker associated with the message.
-     */
-    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (!filter(level, message, marker)) return
-        // Make sure to strip out any ANSI codes when writing to file
-        mutex.withBlockingLock {
-            sink.value.writeString("${message.toAnsi().cleanString()}\n")
+    override suspend fun writeToOutput(message: MessageAggregator.Message) {
+        sink.mutex.withLock {
+            sink.value.writeString("${message.message.toAnsi().cleanString()}\n")
         }
     }
 
-    protected open fun dispose() {
-        sink.value.flush()
+    override fun afterAggregatorShutdown() {
+        flush()
         sink.release { sinks -= path }
     }
+
+    override fun flush() = sink.value.flush()
 }

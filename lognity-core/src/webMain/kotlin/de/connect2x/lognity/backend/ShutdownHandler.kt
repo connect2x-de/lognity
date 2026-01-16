@@ -6,14 +6,16 @@ import web.events.EventHandler
 import web.window.window
 
 internal actual object ShutdownHandler {
-    private val hooks: ArrayList<() -> Unit> = ArrayList()
+    private val hooks: ArrayList<Pair<() -> Unit, Int>> = ArrayList()
 
     init {
         registerHook()
     }
 
     private fun registerHook() {
-        fun runCallbacks() = hooks.forEach { hook -> hook() }
+        fun runCallbacks() {
+            for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
+        }
         if (isNode) { // When we are running under Node, we need to insert signal handlers
             val process = getProcess()
             process.on("SIGINT", ::runCallbacks)
@@ -24,7 +26,7 @@ internal actual object ShutdownHandler {
         window.onbeforeunload = EventHandler { runCallbacks() }
     }
 
-    actual fun register(block: () -> Unit) {
-        hooks += block
+    actual fun register(block: () -> Unit, priority: Int) {
+        hooks += block to priority
     }
 }

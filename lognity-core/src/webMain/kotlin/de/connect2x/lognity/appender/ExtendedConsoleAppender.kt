@@ -6,7 +6,6 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.backend.withBlockingLock
 import de.connect2x.lognity.util.isChrome
 import de.connect2x.lognity.util.isNode
 import kotlin.js.JsName
@@ -27,17 +26,17 @@ class ExtendedConsoleAppender( // @formatter:off
     filter: Filter,
     name: String? = null
 ) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
-    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (!filter(level, message, marker)) return
-        mutex.withBlockingLock {
-            // Only Chrome supports ANSI escape codes in the JS console right now
-            val processedMessage = if (isChrome || isNode) message else message.toAnsi().cleanString()
-            when (level) {
-                Level.DEBUG, Level.TRACE -> console.debug(processedMessage)
-                Level.INFO -> console.info(processedMessage)
-                Level.WARN -> console.warn(processedMessage)
-                Level.ERROR, Level.FATAL -> console.error(processedMessage)
-            }
+    override fun append(
+        logger: Logger, level: Level, message: String, marker: Marker?
+    ) {
+        if (message.isEmpty() || level < logger.level) return
+        // Only Chrome supports ANSI escape codes in the JS console right now
+        val processedMessage = if (isChrome || isNode) message else message.toAnsi().cleanString()
+        when (level) {
+            Level.DEBUG, Level.TRACE -> console.debug(processedMessage)
+            Level.INFO -> console.info(processedMessage)
+            Level.WARN -> console.warn(processedMessage)
+            Level.ERROR, Level.FATAL -> console.error(processedMessage)
         }
     }
 }

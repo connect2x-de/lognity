@@ -1,5 +1,6 @@
 package de.connect2x.lognity.util
 
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.io.Sink
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -8,7 +9,8 @@ import kotlin.concurrent.atomics.incrementAndFetch
 
 @OptIn(ExperimentalAtomicApi::class)
 internal data class RefCountedSink(
-    val value: Sink
+    val value: Sink,
+    val mutex: Mutex = Mutex()
 ) {
     private var refCount: AtomicInt = AtomicInt(0)
 

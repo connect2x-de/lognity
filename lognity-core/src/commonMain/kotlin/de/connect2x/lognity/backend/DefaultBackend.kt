@@ -16,6 +16,12 @@ import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
+import de.connect2x.lognity.util.cancelAndJoinBlocking
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -56,6 +62,13 @@ object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
 
+    private val supervisorJob: Job = SupervisorJob()
+    val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
+
+    init {
+        ShutdownHandler.register(::onShutdown, priority = 100) // This needs to be run last
+    }
+
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         systemLogAppender(
             "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}"
@@ -77,6 +90,10 @@ object DefaultBackend : Backend {
         }
 
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
+
+    private fun onShutdown() {
+        supervisorJob.cancelAndJoinBlocking()
+    }
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)
 
