@@ -9,24 +9,25 @@ internal actual object ShutdownHandler {
     private val hooks: ArrayList<Pair<() -> Unit, Int>> = ArrayList()
 
     init {
-        registerHook()
+        registerAutomaticShutdown()
     }
 
-    private fun registerHook() {
-        fun runCallbacks() {
-            for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
-        }
+    private fun registerAutomaticShutdown() {
         if (isNode) { // When we are running under Node, we need to insert signal handlers
             val process = getProcess()
-            process.on("SIGINT", ::runCallbacks)
-            process.on("SIGTERM", ::runCallbacks)
+            process.on("SIGINT", ::shutdown)
+            process.on("SIGTERM", ::shutdown)
             return
         }
         // Otherwise use the browser API
-        window.onbeforeunload = EventHandler { runCallbacks() }
+        window.onbeforeunload = EventHandler { shutdown() }
     }
 
     actual fun register(block: () -> Unit, priority: Int) {
         hooks += block to priority
+    }
+
+    private fun shutdown() {
+        for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
     }
 }

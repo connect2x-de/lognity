@@ -16,11 +16,11 @@ internal actual object ShutdownHandler {
         atexit(staticCFunction<Unit> {
             // Need full qualifier here because of volatile closure
             val handler = ShutdownHandler // To prevent formatter from removing ref
-            handler.invokeAll()
+            handler.shutdown()
         })
     }
 
-    private fun invokeAll() {
+    private fun shutdown() {
         runBlocking {
             mutex.withLock {
                 for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()

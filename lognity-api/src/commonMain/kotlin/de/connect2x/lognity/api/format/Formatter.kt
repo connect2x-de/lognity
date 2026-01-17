@@ -4,11 +4,14 @@ import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * A function which represents a transformation applied for a given template variable
  * in the log pattern.
  */
+@OptIn(ExperimentalTime::class)
 @Suppress("NOTHING_TO_INLINE")
 fun interface Formatter {
     companion object {
@@ -17,7 +20,7 @@ fun interface Formatter {
          * This identity formatter can be used as a base for building more complex formatters
          * or when no formatting is desired.
          */
-        val identity: Formatter = Formatter { _, _, _, _, s -> s }
+        val identity: Formatter = Formatter { _, _, _, _, _, s -> s }
 
         /**
          * The default formatter provided by the current log backend.
@@ -41,6 +44,7 @@ fun interface Formatter {
         level: Level,
         content: Any,
         marker: Marker?,
+        timestamp: Instant,
         s: String
     ): String // @formatter:on
 
@@ -50,7 +54,7 @@ fun interface Formatter {
      * @param other The element with which to join this element to form a new formatter instance.
      * @return A new [Formatter] instance containing both this and the other format element.
      */
-    operator fun plus(other: Formatter): Formatter = Formatter { logger, level, content, marker, s ->
-        other(logger, level, content, marker, this(logger, level, content, marker, s))
+    operator fun plus(other: Formatter): Formatter = Formatter { logger, level, content, marker, timestamp, s ->
+        other(logger, level, content, marker, timestamp, this(logger, level, content, marker, timestamp, s))
     }
 }

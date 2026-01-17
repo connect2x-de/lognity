@@ -9,8 +9,11 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import org.slf4j.Logger as Slf4jLogger
 
+@OptIn(ExperimentalTime::class)
 internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {
@@ -26,7 +29,8 @@ internal class Slf4jLognityLogger(
     override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
         if (level < this.level || marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
-        val formattedMessage = Formatter.default(this, level, messageContent, marker, formatPattern)
+        val timestamp = Clock.System.now()
+        val formattedMessage = Formatter.default(this, level, messageContent, marker, timestamp, formatPattern)
         when (level) {
             Level.TRACE -> delegate.trace(formattedMessage)
             Level.DEBUG -> delegate.debug(formattedMessage)

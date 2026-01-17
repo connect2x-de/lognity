@@ -7,9 +7,10 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.joinBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,18 +33,27 @@ class MessageAggregator( // @formatter:off
     private val isFlushJobRunning: AtomicBoolean = AtomicBoolean(true)
 
     private val flushJob: Job = coroutineScope.launch {
-        // Make sure we always empty out all buffers before unblocking
-        while (isFlushJobRunning.load() || queue.isNotEmpty()) {
-            while (queue.isNotEmpty()) {
-                messageCallback(queue.removeFirst())
-                yield()
+        try {
+            while (true) {
+                while (queue.isNotEmpty()) {
+                    messageCallback(queue.removeFirst())
+                }
+                if (!isFlushJobRunning.load()) break
+                delay(100.milliseconds)
             }
-            delay(10.milliseconds)
         }
-        closeCallback()
+        finally {
+            withContext(NonCancellable) {
+                while (queue.isNotEmpty()) {
+                    messageCallback(queue.removeFirst())
+                }
+                closeCallback()
+            }
+        }
     }
 
     fun enqueue(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if(!isFlushJobRunning.load()) error("Message aggregator is already shut down :(")
         queue += Message(logger, level, message, marker)
     }
 
