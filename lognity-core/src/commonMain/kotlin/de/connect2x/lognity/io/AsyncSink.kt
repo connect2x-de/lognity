@@ -25,15 +25,17 @@ class AsyncSink(
         }
     }
 
-    private val channel: Channel<Sink.() -> Unit> = Channel(Channel.UNLIMITED)
+    private val channel: Channel<suspend Sink.() -> Unit> = Channel(Channel.UNLIMITED)
 
     private val job: Job = DefaultBackend.coroutineScope.launch {
-        val sink = SystemFileSystem.sink(path).buffered()
-        channel.invokeOnClose { sink.close() }
-        for (task in channel) sink.task()
+        var sink = SystemFileSystem.sink(path).buffered()
+        for (task in channel) {
+            sink.task()
+        }
+        sink.close()
     }
 
-    fun write(task: Sink.() -> Unit) {
+    fun write(task: suspend Sink.() -> Unit) {
         channel.trySend(task)
     }
 

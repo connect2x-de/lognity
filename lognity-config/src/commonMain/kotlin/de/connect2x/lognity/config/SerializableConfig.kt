@@ -65,6 +65,7 @@ data class SerializableConfig( // @formatter:off
         init { // Default implementations extension
             this uses ConfigExtension {
                 registerConditionType<AlwaysCondition>()
+                registerFormatterType("default", Formatter.default)
             }
         }
 
@@ -98,40 +99,23 @@ data class SerializableConfig( // @formatter:off
         }
     }
 
-    /**
-     * Applies this configuration to the given [ConfigBuilder].
-     *
-     * - Sets builder-level properties like `level` and `isEnabled`.
-     * - Registers appenders defined in this config, resolving formatter names
-     *   using the provided [formatters] map.
-     *
-     * @param formatters map that resolves formatter identifiers used by this config.
-     */
-    @ConfigDsl
-    context(builder: ConfigBuilder)
-    fun applyConfig(
-        formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
-    ) = with(builder) {
-        level = this@SerializableConfig.level
-        isEnabled = enabled
-        for (appender in appenders) {
-            val formatter = formatters[appender.formatter] ?: continue
-            val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
-            factory(appender, formatter)
+    private val cachedConfig: Config by lazy {
+        Config {
+            level = this@SerializableConfig.level
+            isEnabled = enabled
+            for (appender in appenders) {
+                val formatter = extensionRegistrar.formatterTypes[appender.formatter] ?: continue
+                val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
+                factory(appender, formatter)
+            }
         }
     }
 
-    /**
-     * Creates an immutable [Config] from this serializable configuration.
-     *
-     * This is a convenience wrapper around `Config { applyConfig(formatters) }`.
-     *
-     * @param formatters map that resolves formatter identifiers used by this config.
-     * @return the created [Config] instance.
-     */
-    fun createConfig(
-        formatters: Map<String, Formatter> = mapOf("default" to Formatter.default)
-    ): Config = Config { applyConfig(formatters) }
+    @ConfigDsl
+    context(builder: ConfigBuilder)
+    fun applyConfig() = builder.setFrom(cachedConfig)
+
+    fun asConfig(): Config = cachedConfig
 
     /**
      * Merges this configuration with another one.

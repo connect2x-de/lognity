@@ -1,7 +1,6 @@
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.backend.Backend
-import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.config.util.isNode
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -23,11 +22,10 @@ internal external fun fetch(input: String): Promise<Response>
 @OptIn(ExperimentalWasmJsInterop::class, DelicateCoroutinesApi::class)
 actual suspend inline fun Backend.withDefaultConfig( // @formatter:off
     path: String,
-    formatters: Map<String, Formatter>,
     crossinline block: suspend () -> Unit
 ) {  // @formatter:on
     if (isNode) {
-        setDefaultConfig(Path(path), formatters)
+        setDefaultConfig(Path(path))
         block()
         return
     }
@@ -35,7 +33,7 @@ actual suspend inline fun Backend.withDefaultConfig( // @formatter:off
         response.textAsync().then<JsAny?> { text ->
             val buffer = Buffer()
             buffer.writeString(text.toString())
-            setDefaultConfig(buffer, formatters)
+            setDefaultConfig(buffer)
             null
         }.finally {
             GlobalScope.launch { block() }

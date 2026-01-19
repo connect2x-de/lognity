@@ -10,6 +10,9 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.AsyncSink
 import de.connect2x.lognity.util.RefCounted
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.io.Sink
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
@@ -39,11 +42,13 @@ class RollingFileAppender(
         }
     }
 
+    private val rotationMutex: Mutex = Mutex()
     private val currentIndex: AtomicInt = AtomicInt(0)
     private val sink: AtomicReference<RefCounted<AsyncSink>> =
         AtomicReference(AsyncSink.getOrOpen(getCurrentFilePath()))
 
     init {
+        println("CREATED APPENDER!")
         ShutdownHandler.register({ sink.load().release() }, priority = 99)
     }
 
@@ -51,22 +56,27 @@ class RollingFileAppender(
         if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
         sink.load().value.write {
             writeString("${message.toAnsi().cleanString()}\n")
+            rotateFilesIfNeeded()
         }
-        rotateFilesIfNeeded()
     }
 
     private fun getCurrentFilePath(): Path = suffixFileName(basePath, currentIndex.load())
 
     private fun getCurrentFileSize(): Long = SystemFileSystem.metadataOrNull(getCurrentFilePath())?.size ?: 0L
 
-    private fun rotateFiles() {
-        if (currentIndex.incrementAndFetch() == fileCount) {
-            currentIndex.store(0)
+    private suspend fun rotateFiles() {
+        rotationMutex.withLock {
+            if (currentIndex.incrementAndFetch() == fileCount - 1) {
+                currentIndex.store(0)
+            }
+            sink.exchange(AsyncSink.getOrOpen(getCurrentFilePath())).apply {
+                value.write(Sink::flush)
+                release()
+            }
         }
-        sink.exchange(AsyncSink.getOrOpen(getCurrentFilePath())).release()
     }
 
-    private fun rotateFilesIfNeeded() {
+    private suspend fun rotateFilesIfNeeded() {
         if (getCurrentFileSize() < maxFileSize) return
         rotateFiles()
     }
