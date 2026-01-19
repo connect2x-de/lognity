@@ -20,8 +20,8 @@ import de.connect2x.lognity.util.cancelAndJoinBlocking
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.job
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -64,10 +64,8 @@ object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
 
-    private val supervisorJob: Job = SupervisorJob()
-
     private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
-        CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
+        CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("Lognity"))
     }
 
     override val coroutineScope: CoroutineScope by lazy( // @formatter:off
@@ -102,7 +100,7 @@ object DefaultBackend : Backend {
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
 
     private fun onShutdown() {
-        supervisorJob.cancelAndJoinBlocking()
+        coroutineScope.coroutineContext.job.cancelAndJoinBlocking()
     }
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)
