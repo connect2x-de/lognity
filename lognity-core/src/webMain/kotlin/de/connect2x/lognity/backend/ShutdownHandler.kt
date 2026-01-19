@@ -17,6 +17,7 @@ internal actual object ShutdownHandler {
             val process = getProcess()
             process.on("SIGINT", ::shutdown)
             process.on("SIGTERM", ::shutdown)
+            process.on("exit", ::shutdown)
             return
         }
         // Otherwise use the browser API
