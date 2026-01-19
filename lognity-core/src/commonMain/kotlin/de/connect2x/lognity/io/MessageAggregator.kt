@@ -1,4 +1,4 @@
-package de.connect2x.lognity.appender
+package de.connect2x.lognity.io
 
 import co.touchlab.stately.collections.SharedLinkedList
 import de.connect2x.lognity.api.logger.Level

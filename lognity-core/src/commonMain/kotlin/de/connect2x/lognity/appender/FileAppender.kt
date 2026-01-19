@@ -3,10 +3,10 @@ package de.connect2x.lognity.appender
 import de.connect2x.lognity.api.ansi.toAnsi
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import kotlinx.io.Sink
-import kotlinx.io.buffered
+import de.connect2x.lognity.backend.DefaultBackend
+import de.connect2x.lognity.io.MessageAggregator
+import de.connect2x.lognity.io.SynchronizedSink
 import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
 
 /**
@@ -30,10 +30,12 @@ class FileAppender( // @formatter:off
     val path: Path,
     override val name: String? = null,
 ) : AbstractAggregatingAppender() { // @formatter:on
-    val sink: Sink = SystemFileSystem.sink(path).buffered()
+    val sink: SynchronizedSink = DefaultBackend.sinkCache.getOrOpenSink(path)
 
     override suspend fun writeToOutput(message: MessageAggregator.Message) {
-        sink.writeString("${message.message.toAnsi().cleanString()}\n")
+        sink.synchronized {
+            writeString("${message.message.toAnsi().cleanString()}\n")
+        }
     }
 
     override suspend fun afterAggregatorShutdown() = sink.close()

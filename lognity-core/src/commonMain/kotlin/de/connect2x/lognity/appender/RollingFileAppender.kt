@@ -3,10 +3,9 @@ package de.connect2x.lognity.appender
 import de.connect2x.lognity.api.ansi.toAnsi
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.io.Sink
-import kotlinx.io.buffered
+import de.connect2x.lognity.backend.DefaultBackend
+import de.connect2x.lognity.io.MessageAggregator
+import de.connect2x.lognity.io.SynchronizedSink
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
@@ -35,21 +34,20 @@ class RollingFileAppender(
     }
 
     private val currentIndex: AtomicInt = AtomicInt(0)
-    private val sinkMutex: Mutex = Mutex()
-    private var sink: Sink? = null
+    private var sink: SynchronizedSink? = null
 
-    override suspend fun writeToOutput(message: MessageAggregator.Message) = sinkMutex.withLock {
+    override suspend fun writeToOutput(message: MessageAggregator.Message) {
         if (sink == null) {
-            sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+            sink = DefaultBackend.sinkCache.getOrOpenSink(getCurrentFilePath())
         }
-        sink!!.writeString("${message.message.toAnsi().cleanString()}\n")
+        sink?.synchronized {
+            writeString("${message.message.toAnsi().cleanString()}\n")
+        }
         rotateFilesIfNeeded()
     }
 
     override suspend fun afterAggregatorShutdown() {
-        sinkMutex.withLock {
-            sink?.close()
-        }
+        sink?.close()
     }
 
     private fun getCurrentFilePath(): Path = suffixFileName(basePath, currentIndex.load())
@@ -66,7 +64,7 @@ class RollingFileAppender(
         }
         this.currentIndex.store(currentIndex)
         sink?.close()
-        sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+        sink = DefaultBackend.sinkCache.getOrOpenSink(getCurrentFilePath())
     }
 
     private fun rotateFilesIfNeeded() {

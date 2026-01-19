@@ -6,6 +6,7 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.backend.ShutdownHandler
+import de.connect2x.lognity.io.MessageAggregator
 
 abstract class AbstractAggregatingAppender : Appender {
     protected val aggregator: MessageAggregator = MessageAggregator( // @formatter:off
