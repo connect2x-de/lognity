@@ -48,7 +48,6 @@ class RollingFileAppender(
         AtomicReference(AsyncSink.getOrOpen(getCurrentFilePath()))
 
     init {
-        println("CREATED APPENDER!")
         ShutdownHandler.register({ sink.load().release() }, priority = 99)
     }
 
