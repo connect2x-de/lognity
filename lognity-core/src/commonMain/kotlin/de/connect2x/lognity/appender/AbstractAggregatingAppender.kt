@@ -19,7 +19,7 @@ abstract class AbstractAggregatingAppender : Appender {
     }
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (message.isEmpty() || !filter(level, message, marker)) return
+        if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
         aggregator.enqueue(logger, level, message, marker)
     }
 

@@ -25,6 +25,7 @@ open class ConsoleAppender( // @formatter:off
     override val name: String? = null
 ) : Appender { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
         println(message)
     }
 }

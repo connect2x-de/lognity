@@ -65,7 +65,15 @@ object DefaultBackend : Backend {
     override val defaultLevel: Level = getDefaultLogLevel()
 
     private val supervisorJob: Job = SupervisorJob()
-    val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
+
+    private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
+        CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
+    }
+
+    override val coroutineScope: CoroutineScope by lazy( // @formatter:off
+        mode = LazyThreadSafetyMode.SYNCHRONIZED,
+        initializer = coroutineScopeProvider.load()
+    ) // @formatter:on
 
     init {
         ShutdownHandler.register(::onShutdown, priority = 100) // This needs to be run last
@@ -109,5 +117,9 @@ object DefaultBackend : Backend {
             contextSpec()
             name?.let(::Name)?.let(::value)
         })
+    }
+
+    override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
+        coroutineScopeProvider.store(provider)
     }
 }

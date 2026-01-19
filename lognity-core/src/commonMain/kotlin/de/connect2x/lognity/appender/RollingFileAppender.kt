@@ -36,15 +36,20 @@ class RollingFileAppender(
 
     private val currentIndex: AtomicInt = AtomicInt(0)
     private val sinkMutex: Mutex = Mutex()
-    private var sink: Sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+    private var sink: Sink? = null
 
     override suspend fun writeToOutput(message: MessageAggregator.Message) = sinkMutex.withLock {
-        sink.writeString("${message.message.toAnsi().cleanString()}\n")
+        if (sink == null) {
+            sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+        }
+        sink!!.writeString("${message.message.toAnsi().cleanString()}\n")
         rotateFilesIfNeeded()
     }
 
-    override suspend fun afterAggregatorShutdown() = sinkMutex.withLock {
-        sink.close()
+    override suspend fun afterAggregatorShutdown() {
+        sinkMutex.withLock {
+            sink?.close()
+        }
     }
 
     private fun getCurrentFilePath(): Path = suffixFileName(basePath, currentIndex.load())
@@ -60,7 +65,7 @@ class RollingFileAppender(
             currentIndex = 0
         }
         this.currentIndex.store(currentIndex)
-        sink.close()
+        sink?.close()
         sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
     }
 

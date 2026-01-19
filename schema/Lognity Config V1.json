@@ -73,20 +73,167 @@
                                                 "marker",
                                                 "message",
                                                 "level"
-                                            ]
+                                            ],
+                                            "description": "The type of condition."
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The internal name of the condition."
                                         }
-                                    }
+                                    },
+                                    "if": {
+                                        "properties": {
+                                            "type": {
+                                                "const": "marker"
+                                            }
+                                        }
+                                    },
+                                    "then": {
+                                        "properties": {
+                                            "condition": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "KEY_EQUALS",
+                                                    "KEY_NOT_EQUALS",
+                                                    "KEY_CONTAINS",
+                                                    "KEY_NOT_CONTAINS",
+                                                    "NAME_EQUALS",
+                                                    "NAME_NOT_EQUALS",
+                                                    "NAME_CONTAINS",
+                                                    "NAME_NOT_CONTAINS"
+                                                ],
+                                                "description": "The conditional rule to apply on every log marker."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "description": "The literal string value to check all markers against."
+                                            }
+                                        },
+                                        "required": [
+                                            "condition",
+                                            "value"
+                                        ]
+                                    },
+                                    "else": {
+                                        "if": {
+                                            "properties": {
+                                                "type": {
+                                                    "const": "message"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "condition": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "EQUALS",
+                                                        "NOT_EQUALS",
+                                                        "CONTAINS",
+                                                        "NOT_CONTAINS"
+                                                    ],
+                                                    "description": "The conditional rule to apply to every log message."
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "description": "The literal string value to check all messages against."
+                                                }
+                                            },
+                                            "required": [
+                                                "condition",
+                                                "value"
+                                            ]
+                                        },
+                                        "else": {
+                                            "if": {
+                                                "properties": {
+                                                    "type": {
+                                                        "const": "level"
+                                                    }
+                                                }
+                                            },
+                                            "then": {
+                                                "properties": {
+                                                    "condition": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "EQUALS",
+                                                            "NOT_EQUALS",
+                                                            "BELOW",
+                                                            "ABOVE"
+                                                        ],
+                                                        "description": "The conditional rule to apply to all log levels."
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "TRACE",
+                                                            "DEBUG",
+                                                            "INFO",
+                                                            "WARN",
+                                                            "ERROR",
+                                                            "FATAL"
+                                                        ],
+                                                        "description": "The log level to check all incoming log levels agsinst."
+                                                    }
+                                                },
+                                                "required": [
+                                                    "condition",
+                                                    "value"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": ["type"]
                                 }
                             }
                         }
+                    }
+                },
+                "if": {
+                    "properties": {
+                        "type": {
+                            "const": "file"
+                        }
+                    }
+                },
+                "then": {
+                    "properties": {
+                        "path": {
+                            "type": "string",
+                            "description": "The relative path to the log file for plain file appenders."
+                        }
                     },
-                    "path": {
-                        "type": "string",
-                        "description": "The relative path to the log file for file appenders."
+                    "required": [
+                        "path"
+                    ]
+                },
+                "else": {
+                    "if": {
+                        "properties": {
+                            "type": {
+                                "const": "rolling_file"
+                            }
+                        }
                     },
-                    "rolling": {
-                        "type": "boolean",
-                        "description": "For file appenders, automatically adds timestamps to the log files so they don't get overwritten."
+                    "then": {
+                        "properties": {
+                            "base_path": {
+                                "type": "string",
+                                "description": "The base path of the rolling file segment files."
+                            },
+                            "file_count": {
+                                "type": "integer",
+                                "description": "The number of files used as a ring buffer."
+                            },
+                            "max_file_size": {
+                                "type": "integer",
+                                "description": "The maximum size of each segment file."
+                            }
+                        },
+                        "required": [
+                            "base_path"
+                        ]
                     }
                 },
                 "required": [
