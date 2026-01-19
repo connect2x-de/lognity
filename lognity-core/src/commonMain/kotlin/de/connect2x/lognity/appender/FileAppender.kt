@@ -1,11 +1,15 @@
 package de.connect2x.lognity.appender
 
 import de.connect2x.lognity.api.ansi.toAnsi
+import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import de.connect2x.lognity.backend.DefaultBackend
-import de.connect2x.lognity.io.MessageAggregator
-import de.connect2x.lognity.io.SynchronizedSink
+import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.backend.ShutdownHandler
+import de.connect2x.lognity.io.AsyncSink
+import de.connect2x.lognity.util.RefCounted
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
 
@@ -29,16 +33,17 @@ class FileAppender( // @formatter:off
     override val filter: Filter,
     val path: Path,
     override val name: String? = null,
-) : AbstractAggregatingAppender() { // @formatter:on
-    val sink: SynchronizedSink = DefaultBackend.sinkCache.getOrOpenSink(path)
+) : Appender { // @formatter:on
+    val sink: RefCounted<AsyncSink> = AsyncSink.getOrOpen(path)
 
-    override suspend fun writeToOutput(message: MessageAggregator.Message) {
-        sink.synchronized {
-            writeString("${message.message.toAnsi().cleanString()}\n")
-        }
+    init {
+        ShutdownHandler.register(sink::release, priority = 99)
     }
 
-    override suspend fun afterAggregatorShutdown() = sink.close()
-
-    override fun flush() = sink.flush()
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
+        sink.value.write {
+            writeString("${message.toAnsi().cleanString()}\n")
+        }
+    }
 }

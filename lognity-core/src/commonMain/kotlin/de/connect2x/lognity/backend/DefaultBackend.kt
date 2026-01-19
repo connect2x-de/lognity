@@ -14,7 +14,6 @@ import de.connect2x.lognity.api.logger.Logger.Name
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
-import de.connect2x.lognity.io.SinkCache
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
 import de.connect2x.lognity.util.cancelAndJoinBlocking
@@ -65,7 +64,6 @@ object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
 
-    internal val sinkCache: SinkCache = SinkCache()
     private val supervisorJob: Job = SupervisorJob()
 
     private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
