@@ -10,11 +10,12 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.AsyncSink
 import de.connect2x.lognity.util.RefCounted
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
 import kotlin.concurrent.atomics.AtomicInt
-import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
 
@@ -39,19 +40,19 @@ class RollingFileAppender(
         }
     }
 
-    private val currentIndex: AtomicInt = AtomicInt(0)
-    private val sink: AtomicReference<RefCounted<AsyncSink>> =
-        AtomicReference(AsyncSink.getOrOpen(getCurrentFilePath()))
+    private var currentIndex: AtomicInt = AtomicInt(0)
+    private var sink: RefCounted<AsyncSink> = AsyncSink.getOrOpen(getCurrentFilePath())
+    private val rotationMutex: Mutex = Mutex()
 
     init {
-        ShutdownHandler.register({ sink.load().release() }, priority = 99)
+        ShutdownHandler.register({ sink.release() }, priority = 99)
     }
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
-        sink.load().value.write {
+        sink.value.write {
             writeString("${message.toAnsi().cleanString()}\n")
-            rotateFilesIfNeeded()
+            rotateFileIfNeeded()
         }
     }
 
@@ -59,17 +60,18 @@ class RollingFileAppender(
 
     private fun getCurrentFileSize(): Long = SystemFileSystem.metadataOrNull(getCurrentFilePath())?.size ?: 0L
 
-    private fun rotateFiles() {
+    private suspend fun rotateFileIfNeeded() = rotationMutex.withLock {
+        if (getCurrentFileSize() < maxFileSize) return@withLock
+        rotateFile()
+    }
+
+    private fun rotateFile() {
         if (currentIndex.incrementAndFetch() == fileCount - 1) {
             currentIndex.store(0)
         }
-        sink.exchange(AsyncSink.getOrOpen(getCurrentFilePath())).apply {
-            release()
-        }
-    }
-
-    private fun rotateFilesIfNeeded() {
-        if (getCurrentFileSize() < maxFileSize) return
-        rotateFiles()
+        sink.release()
+        val path = getCurrentFilePath()
+        SystemFileSystem.delete(path, mustExist = false)
+        sink = AsyncSink.getOrOpen(path)
     }
 }
