@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -62,6 +63,7 @@ object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
 
+    private val isCoroutineScopeProviderSet: AtomicBoolean = AtomicBoolean(false)
     private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
         val supervisorJob = SupervisorJob()
         ShutdownHandler.register(supervisorJob::cancel, priority = 100)
@@ -110,6 +112,9 @@ object DefaultBackend : Backend {
     }
 
     override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
+        check(!isCoroutineScopeProviderSet.compareAndExchange(expectedValue = false, newValue = true)) {
+            "CoroutineScope provider was already set for logging backend"
+        }
         coroutineScopeProvider.store(provider)
     }
 }
