@@ -1,34 +1,71 @@
 package de.connect2x.lognity.appender
 
+import de.connect2x.lognity.api.ansi.toAnsi
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.io.Sink
+import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
+import kotlinx.io.writeString
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+@OptIn(ExperimentalAtomicApi::class)
 class RollingFileAppender(
-    pattern: String, formatter: Formatter, filter: Filter, private val basePath: Path, name: String? = null
-) : FileAppender(pattern, formatter, filter, suffixFileName(basePath, "latest"), name) {
+    override val pattern: String,
+    override val formatter: Formatter,
+    override val filter: Filter,
+    val basePath: Path,
+    override val name: String? = null,
+    val fileCount: Int = 10,
+    val maxFileSize: Long = 1024 * 50 // 50kB per default
+) : AbstractAggregatingAppender() {
     companion object {
-        private fun suffixFileName(path: Path, suffix: String): Path {
+        private fun suffixFileName(path: Path, index: Int): Path {
+            val parentPath = path.parent ?: Path("")
             val fileName = path.name
+            if ('.' !in fileName) return Path(parentPath, "$fileName-$index")
             val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'))
             val fileExt = fileName.substring(fileName.lastIndexOf('.') + 1)
-            val parentPath = path.parent ?: Path("")
-            return Path(parentPath, "$fileNameWithoutExt-$suffix.$fileExt")
+            return Path(parentPath, "$fileNameWithoutExt.$index.$fileExt")
         }
     }
 
-    @OptIn(ExperimentalTime::class)
-    override fun afterAggregatorShutdown() {
-        sink.release {
-            sinks -= path
-            val timestamp = Clock.System.now().format(DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)
-            val timestampedPath = suffixFileName(basePath, timestamp)
-            SystemFileSystem.atomicMove(path, timestampedPath) // Rename the latest file to the timestamped name
+    private val currentIndex: AtomicInt = AtomicInt(0)
+    private val sinkMutex: Mutex = Mutex()
+    private var sink: Sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+
+    override suspend fun writeToOutput(message: MessageAggregator.Message) = sinkMutex.withLock {
+        sink.writeString("${message.message.toAnsi().cleanString()}\n")
+        rotateFilesIfNeeded()
+    }
+
+    override suspend fun afterAggregatorShutdown() = sinkMutex.withLock {
+        sink.close()
+    }
+
+    private fun getCurrentFilePath(): Path = suffixFileName(basePath, currentIndex.load())
+
+    private fun getCurrentFileSize(): Long = SystemFileSystem.metadataOrNull(getCurrentFilePath())?.size ?: 0L
+
+    private fun rotateFiles() {
+        var currentIndex = currentIndex.load()
+        if (currentIndex < fileCount) {
+            currentIndex++
         }
+        else {
+            currentIndex = 0
+        }
+        this.currentIndex.store(currentIndex)
+        sink.close()
+        sink = SystemFileSystem.sink(getCurrentFilePath()).buffered()
+    }
+
+    private fun rotateFilesIfNeeded() {
+        if (getCurrentFileSize() < maxFileSize) return
+        rotateFiles()
     }
 }

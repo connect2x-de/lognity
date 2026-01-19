@@ -113,12 +113,7 @@ class SimpleFormatter(
      * @return The formatted log line.
      */
     override operator fun invoke(
-        logger: Logger,
-        level: Level,
-        content: Any,
-        marker: Marker?,
-        timestamp: Instant,
-        s: String
+        logger: Logger, level: Level, content: Any, marker: Marker?, timestamp: Instant, s: String
     ): String {
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
         return format(context.get().apply {

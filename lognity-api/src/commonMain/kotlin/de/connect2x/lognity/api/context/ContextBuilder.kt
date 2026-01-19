@@ -1,5 +1,9 @@
 package de.connect2x.lognity.api.context
 
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+
 /**
  * Builder used to create a [Context] via a small DSL.
  */
@@ -72,4 +76,10 @@ typealias ContextSpec = ContextBuilder.() -> Unit
  *     value(UserIdKey, UserId("42"))
  * }
  */
-inline fun Context(spec: ContextSpec): Context = ContextBuilder().apply(spec).build()
+@OptIn(ExperimentalContracts::class)
+inline fun Context(spec: ContextSpec): Context {
+    contract {
+        callsInPlace(spec, InvocationKind.EXACTLY_ONCE)
+    }
+    return ContextBuilder().apply(spec).build()
+}

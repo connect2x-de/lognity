@@ -29,32 +29,34 @@ internal expect fun getDefaultLogLevel(): Level
 
 internal expect fun createSystemConsoleAppender( // @formatter:off
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemFileAppender( // @formatter:off
     path: String,
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemRollingFileAppender( // @formatter:off
     basePath: String,
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?,
+    fileCount: Int,
+    maxFileSize: Long
 ): Appender // @formatter:on
 
 @OptIn(ExperimentalAtomicApi::class)

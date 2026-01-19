@@ -25,7 +25,7 @@ abstract class AbstractAggregatingAppender : Appender {
 
     protected abstract suspend fun writeToOutput(message: MessageAggregator.Message)
 
-    protected open fun afterAggregatorShutdown() = flush()
+    protected open suspend fun afterAggregatorShutdown() = flush()
 
     protected open fun dispose() {
         aggregator.close()

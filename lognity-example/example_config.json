@@ -18,10 +18,9 @@
             }
         },
         {
-            "type": "file",
-            "name": "",
-            "rolling": true,
-            "path": "example.log",
+            "type": "rolling_file",
+            "name": "my_file_appender",
+            "base_path": "example.log",
             "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
             "formatter": "default",
             "filter": {

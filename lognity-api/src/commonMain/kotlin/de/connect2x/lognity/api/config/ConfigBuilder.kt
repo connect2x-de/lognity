@@ -2,6 +2,9 @@ package de.connect2x.lognity.api.config
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.logger.Level
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * A builder class for creating a new [Config] instance
@@ -64,4 +67,10 @@ typealias ConfigSpec = ConfigBuilder.() -> Unit
 /**
  * Creates a new immutable [Config] using the provided [spec] DSL.
  */
-inline fun Config(spec: ConfigSpec): Config = ConfigBuilder().apply(spec).build()
+@OptIn(ExperimentalContracts::class)
+inline fun Config(spec: ConfigSpec): Config {
+    contract {
+        callsInPlace(spec, InvocationKind.EXACTLY_ONCE)
+    }
+    return ConfigBuilder().apply(spec).build()
+}

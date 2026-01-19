@@ -6,6 +6,7 @@ import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.withDefaultConfig
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 private fun Logger.printTestMessages() {
@@ -35,8 +36,10 @@ suspend fun appMain() {
         // Implicitly named logger (default defined in example_config.json)
         Logger().printTestMessages()
 
-        for(i in 0..<4) DefaultBackend.coroutineScope.launch {
-            namedLogger.printTestMessages()
-        }
+        (0..<4).map {
+            DefaultBackend.coroutineScope.launch {
+                for(i in 0..<100) namedLogger.printTestMessages()
+            }
+        }.joinAll()
     }
 }

@@ -2,6 +2,7 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.config.appender.ConsoleAppender
 import de.connect2x.lognity.config.appender.FileAppender
+import de.connect2x.lognity.config.appender.RollingFileAppender
 import de.connect2x.lognity.config.appender.SystemConsoleAppender
 import de.connect2x.lognity.config.appender.SystemLogAppender
 import de.connect2x.lognity.config.condition.LevelCondition
@@ -42,13 +43,13 @@ object CoreConfigExtension : ConfigExtension {
         registerAppenderType<SystemLogAppender> { config, formatter ->
             systemLogAppender(config.pattern, formatter, config.filter, config.name)
         }
-        // Fixed path or rolling file appender
+        // Fixed path
         registerAppenderType<FileAppender> { config, formatter ->
-            if (config.isRolling) {
-                rollingFileAppender(config.path, config.pattern, formatter, config.filter, config.name)
-                return@registerAppenderType
-            }
             fileAppender(config.path, config.pattern, formatter, config.filter, config.name)
+        }
+        // Rolling file
+        registerAppenderType<RollingFileAppender> { config, formatter ->
+            rollingFileAppender(config.basePath, config.pattern, formatter, config.filter, config.name, config.fileCount, config.maxFileSize)
         }
         registerPlatformAppenderTypes()
     }

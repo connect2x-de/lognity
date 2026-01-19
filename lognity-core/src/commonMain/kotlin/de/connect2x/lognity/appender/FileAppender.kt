@@ -1,11 +1,9 @@
 package de.connect2x.lognity.appender
 
-import co.touchlab.stately.collections.SharedHashMap
 import de.connect2x.lognity.api.ansi.toAnsi
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import de.connect2x.lognity.util.RefCountedSink
-import kotlinx.coroutines.sync.withLock
+import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -25,31 +23,20 @@ import kotlinx.io.writeString
  * @property filter A filter that decides whether a given message should be written.
  * @property path The file system path to which log lines will be appended. The file is opened in append mode.
  */
-open class FileAppender( // @formatter:off
+class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
     val path: Path,
-    override val name: String? = null
+    override val name: String? = null,
 ) : AbstractAggregatingAppender() { // @formatter:on
-    companion object {
-        internal val sinks: SharedHashMap<Path, RefCountedSink> = SharedHashMap()
-    }
-
-    internal val sink: RefCountedSink = sinks.getOrPut(path) {
-        RefCountedSink(SystemFileSystem.sink(path, true).buffered())
-    }.acquire()
+    val sink: Sink = SystemFileSystem.sink(path).buffered()
 
     override suspend fun writeToOutput(message: MessageAggregator.Message) {
-        sink.mutex.withLock {
-            sink.value.writeString("${message.message.toAnsi().cleanString()}\n")
-        }
+        sink.writeString("${message.message.toAnsi().cleanString()}\n")
     }
 
-    override fun afterAggregatorShutdown() {
-        flush()
-        sink.release { sinks -= path }
-    }
+    override suspend fun afterAggregatorShutdown() = sink.close()
 
-    override fun flush() = sink.value.flush()
+    override fun flush() = sink.flush()
 }

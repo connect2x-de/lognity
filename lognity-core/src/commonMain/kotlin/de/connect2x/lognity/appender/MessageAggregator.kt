@@ -20,7 +20,7 @@ import kotlin.time.ExperimentalTime
 class MessageAggregator( // @formatter:off
     val coroutineScope: CoroutineScope,
     val messageCallback: suspend (Message) -> Unit,
-    val closeCallback: () -> Unit = {},
+    val closeCallback: suspend () -> Unit = {},
 ) : AutoCloseable { // @formatter:on
     data class Message( // @formatter:off
         val logger: Logger,
@@ -35,30 +35,28 @@ class MessageAggregator( // @formatter:off
     private val flushJob: Job = coroutineScope.launch {
         try {
             while (true) {
-                while (queue.isNotEmpty()) {
-                    messageCallback(queue.removeFirst())
-                }
+                while (queue.isNotEmpty()) messageCallback(queue.removeFirst())
                 if (!isFlushJobRunning.load()) break
-                delay(100.milliseconds)
+                delay(25.milliseconds)
             }
         }
         finally {
             withContext(NonCancellable) {
-                while (queue.isNotEmpty()) {
-                    messageCallback(queue.removeFirst())
-                }
+                while (queue.isNotEmpty()) messageCallback(queue.removeFirst())
                 closeCallback()
             }
         }
     }
 
     fun enqueue(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if(!isFlushJobRunning.load()) error("Message aggregator is already shut down :(")
+        if (!isFlushJobRunning.load()) error("Message aggregator is already shut down :(")
         queue += Message(logger, level, message, marker)
     }
 
     override fun close() {
-        isFlushJobRunning.store(false)
+        check(isFlushJobRunning.compareAndExchange(expectedValue = true, newValue = false)) {
+            "Message aggregator was already closed"
+        }
         flushJob.joinBlocking()
     }
 }
