@@ -16,12 +16,10 @@ import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
-import de.connect2x.lognity.util.cancelAndJoinBlocking
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.job
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -65,17 +63,15 @@ object DefaultBackend : Backend {
     override val defaultLevel: Level = getDefaultLogLevel()
 
     private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
-        CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("Lognity"))
+        val supervisorJob = SupervisorJob()
+        ShutdownHandler.register(supervisorJob::cancel, priority = 100)
+        CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
     }
 
     override val coroutineScope: CoroutineScope by lazy( // @formatter:off
         mode = LazyThreadSafetyMode.SYNCHRONIZED,
         initializer = coroutineScopeProvider.load()
     ) // @formatter:on
-
-    init {
-        ShutdownHandler.register(::onShutdown, priority = 100) // This needs to be run last
-    }
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         systemLogAppender(
@@ -98,10 +94,6 @@ object DefaultBackend : Backend {
         }
 
     override val defaultFormatter: Formatter get() = SimpleFormatter.default
-
-    private fun onShutdown() {
-        coroutineScope.coroutineContext.job.cancelAndJoinBlocking()
-    }
 
     override fun addShutdownHook(hook: () -> Unit) = ShutdownHandler.register(hook)
 

@@ -10,9 +10,6 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.AsyncSink
 import de.connect2x.lognity.util.RefCounted
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.io.Sink
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
@@ -42,7 +39,6 @@ class RollingFileAppender(
         }
     }
 
-    private val rotationMutex: Mutex = Mutex()
     private val currentIndex: AtomicInt = AtomicInt(0)
     private val sink: AtomicReference<RefCounted<AsyncSink>> =
         AtomicReference(AsyncSink.getOrOpen(getCurrentFilePath()))
@@ -63,19 +59,16 @@ class RollingFileAppender(
 
     private fun getCurrentFileSize(): Long = SystemFileSystem.metadataOrNull(getCurrentFilePath())?.size ?: 0L
 
-    private suspend fun rotateFiles() {
-        rotationMutex.withLock {
-            if (currentIndex.incrementAndFetch() == fileCount - 1) {
-                currentIndex.store(0)
-            }
-            sink.exchange(AsyncSink.getOrOpen(getCurrentFilePath())).apply {
-                value.write(Sink::flush)
-                release()
-            }
+    private fun rotateFiles() {
+        if (currentIndex.incrementAndFetch() == fileCount - 1) {
+            currentIndex.store(0)
+        }
+        sink.exchange(AsyncSink.getOrOpen(getCurrentFilePath())).apply {
+            release()
         }
     }
 
-    private suspend fun rotateFilesIfNeeded() {
+    private fun rotateFilesIfNeeded() {
         if (getCurrentFileSize() < maxFileSize) return
         rotateFiles()
     }

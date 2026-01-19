@@ -2,14 +2,12 @@ package de.connect2x.lognity.io
 
 import co.touchlab.stately.collections.SharedHashMap
 import de.connect2x.lognity.backend.DefaultBackend
-import de.connect2x.lognity.backend.withBlockingLock
 import de.connect2x.lognity.util.RefCounted
-import de.connect2x.lognity.util.joinBlocking
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -32,14 +30,13 @@ class AsyncSink(
 
     private val job: Job = DefaultBackend.coroutineScope.launch {
         val sink = SystemFileSystem.sink(path).buffered()
-        val sinkMutex = Mutex()
-        channel.invokeOnClose {
-            sinkMutex.withBlockingLock {
+        try {
+            for (task in channel) sink.task()
+        }
+        finally {
+            withContext(NonCancellable) {
                 sink.close()
             }
-        }
-        for (task in channel) sinkMutex.withLock {
-            sink.task()
         }
     }
 
@@ -49,6 +46,6 @@ class AsyncSink(
 
     override fun close() {
         channel.close()
-        job.joinBlocking()
+        job.cancel()
     }
 }

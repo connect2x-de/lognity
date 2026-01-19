@@ -38,7 +38,7 @@ suspend fun appMain() {
 
         (0..<4).map {
             DefaultBackend.coroutineScope.launch {
-                for(i in 0..<10) namedLogger.printTestMessages()
+                for(i in 0..<50) namedLogger.printTestMessages()
             }
         }.joinAll()
     }
