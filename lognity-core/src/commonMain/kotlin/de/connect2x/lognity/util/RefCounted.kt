@@ -31,7 +31,7 @@ class RefCounted<T : AutoCloseable>( // @formatter:off
 
     @OptIn(ExperimentalContracts::class)
     fun release(): RefCounted<T> {
-        if (count.decrementAndFetch() != 0) return this
+        if (count.decrementAndFetch() > 0) return this
         defaultReleaseAction(value)
         value.close()
         return this
