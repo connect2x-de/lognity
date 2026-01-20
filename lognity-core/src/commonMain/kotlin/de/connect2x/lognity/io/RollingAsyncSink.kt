@@ -67,11 +67,30 @@ class RollingAsyncSink( // @formatter:off
             else {
                 // If we found the latest file, we parse the current segment number to pick up where we left off
                 val result = latestFileNamePattern.matchEntire(latestFilePath.name)
-                fileIndex = result?.groupValues?.getOrNull(FILE_INDEX_GROUP)?.toIntOrNull() ?: 0
+                fileIndex =
+                    (result?.groupValues?.getOrNull(FILE_INDEX_GROUP)?.toIntOrNull() ?: 0).coerceIn(0..<fileCount)
             }
             latestFilePath
         }
         return fileIndex to path
+    }
+
+    private fun restorePathBuffer(fileIndex: Int, latestPath: Path): Array<Path?> {
+        val pathBuffer = Array<Path?>(fileCount) { null }
+        pathBuffer[fileIndex] = latestPath
+        if (!deleteExisting) {
+            // Load all inactive segment paths into the buffer when present
+            SystemFileSystem.list(parentDir)
+                .filter { path -> path.isRegularFile() && fileNamePattern.matches(path.name) }
+                .forEach { path ->
+                    val result = fileNamePattern.matchEntire(path.name) ?: return@forEach
+                    val inactiveFileIndex =
+                        result.groupValues.getOrNull(FILE_INDEX_GROUP)?.toIntOrNull() ?: return@forEach
+                    if (inactiveFileIndex == fileIndex || inactiveFileIndex >= fileCount) return@forEach // Skip latest
+                    pathBuffer[inactiveFileIndex] = path
+                }
+        }
+        return pathBuffer
     }
 
     private val job: Job = DefaultBackend.coroutineScope.launch {
@@ -79,9 +98,7 @@ class RollingAsyncSink( // @formatter:off
 
         var (fileIndex, path) = getInitialState()
         var sink = SystemFileSystem.sink(path, append = true).buffered()
-
-        val pathBuffer = Array<Path?>(fileCount) { null }
-        pathBuffer[fileIndex] = path
+        val pathBuffer = restorePathBuffer(fileIndex, path)
 
         try {
             for (task in channel) {
