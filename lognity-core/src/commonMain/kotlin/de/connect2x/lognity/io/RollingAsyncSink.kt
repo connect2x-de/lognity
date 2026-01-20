@@ -3,8 +3,10 @@ package de.connect2x.lognity.io
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.util.joinBlocking
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.io.InternalIoApi
@@ -28,8 +30,9 @@ class RollingAsyncSink( // @formatter:off
 
     @OptIn(InternalIoApi::class)
     private val job: Job = DefaultBackend.coroutineScope.launch {
-        val parentDir = basePath.parent ?: Path("")
-        SystemFileSystem.createDirectories(parentDir)
+        var parentDir = basePath.parent
+        if (parentDir == null) parentDir = SystemFileSystem.resolve(Path("."))
+        else SystemFileSystem.createDirectories(parentDir)
         // @formatter:off
         SystemFileSystem.list(parentDir)
             .filter { path -> SystemFileSystem.metadataOrNull(path)?.isRegularFile == true && fileNamePattern.matches(path.name) }
@@ -62,7 +65,9 @@ class RollingAsyncSink( // @formatter:off
             }
         }
         finally {
-            sink.close()
+            withContext(NonCancellable) {
+                sink.close()
+            }
         }
     }
 
@@ -70,11 +75,11 @@ class RollingAsyncSink( // @formatter:off
         val timestampPattern = if (useTimestamps) "-(.+)" else ""
         val fileName = basePath.name
         return if ("." in fileName) {
-            val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'))
+            val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')).replace(".", "\\.")
             val fileExt = fileName.substring(fileName.lastIndexOf('.') + 1)
-            Regex("""$fileNameWithoutExt(\.\d+)$timestampPattern(\.$fileExt)""")
+            Regex("""$fileNameWithoutExt(\.[0-9]+)$timestampPattern(\.$fileExt)""")
         }
-        else Regex("""$fileName(\.\d+)$timestampPattern""")
+        else Regex("""$fileName(\.[0-9]+)$timestampPattern""")
     }
 
     @OptIn(ExperimentalTime::class)

@@ -3,8 +3,10 @@ package de.connect2x.lognity.io
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.util.joinBlocking
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -21,7 +23,9 @@ class AsyncSink(
             for (task in channel) sink.task()
         }
         finally {
-            sink.close()
+            withContext(NonCancellable) {
+                sink.close()
+            }
         }
     }
 
