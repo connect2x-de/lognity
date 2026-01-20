@@ -78,9 +78,10 @@ fun ConfigBuilder.fileAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
-    name: String? = null
+    name: String? = null,
+    deleteExisting: Boolean = false
 ) { // @formatter:on
-    appender(createSystemFileAppender(path, pattern, formatter, filter, name))
+    appender(createSystemFileAppender(path, pattern, formatter, filter, name, deleteExisting))
 }
 
 /**
@@ -99,12 +100,13 @@ fun ConfigBuilder.rollingFileAppender( // @formatter:off
     filter: Filter = Filter.always,
     name: String? = null,
     maxFileCount: Int = 10,
-    maxFileSize: Long = 1024 * 10, // 10kB
-    useTimestamps: Boolean = true
+    maxFileSize: Long = 1024 * 1024, // 1MB
+    useTimestamps: Boolean = true,
+    deleteExisting: Boolean = false
 ) { // @formatter:on
     appender(
         createSystemRollingFileAppender(
-            basePath, pattern, formatter, filter, name, maxFileCount, maxFileSize, useTimestamps
+            basePath, pattern, formatter, filter, name, maxFileCount, maxFileSize, useTimestamps, deleteExisting
         )
     )
 }

@@ -22,7 +22,8 @@ class RollingAsyncSink( // @formatter:off
     val basePath: Path,
     val fileCount: Int,
     val maxFileSize: Long,
-    val useTimestamps: Boolean
+    val useTimestamps: Boolean,
+    val deleteExisting: Boolean
 ) : AutoCloseable { // @formatter:on
     private val fileNamePattern: Regex = compileFileNamePattern()
     private val channel: Channel<Sink.() -> Unit> = Channel(Channel.UNLIMITED)
@@ -31,11 +32,13 @@ class RollingAsyncSink( // @formatter:off
         var parentDir = basePath.parent
         if (parentDir == null) parentDir = SystemFileSystem.resolve(Path("."))
         else SystemFileSystem.createDirectories(parentDir)
-        // @formatter:off
-        SystemFileSystem.list(parentDir)
-            .filter { path -> SystemFileSystem.metadataOrNull(path)?.isRegularFile == true && fileNamePattern.matches(path.name) }
-            .forEach(SystemFileSystem::delete)
-        // @formatter:on
+        if(deleteExisting) {
+            // @formatter:off
+            SystemFileSystem.list(parentDir)
+                .filter { path -> SystemFileSystem.metadataOrNull(path)?.isRegularFile == true && fileNamePattern.matches(path.name) }
+                .forEach(SystemFileSystem::delete)
+            // @formatter:on
+        }
 
         var fileIndex = 0
         var path = resolveFilePath(fileIndex)
@@ -69,15 +72,15 @@ class RollingAsyncSink( // @formatter:off
         }
     }
 
-    private fun compileFileNamePattern(): Regex {
+    private fun compileFileNamePattern(suffix: String = ""): Regex {
         val timestampPattern = if (useTimestamps) "-(.+)" else ""
         val fileName = basePath.name
         return if ("." in fileName) {
             val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')).replace(".", "\\.")
             val fileExt = fileName.substring(fileName.lastIndexOf('.') + 1)
-            Regex("""$fileNameWithoutExt(\.[0-9]+)$timestampPattern(\.$fileExt)""")
+            Regex("""$fileNameWithoutExt(\.[0-9]+)$timestampPattern$suffix(\.$fileExt)""")
         }
-        else Regex("""$fileName(\.[0-9]+)$timestampPattern""")
+        else Regex("""$fileName(\.[0-9]+)$timestampPattern$suffix""")
     }
 
     @OptIn(ExperimentalTime::class)

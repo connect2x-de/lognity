@@ -45,7 +45,8 @@ internal expect fun createSystemFileAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
     filter: Filter,
-    name: String?
+    name: String?,
+    deleteExisting: Boolean
 ): Appender // @formatter:on
 
 internal expect fun createSystemRollingFileAppender( // @formatter:off
@@ -56,7 +57,8 @@ internal expect fun createSystemRollingFileAppender( // @formatter:off
     name: String?,
     fileCount: Int,
     maxFileSize: Long,
-    useTimestamps: Boolean
+    useTimestamps: Boolean,
+    deleteExisting: Boolean
 ): Appender // @formatter:on
 
 @OptIn(ExperimentalAtomicApi::class)

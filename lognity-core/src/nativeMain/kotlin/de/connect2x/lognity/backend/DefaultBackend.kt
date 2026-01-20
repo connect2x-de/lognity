@@ -19,8 +19,9 @@ internal actual fun createSystemFileAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
     filter: Filter,
-    name: String?
-): Appender = FileAppender(pattern, formatter, filter, Path(path), name) // @formatter:on
+    name: String?,
+    deleteExisting: Boolean
+): Appender = FileAppender(pattern, formatter, filter, Path(path), name, deleteExisting) // @formatter:on
 
 internal actual fun createSystemRollingFileAppender( // @formatter:off
     basePath: String,
@@ -30,7 +31,8 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
     name: String?,
     fileCount: Int,
     maxFileSize: Long,
-    useTimestamps: Boolean
+    useTimestamps: Boolean,
+    deleteExisting: Boolean
 ): Appender =
     RollingFileAppender(
         pattern,
@@ -40,7 +42,8 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
         name,
         fileCount,
         maxFileSize,
-        useTimestamps
+        useTimestamps,
+        deleteExisting
     ) // @formatter:on
 
 internal actual fun createSystemConsoleAppender( // @formatter:off
