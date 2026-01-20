@@ -8,14 +8,14 @@
             "type": "system_console",
             "name": "my_appender",
             "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
-            "formatter": "default",
-            "filter": {
-                "conditions": [
-                    {
-                        "type": "always"
-                    }
-                ]
-            }
+            "formatter": "default"
+        },
+        {
+            "type": "rolling_file",
+            "name": "my_file_appender",
+            "base_path": "example.log",
+            "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
+            "formatter": "default"
         }
     ]
 }

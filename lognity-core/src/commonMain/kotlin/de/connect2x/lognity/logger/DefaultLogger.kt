@@ -9,8 +9,10 @@ import de.connect2x.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalAtomicApi::class)
+@OptIn(ExperimentalAtomicApi::class, ExperimentalTime::class)
 @PublishedApi
 internal class DefaultLogger( // @formatter:off
     override val config: Config,
@@ -35,9 +37,10 @@ internal class DefaultLogger( // @formatter:off
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
+        val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, marker, appender.pattern), null
+                this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null
             )
         }
     }
@@ -47,9 +50,13 @@ internal class DefaultLogger( // @formatter:off
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
         val messageContent = message(AnsiScope)
+        val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, marker, appender.pattern), marker
+                this,
+                level,
+                appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern),
+                marker
             )
         }
     }

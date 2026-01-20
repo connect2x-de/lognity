@@ -9,7 +9,7 @@ import platform.posix.atexit
 
 @OptIn(ExperimentalForeignApi::class)
 internal actual object ShutdownHandler {
-    private val hooks: ArrayList<() -> Unit> = ArrayList()
+    private val hooks: ArrayList<Pair<() -> Unit, Int>> = ArrayList()
     private val mutex: Mutex = Mutex()
 
     init {
@@ -20,18 +20,18 @@ internal actual object ShutdownHandler {
         })
     }
 
-    private fun invokeAll() {
+    actual fun invokeAll() {
         runBlocking {
             mutex.withLock {
-                for (hook in hooks) hook()
+                for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
             }
         }
     }
 
-    actual fun register(block: () -> Unit) {
+    actual fun register(block: () -> Unit, priority: Int) {
         runBlocking {
             mutex.withLock {
-                hooks += block
+                hooks += block to priority
             }
         }
     }

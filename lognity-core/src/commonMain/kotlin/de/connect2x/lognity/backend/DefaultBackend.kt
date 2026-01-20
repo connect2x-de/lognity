@@ -16,6 +16,11 @@ import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -23,38 +28,53 @@ internal expect fun getDefaultLogLevel(): Level
 
 internal expect fun createSystemConsoleAppender( // @formatter:off
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemLogAppender( // @formatter:off
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemFileAppender( // @formatter:off
     path: String,
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?
 ): Appender // @formatter:on
 
 internal expect fun createSystemRollingFileAppender( // @formatter:off
     basePath: String,
     pattern: String,
-    formatter: Formatter = Formatter.default,
-    filter: Filter = Filter.always,
-    name: String? = null
+    formatter: Formatter,
+    filter: Filter,
+    name: String?,
+    fileCount: Int,
+    maxFileSize: Long,
+    useTimestamps: Boolean
 ): Appender // @formatter:on
 
 @OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
+
+    private val isCoroutineScopeProviderSet: AtomicBoolean = AtomicBoolean(false)
+    private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
+        val supervisorJob = SupervisorJob()
+        ShutdownHandler.register(supervisorJob::cancel, priority = 100)
+        CoroutineScope(Dispatchers.Default + supervisorJob + CoroutineName("Lognity"))
+    }
+
+    override val coroutineScope: CoroutineScope by lazy( // @formatter:off
+        mode = LazyThreadSafetyMode.SYNCHRONIZED,
+        initializer = coroutineScopeProvider.load()
+    ) // @formatter:on
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         systemLogAppender(
@@ -90,5 +110,12 @@ object DefaultBackend : Backend {
             contextSpec()
             name?.let(::Name)?.let(::value)
         })
+    }
+
+    override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
+        check(!isCoroutineScopeProviderSet.compareAndExchange(expectedValue = false, newValue = true)) {
+            "CoroutineScope provider was already set for logging backend"
+        }
+        coroutineScopeProvider.store(provider)
     }
 }

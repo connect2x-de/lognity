@@ -1,35 +1,39 @@
 package de.connect2x.lognity.appender
 
+import de.connect2x.lognity.api.ansi.toAnsi
+import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
+import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.backend.ShutdownHandler
+import de.connect2x.lognity.io.RollingAsyncSink
 import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
+import kotlinx.io.writeString
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+@OptIn(ExperimentalAtomicApi::class)
 class RollingFileAppender(
-    pattern: String, formatter: Formatter, filter: Filter, private val basePath: Path, name: String? = null
-) : FileAppender(pattern, formatter, filter, suffixFileName(basePath, "latest"), name) {
-    companion object {
-        private fun suffixFileName(path: Path, suffix: String): Path {
-            val fileName = path.name
-            val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'))
-            val fileExt = fileName.substring(fileName.lastIndexOf('.') + 1)
-            val parentPath = path.parent ?: Path("")
-            return Path(parentPath, "$fileNameWithoutExt-$suffix.$fileExt")
-        }
+    override val pattern: String,
+    override val formatter: Formatter,
+    override val filter: Filter,
+    basePath: Path,
+    override val name: String? = null,
+    fileCount: Int = 10,
+    maxFileSize: Long = 1024 * 50, // 50kB per default
+    useTimestamps: Boolean = true
+) : Appender {
+    private val sink: RollingAsyncSink = RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps)
+
+    init {
+        ShutdownHandler.register(sink::close, priority = 99)
     }
 
-    @OptIn(ExperimentalTime::class)
-    override fun dispose() {
-        sink.value.flush()
-        sink.release {
-            sinks -= path
-            val timestamp = Clock.System.now().format(DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)
-            val timestampedPath = suffixFileName(basePath, timestamp)
-            SystemFileSystem.atomicMove(path, timestampedPath) // Rename the latest file to the timestamped name
+    override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
+        sink.write {
+            writeString("${message.toAnsi().cleanString()}\n")
         }
     }
 }

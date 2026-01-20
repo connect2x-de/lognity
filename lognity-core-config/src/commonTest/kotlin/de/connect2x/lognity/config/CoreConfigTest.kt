@@ -24,7 +24,7 @@ class CoreConfigTest {
     fun `Empty file creates default config`() {
         val emptySource = Buffer()
         emptySource.writeString("{}")
-        val config = SerializableConfig.load(emptySource).createConfig()
+        val config = SerializableConfig.load(emptySource).asConfig()
         assertEquals(Level.default, config.initialLevel)
         assertTrue(config.initialEnableState)
         assertTrue(config.appenders.isEmpty())
@@ -40,7 +40,7 @@ class CoreConfigTest {
             }
         """.trimIndent()
         )
-        val config = SerializableConfig.load(source).createConfig()
+        val config = SerializableConfig.load(source).asConfig()
         assertEquals(Level.TRACE, config.initialLevel)
     }
 
@@ -54,7 +54,7 @@ class CoreConfigTest {
             }
         """.trimIndent()
         )
-        val config = SerializableConfig.load(source).createConfig()
+        val config = SerializableConfig.load(source).asConfig()
         assertTrue(config.initialEnableState)
     }
 
@@ -83,7 +83,7 @@ class CoreConfigTest {
             }
         """.trimIndent()
         )
-        val config = SerializableConfig.load(source).createConfig()
+        val config = SerializableConfig.load(source).asConfig()
         val appender = config.appenders.first()
         assertEquals("{{message}}", appender.pattern)
         assertSame(Backend.defaultFormatter, appender.formatter)
@@ -116,7 +116,7 @@ class CoreConfigTest {
             }
         """.trimIndent()
         )
-        val config = SerializableConfig.load(source).createConfig()
+        val config = SerializableConfig.load(source).asConfig()
         // If this is null, appender is not applicable to this platform
         val appender = config.appenders.firstOrNull() ?: return
         if (appender !is FileAppender) return

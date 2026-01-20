@@ -8,6 +8,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.api.marker.NoopMarker
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * A no-operation implementation of the [Backend] interface.
@@ -19,6 +21,7 @@ object NoopBackend : Backend {
     override val name: String = "NOOP"
     override val defaultLevel: Level = Level.WARN
     override val defaultFormatter: Formatter = Formatter.identity
+    override val coroutineScope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 
     override var configSpec: ConfigSpec
         get() = {}
@@ -33,4 +36,6 @@ object NoopBackend : Backend {
     override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker = NoopMarker
 
     override fun createLogger(name: String?, contextSpec: ContextSpec): Logger = NoopLogger
+
+    override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) = Unit
 }

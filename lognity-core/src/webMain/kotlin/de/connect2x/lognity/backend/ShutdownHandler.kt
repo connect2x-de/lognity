@@ -6,25 +6,29 @@ import web.events.EventHandler
 import web.window.window
 
 internal actual object ShutdownHandler {
-    private val hooks: ArrayList<() -> Unit> = ArrayList()
+    private val hooks: ArrayList<Pair<() -> Unit, Int>> = ArrayList()
 
     init {
-        registerHook()
+        registerAutomaticShutdown()
     }
 
-    private fun registerHook() {
-        fun runCallbacks() = hooks.forEach { hook -> hook() }
+    private fun registerAutomaticShutdown() {
         if (isNode) { // When we are running under Node, we need to insert signal handlers
             val process = getProcess()
-            process.on("SIGINT", ::runCallbacks)
-            process.on("SIGTERM", ::runCallbacks)
+            process.on("SIGINT", ::invokeAll)
+            process.on("SIGTERM", ::invokeAll)
+            process.on("exit", ::invokeAll)
             return
         }
         // Otherwise use the browser API
-        window.onbeforeunload = EventHandler { runCallbacks() }
+        window.onbeforeunload = EventHandler { invokeAll() }
     }
 
-    actual fun register(block: () -> Unit) {
-        hooks += block
+    actual fun register(block: () -> Unit, priority: Int) {
+        hooks += block to priority
+    }
+
+    actual fun invokeAll() {
+        for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
     }
 }

@@ -7,6 +7,7 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.coroutines.CoroutineScope
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -31,6 +32,7 @@ interface Backend {
         override val name: String get() = currentBackend.load().name
         override val defaultLevel: Level get() = currentBackend.load().defaultLevel
         override val defaultFormatter: Formatter get() = currentBackend.load().defaultFormatter
+        override val coroutineScope: CoroutineScope get() = currentBackend.load().coroutineScope
 
         override var configSpec: ConfigSpec
             get() = currentBackend.load().configSpec
@@ -53,6 +55,10 @@ interface Backend {
         override fun createLogger(
             name: String?, contextSpec: ContextSpec
         ): Logger = currentBackend.load().createLogger(name, contextSpec)
+
+        override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
+            currentBackend.load().setCoroutineScopeProvider(provider)
+        }
     }
 
     /**
@@ -85,6 +91,10 @@ interface Backend {
      * with this spec to create the actual context of the new logger.
      */
     var contextSpec: ContextSpec
+
+    val coroutineScope: CoroutineScope
+
+    fun setCoroutineScopeProvider(provider: () -> CoroutineScope)
 
     /**
      * Register the given shutdown hook to be invoked when the application terminates.

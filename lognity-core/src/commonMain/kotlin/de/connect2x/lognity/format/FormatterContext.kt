@@ -4,6 +4,9 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Context object provided to formatters when rendering log messages.
@@ -19,10 +22,13 @@ import de.connect2x.lognity.api.marker.Marker
  * @property level The effective log [Level] for this event. Defaults to [Level.default].
  * @property content The log message content or payload. Often a [String] but may be any type.
  * @property marker Optional [Marker] attached to the event for additional context or routing.
+ * @property timestamp The timestamp of the current log message being formatted.
  */
+@OptIn(ExperimentalTime::class)
 data class FormatterContext( // @formatter:off
     var logger: Logger = NoopLogger,
     var level: Level = Level.default,
     var content: Any = "",
-    var marker: Marker? = null
+    var marker: Marker? = null,
+    var timestamp: Instant = Clock.System.now(),
 ) // @formatter:on

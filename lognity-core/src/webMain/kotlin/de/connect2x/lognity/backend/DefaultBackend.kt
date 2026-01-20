@@ -37,5 +37,8 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,
     filter: Filter,
-    name: String?
-): Appender = if(isNode) RollingFileAppender(pattern, formatter, filter, Path(basePath), name) else NoopAppender // @formatter:on
+    name: String?,
+    fileCount: Int,
+    maxFileSize: Long,
+    useTimestamps: Boolean
+): Appender = if(isNode) RollingFileAppender(pattern, formatter, filter, Path(basePath), name, fileCount, maxFileSize, useTimestamps) else NoopAppender // @formatter:on

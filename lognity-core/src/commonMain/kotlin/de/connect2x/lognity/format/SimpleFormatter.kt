@@ -15,6 +15,7 @@ import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * A simple, fast log message formatter that compiles format strings once and reuses them.
@@ -32,6 +33,7 @@ import kotlin.time.ExperimentalTime
  *   format strings. The keys represent placeholder names that can be used in format strings and the
  *   values define how those placeholders are rendered from a [FormatterContext].
  */
+@OptIn(ExperimentalTime::class)
 class SimpleFormatter(
     private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
 ) : Formatter {
@@ -84,13 +86,13 @@ class SimpleFormatter(
             "level" to CompiledFormat.Variable { ctx -> paddedLevelNames[ctx.level.ordinal] },
             "levelSymbol" to CompiledFormat.Variable { ctx -> ctx.level.symbol },
             "name" to CompiledFormat.Variable { ctx -> ctx.logger.context[Logger.Name]?.name ?: "" },
-            "yyyy" to CompiledFormat.Variable { Clock.System.now().format(yearFormat) },
-            "MM" to CompiledFormat.Variable { Clock.System.now().format(monthFormat) },
-            "dd" to CompiledFormat.Variable { Clock.System.now().format(dayFormat) },
-            "hh" to CompiledFormat.Variable { Clock.System.now().format(hourFormat) },
-            "mm" to CompiledFormat.Variable { Clock.System.now().format(minuteFormat) },
-            "ss" to CompiledFormat.Variable { Clock.System.now().format(secondFormat) },
-            "SSS" to CompiledFormat.Variable { Clock.System.now().format(secondFractionFormat) }
+            "yyyy" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(yearFormat) },
+            "MM" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(monthFormat) },
+            "dd" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(dayFormat) },
+            "hh" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(hourFormat) },
+            "mm" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(minuteFormat) },
+            "ss" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFormat) },
+            "SSS" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFractionFormat) }
         )) // @formatter:on
     }
 
@@ -110,13 +112,16 @@ class SimpleFormatter(
      * @param s The format string containing placeholders to resolve.
      * @return The formatted log line.
      */
-    override operator fun invoke(logger: Logger, level: Level, content: Any, marker: Marker?, s: String): String {
+    override operator fun invoke(
+        logger: Logger, level: Level, content: Any, marker: Marker?, timestamp: Instant, s: String
+    ): String {
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
         return format(context.get().apply {
             this.logger = logger
             this.level = level
             this.content = content
             this.marker = marker
+            this.timestamp = timestamp
         })
     }
 }

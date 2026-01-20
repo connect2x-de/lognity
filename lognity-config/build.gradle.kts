@@ -98,6 +98,8 @@ kotlin {
                 implementation(sharedLibs.kotlinx.serialization.core)
                 implementation(sharedLibs.kotlinx.serialization.json)
                 implementation(sharedLibs.kotlinx.coroutines.core)
+                implementation(libs.stately.common)
+                implementation(libs.stately.collections)
             }
         }
         commonTest {
