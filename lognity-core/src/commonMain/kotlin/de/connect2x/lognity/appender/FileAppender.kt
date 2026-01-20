@@ -9,7 +9,6 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.AsyncSink
-import de.connect2x.lognity.util.RefCounted
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
 
@@ -34,15 +33,15 @@ class FileAppender( // @formatter:off
     val path: Path,
     override val name: String? = null,
 ) : Appender { // @formatter:on
-    val sink: RefCounted<AsyncSink> = AsyncSink.getOrOpen(path)
+    val sink: AsyncSink = AsyncSink(path)
 
     init {
-        ShutdownHandler.register(sink::release, priority = 99)
+        ShutdownHandler.register(sink::close, priority = 99)
     }
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (level < logger.level || message.isEmpty() || !filter(level, message, marker)) return
-        sink.value.write {
+        sink.write {
             writeString("${message.toAnsi().cleanString()}\n")
         }
     }

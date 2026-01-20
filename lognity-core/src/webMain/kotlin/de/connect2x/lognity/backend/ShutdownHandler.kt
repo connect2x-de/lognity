@@ -15,20 +15,20 @@ internal actual object ShutdownHandler {
     private fun registerAutomaticShutdown() {
         if (isNode) { // When we are running under Node, we need to insert signal handlers
             val process = getProcess()
-            process.on("SIGINT", ::shutdown)
-            process.on("SIGTERM", ::shutdown)
-            process.on("exit", ::shutdown)
+            process.on("SIGINT", ::invokeAll)
+            process.on("SIGTERM", ::invokeAll)
+            process.on("exit", ::invokeAll)
             return
         }
         // Otherwise use the browser API
-        window.onbeforeunload = EventHandler { shutdown() }
+        window.onbeforeunload = EventHandler { invokeAll() }
     }
 
     actual fun register(block: () -> Unit, priority: Int) {
         hooks += block to priority
     }
 
-    private fun shutdown() {
+    actual fun invokeAll() {
         for ((hook, _) in hooks.sortedBy(Pair<() -> Unit, Int>::second)) hook()
     }
 }
