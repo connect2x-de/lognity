@@ -21,9 +21,10 @@ class RollingFileAppender(
     basePath: Path,
     override val name: String? = null,
     fileCount: Int = 10,
-    maxFileSize: Long = 1024 * 50 // 50kB per default
+    maxFileSize: Long = 1024 * 50, // 50kB per default
+    useTimestamps: Boolean = true
 ) : Appender {
-    private val sink: RollingAsyncSink = RollingAsyncSink(basePath, fileCount, maxFileSize)
+    private val sink: RollingAsyncSink = RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps)
 
     init {
         ShutdownHandler.register(sink::close, priority = 99)

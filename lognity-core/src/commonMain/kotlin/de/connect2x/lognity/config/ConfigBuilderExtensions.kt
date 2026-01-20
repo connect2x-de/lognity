@@ -99,7 +99,12 @@ fun ConfigBuilder.rollingFileAppender( // @formatter:off
     filter: Filter = Filter.always,
     name: String? = null,
     maxFileCount: Int = 10,
-    maxFileSize: Long = 1024 * 10 // 10kB
+    maxFileSize: Long = 1024 * 10, // 10kB
+    useTimestamps: Boolean = true
 ) { // @formatter:on
-    appender(createSystemRollingFileAppender(basePath, pattern, formatter, filter, name, maxFileCount, maxFileSize))
+    appender(
+        createSystemRollingFileAppender(
+            basePath, pattern, formatter, filter, name, maxFileCount, maxFileSize, useTimestamps
+        )
+    )
 }

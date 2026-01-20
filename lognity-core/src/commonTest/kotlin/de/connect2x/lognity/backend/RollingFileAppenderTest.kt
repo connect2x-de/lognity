@@ -17,7 +17,32 @@ class RollingFileAppenderTest {
     fun `File rotates on specified size boundary`() {
         Backend.configSpec = {
             systemConsoleAppender("{{message}}")
-            rollingFileAppender("rolling_file_test.log", "{{message}}", maxFileCount = 2, maxFileSize = 1024)
+            rollingFileAppender(
+                basePath = "rolling_file_size_test.log",
+                pattern = "{{message}}",
+                maxFileCount = 2,
+                maxFileSize = 1024,
+                useTimestamps = false
+            )
+        }
+        val logger = Logger()
+        val line = "X".repeat(127)
+        for (i in 0..<10) {
+            logger.info { line }
+        }
+    }
+
+    @Test
+    fun `File rotates and wraps around after last segment`() {
+        Backend.configSpec = {
+            systemConsoleAppender("{{message}}")
+            rollingFileAppender(
+                basePath = "rolling_file_wrap_test.log",
+                pattern = "{{message}}",
+                maxFileCount = 2,
+                maxFileSize = 300,
+                useTimestamps = false
+            )
         }
         val logger = Logger()
         val line = "X".repeat(127)

@@ -49,7 +49,16 @@ object CoreConfigExtension : ConfigExtension {
         }
         // Rolling file
         registerAppenderType<RollingFileAppender> { config, formatter ->
-            rollingFileAppender(config.basePath, config.pattern, formatter, config.filter, config.name, config.fileCount, config.maxFileSize)
+            rollingFileAppender(
+                config.basePath,
+                config.pattern,
+                formatter,
+                config.filter,
+                config.name,
+                config.fileCount,
+                config.maxFileSize,
+                config.useTimestamps
+            )
         }
         registerPlatformAppenderTypes()
     }

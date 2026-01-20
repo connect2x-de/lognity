@@ -55,7 +55,8 @@ internal expect fun createSystemRollingFileAppender( // @formatter:off
     filter: Filter,
     name: String?,
     fileCount: Int,
-    maxFileSize: Long
+    maxFileSize: Long,
+    useTimestamps: Boolean
 ): Appender // @formatter:on
 
 @OptIn(ExperimentalAtomicApi::class)

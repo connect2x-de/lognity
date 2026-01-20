@@ -13,5 +13,6 @@ data class RollingFileAppender(
     override val filter: SerializableFilter = SerializableFilter(),
     override val name: String? = null,
     @SerialName("file_count") val fileCount: Int = 10,
-    @SerialName("max_file_size") val maxFileSize: Long = 1024 * 50 // 50kB per default
+    @SerialName("max_file_size") val maxFileSize: Long = 1024 * 1024, // 1MB per default
+    @SerialName("use_timestamps") val useTimestamps: Boolean = true
 ) : SerializableAppender
