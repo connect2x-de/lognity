@@ -224,11 +224,28 @@
                             },
                             "file_count": {
                                 "type": "integer",
-                                "description": "The number of files used as a ring buffer."
+                                "description": "The number of files used as a ring buffer.",
+                                "default": 10
                             },
                             "max_file_size": {
                                 "type": "integer",
-                                "description": "The maximum size of each segment file."
+                                "description": "The maximum size of each segment file.",
+                                "default": 1048576
+                            },
+                            "use_timestamps": {
+                                "type": "boolean",
+                                "description": "Whether this appender adds timestamps to the file name when updating segments.",
+                                "default": true
+                            },
+                            "delete_existing": {
+                                "type": "boolean",
+                                "description": "Whether existing log files are deleted before logging begins.",
+                                "default": false
+                            },
+                            "latest_suffix": {
+                                "type": "string",
+                                "description": "The suffix added to the last touched log file.",
+                                "default": "-latest"
                             }
                         },
                         "required": [

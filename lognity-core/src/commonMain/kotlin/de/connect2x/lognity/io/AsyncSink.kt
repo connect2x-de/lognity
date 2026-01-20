@@ -12,13 +12,15 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 
-class AsyncSink(
-    val path: Path
-) : AutoCloseable {
+class AsyncSink( // @formatter:off
+    val path: Path,
+    val deleteExisting: Boolean = false
+) : AutoCloseable { // @formatter:on
     private val channel: Channel<Sink.() -> Unit> = Channel(Channel.UNLIMITED)
 
     private val job: Job = DefaultBackend.coroutineScope.launch {
-        var sink = SystemFileSystem.sink(path).buffered()
+        if (deleteExisting) SystemFileSystem.delete(path, mustExist = false)
+        var sink = SystemFileSystem.sink(path, append = true).buffered()
         try {
             for (task in channel) sink.task()
         }

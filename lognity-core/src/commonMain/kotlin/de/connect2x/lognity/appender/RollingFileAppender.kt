@@ -18,13 +18,22 @@ class RollingFileAppender(
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
-    basePath: Path,
+    val basePath: Path,
     override val name: String? = null,
-    fileCount: Int = 10,
-    maxFileSize: Long = 1024 * 50, // 50kB per default
-    useTimestamps: Boolean = true
+    fileCount: Int = DEFAULT_FILE_COUNT,
+    maxFileSize: Long = DEFAULT_FILE_SIZE,
+    useTimestamps: Boolean = true,
+    deleteExisting: Boolean = false,
+    latestSuffix: String = DEFAULT_LATEST_SUFFIX
 ) : Appender {
-    private val sink: RollingAsyncSink = RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps)
+    companion object {
+        const val DEFAULT_FILE_COUNT: Int = 8
+        const val DEFAULT_FILE_SIZE: Long = 1024 * 1024 * 10 // 10MB
+        const val DEFAULT_LATEST_SUFFIX: String = "-latest"
+    }
+
+    private val sink: RollingAsyncSink =
+        RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps, deleteExisting, latestSuffix)
 
     init {
         ShutdownHandler.register(sink::close, priority = 99)

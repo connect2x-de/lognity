@@ -32,8 +32,9 @@ class FileAppender( // @formatter:off
     override val filter: Filter,
     val path: Path,
     override val name: String? = null,
+    deleteExisting: Boolean = false
 ) : Appender { // @formatter:on
-    val sink: AsyncSink = AsyncSink(path)
+    val sink: AsyncSink = AsyncSink(path, deleteExisting)
 
     init {
         ShutdownHandler.register(sink::close, priority = 99)
