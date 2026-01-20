@@ -1,6 +1,7 @@
 package de.connect2x.lognity.io
 
 import de.connect2x.lognity.backend.DefaultBackend
+import de.connect2x.lognity.util.joinBlocking
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -41,7 +42,7 @@ class RollingAsyncSink( // @formatter:off
         try {
             for (task in channel) {
                 sink.task()
-                sink.emit() // Ensure new data is emitted, not flushed
+                sink.flush()
                 val fileSize = SystemFileSystem.metadataOrNull(path)?.size ?: 0L
                 if (fileSize >= maxFileSize) {
                     if (fileIndex < fileCount) fileIndex++
@@ -64,6 +65,6 @@ class RollingAsyncSink( // @formatter:off
 
     override fun close() {
         channel.close()
-        job.cancel()
+        job.joinBlocking()
     }
 }
