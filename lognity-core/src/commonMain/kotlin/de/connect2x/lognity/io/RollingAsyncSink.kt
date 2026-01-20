@@ -97,16 +97,19 @@ class RollingAsyncSink( // @formatter:off
         if (deleteExisting) deleteExisting()
 
         var (fileIndex, path) = getInitialState()
-        var sink = SystemFileSystem.sink(path, append = true).buffered()
+        val initialSize = SystemFileSystem.metadataOrNull(path)?.size ?: 0L
+        var sink = SystemFileSystem.sink(path, append = true).asCounting(initialSize)
+        var bufferedSink = sink.buffered()
         val pathBuffer = restorePathBuffer(fileIndex, path)
 
         try {
             for (task in channel) {
-                sink.task()
-                sink.flush()
-                val fileSize = SystemFileSystem.metadataOrNull(path)?.size ?: 0L
-                if (fileSize >= maxFileSize) {
-                    sink.close()
+                bufferedSink.task()
+                //bufferedSink.emit()
+                //bufferedSink.flush()
+                //val fileSize = SystemFileSystem.metadataOrNull(path)?.size ?: 0L
+                if (sink.bytesWritten >= maxFileSize) {
+                    bufferedSink.close()
 
                     if (latestSuffix.isNotEmpty()) {
                         val oldRenamedPath = removeLatestSuffix(path)
@@ -122,13 +125,14 @@ class RollingAsyncSink( // @formatter:off
                     pathBuffer[fileIndex] = path
 
                     SystemFileSystem.delete(path, mustExist = false)
-                    sink = SystemFileSystem.sink(path).buffered()
+                    sink = SystemFileSystem.sink(path).asCounting()
+                    bufferedSink = sink.buffered()
                 }
             }
         }
         finally {
             withContext(NonCancellable) {
-                sink.close()
+                bufferedSink.close()
             }
         }
     }

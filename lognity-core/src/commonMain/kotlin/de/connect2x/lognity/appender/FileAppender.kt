@@ -30,7 +30,7 @@ class FileAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
-    path: Path,
+    val path: Path,
     override val name: String? = null,
     deleteExisting: Boolean = false
 ) : Appender { // @formatter:on

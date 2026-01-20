@@ -18,7 +18,7 @@ class RollingFileAppender(
     override val pattern: String,
     override val formatter: Formatter,
     override val filter: Filter,
-    basePath: Path,
+    val basePath: Path,
     override val name: String? = null,
     fileCount: Int = DEFAULT_FILE_COUNT,
     maxFileSize: Long = DEFAULT_FILE_SIZE,
