@@ -105,9 +105,6 @@ class RollingAsyncSink( // @formatter:off
         try {
             for (task in channel) {
                 bufferedSink.task()
-                //bufferedSink.emit()
-                //bufferedSink.flush()
-                //val fileSize = SystemFileSystem.metadataOrNull(path)?.size ?: 0L
                 if (sink.bytesWritten >= maxFileSize) {
                     bufferedSink.close()
 
