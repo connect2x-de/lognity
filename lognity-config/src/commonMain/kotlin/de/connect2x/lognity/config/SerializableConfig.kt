@@ -101,7 +101,7 @@ data class SerializableConfig( // @formatter:off
 
     private val cachedConfig: Config by lazy {
         Config {
-            level = this@SerializableConfig.level
+            level = getCombinedLevel()
             isEnabled = enabled
             for (appender in appenders) {
                 val formatter = extensionRegistrar.formatterTypes[appender.formatter] ?: continue
@@ -109,6 +109,12 @@ data class SerializableConfig( // @formatter:off
                 factory(appender, formatter)
             }
         }
+    }
+
+    fun getCombinedLevel(): Level {
+        val defaultLevel = Level.default
+        return if (level < defaultLevel) level
+        else defaultLevel
     }
 
     @ConfigDsl
