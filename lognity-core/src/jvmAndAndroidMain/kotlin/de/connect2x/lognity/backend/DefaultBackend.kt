@@ -25,5 +25,19 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
     fileCount: Int,
     maxFileSize: Long,
     useTimestamps: Boolean,
-    deleteExisting: Boolean
-): Appender = RollingFileAppender(pattern, formatter, filter, Path(basePath), name, fileCount, maxFileSize, useTimestamps, deleteExisting) // @formatter:on
+    deleteExisting: Boolean,
+    latestSuffix: String
+): Appender { // @formatter:on
+    return RollingFileAppender(
+        pattern,
+        formatter,
+        filter,
+        Path(basePath),
+        name,
+        fileCount,
+        maxFileSize,
+        useTimestamps,
+        deleteExisting,
+        latestSuffix
+    )
+}

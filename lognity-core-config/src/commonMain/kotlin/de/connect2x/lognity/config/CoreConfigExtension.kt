@@ -58,7 +58,8 @@ object CoreConfigExtension : ConfigExtension {
                 config.fileCount,
                 config.maxFileSize,
                 config.useTimestamps,
-                config.deleteExisting
+                config.deleteExisting,
+                config.latestSuffix
             )
         }
         registerPlatformAppenderTypes()

@@ -5,6 +5,7 @@ import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.config.ConfigDsl
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ConsoleAppender
+import de.connect2x.lognity.appender.RollingFileAppender
 import de.connect2x.lognity.backend.createSystemConsoleAppender
 import de.connect2x.lognity.backend.createSystemFileAppender
 import de.connect2x.lognity.backend.createSystemLogAppender
@@ -99,14 +100,24 @@ fun ConfigBuilder.rollingFileAppender( // @formatter:off
     formatter: Formatter = Formatter.default,
     filter: Filter = Filter.always,
     name: String? = null,
-    maxFileCount: Int = 10,
-    maxFileSize: Long = 1024 * 1024, // 1MB
+    maxFileCount: Int = RollingFileAppender.DEFAULT_FILE_COUNT,
+    maxFileSize: Long = RollingFileAppender.DEFAULT_FILE_SIZE,
     useTimestamps: Boolean = true,
-    deleteExisting: Boolean = false
+    deleteExisting: Boolean = false,
+    latestSuffix: String = RollingFileAppender.DEFAULT_LATEST_SUFFIX
 ) { // @formatter:on
     appender(
         createSystemRollingFileAppender(
-            basePath, pattern, formatter, filter, name, maxFileCount, maxFileSize, useTimestamps, deleteExisting
+            basePath,
+            pattern,
+            formatter,
+            filter,
+            name,
+            maxFileCount,
+            maxFileSize,
+            useTimestamps,
+            deleteExisting,
+            latestSuffix
         )
     )
 }

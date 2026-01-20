@@ -31,7 +31,17 @@ internal actual fun createSystemFileAppender( // @formatter:off
     filter: Filter,
     name: String?,
     deleteExisting: Boolean
-): Appender = if (isNode) FileAppender(pattern, formatter, filter, Path(path), name, deleteExisting) else NoopAppender // @formatter:on
+): Appender { // @formatter:on
+    return if (isNode) FileAppender( // @formatter:off
+        pattern,
+        formatter,
+        filter,
+        Path(path),
+        name,
+        deleteExisting
+    ) // @formatter:on
+    else NoopAppender
+}
 
 internal actual fun createSystemRollingFileAppender( // @formatter:off
     basePath: String,
@@ -42,5 +52,20 @@ internal actual fun createSystemRollingFileAppender( // @formatter:off
     fileCount: Int,
     maxFileSize: Long,
     useTimestamps: Boolean,
-    deleteExisting: Boolean
-): Appender = if(isNode) RollingFileAppender(pattern, formatter, filter, Path(basePath), name, fileCount, maxFileSize, useTimestamps, deleteExisting) else NoopAppender // @formatter:on
+    deleteExisting: Boolean,
+    latestSuffix: String
+): Appender { // @formatter:on
+    return if (isNode) RollingFileAppender(
+        pattern,
+        formatter,
+        filter,
+        Path(basePath),
+        name,
+        fileCount,
+        maxFileSize,
+        useTimestamps,
+        deleteExisting,
+        latestSuffix
+    )
+    else NoopAppender
+}
