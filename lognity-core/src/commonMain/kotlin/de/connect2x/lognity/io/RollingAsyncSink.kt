@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.io.InternalIoApi
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -28,7 +27,6 @@ class RollingAsyncSink( // @formatter:off
     private val fileNamePattern: Regex = compileFileNamePattern()
     private val channel: Channel<Sink.() -> Unit> = Channel(Channel.UNLIMITED)
 
-    @OptIn(InternalIoApi::class)
     private val job: Job = DefaultBackend.coroutineScope.launch {
         var parentDir = basePath.parent
         if (parentDir == null) parentDir = SystemFileSystem.resolve(Path("."))
