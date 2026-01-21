@@ -49,7 +49,7 @@ build:
   rules:
     - *if-merge-request
   script:
-    - ./gradlew clean build
+    - ./gradlew build
 
 security:dependencies:
   stage: security
@@ -81,20 +81,48 @@ security:dependencies:
     - trivy repo ./ --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output report.json
     - trivy repo ./ --exit-code 1 --severity CRITICAL
 
-publish:release:
+publish:release:linux:
+  stage: publish
+  timeout: 3h
+  image: $BUILD_LINUX_IMAGE_NAME
+  tags: [ "connect2x-linux" ]
+  rules:
+    - *if-release
+  script:
+    - ./gradlew
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,Jvm,AndroidNativeArm32,AndroidNativeArm64,AndroidNativeX64,AndroidNativeX86}PublicationToGitlabRepository
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,Jvm,AndroidNativeArm32,AndroidNativeArm64,AndroidNativeX64,AndroidNativeX86}PublicationToSonatypeRepository
+      closeAndReleaseStagingRepositories
+
+publish:release:macos:
   stage: publish
   timeout: 3h
   tags: [ "connect2x-mac" ]
   rules:
     - *if-release
   script:
-    - ./gradlew publishAllPublicationsToGitLabRepository publishToSonatype closeAndReleaseStagingRepositories
+    - ./gradlew
+      publish{MacosX64,MacosArm64,IosArm64,IosSimulatorArm64,IosX64}PublicationToGitLabRepository
+      publish{MacosX64,MacosArm64,IosArm64,IosSimulatorArm64,IosX64}PublicationToSonatypeRepository
+      closeAndReleaseStagingRepositories
 
-publish:snapshot:
+publish:snapshot:linux:
+  stage: publish
+  timeout: 3h
+  image: $BUILD_LINUX_IMAGE_NAME
+  tags: [ "connect2x-linux" ]
+  rules:
+    - *if-release
+  script:
+    - ./gradlew
+      publish{KotlinMultiplatform,Js,WasmJs,AndroidRelease,AndroidDebug,Jvm,AndroidNativeArm32,AndroidNativeArm64,AndroidNativeX64,AndroidNativeX86}PublicationToGitlabRepository
+
+publish:snapshot:macos:
   stage: publish
   timeout: 3h
   tags: [ "connect2x-mac" ]
   rules:
-    - *if-main
+    - *if-release
   script:
-    - ./gradlew publishAllPublicationsToGitLabRepository
+    - ./gradlew
+      publish{MacosX64,MacosArm64,IosArm64,IosSimulatorArm64,IosX64}PublicationToGitLabRepository
