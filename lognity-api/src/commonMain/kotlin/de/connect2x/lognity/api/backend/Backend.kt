@@ -92,12 +92,22 @@ interface Backend {
      */
     var contextSpec: ContextSpec
 
+    /**
+     * The coroutine scope used by the backend for asynchronous operations.
+     */
     val coroutineScope: CoroutineScope
 
+    /**
+     * Sets the provider for the coroutine scope used by the backend.
+     *
+     * @param provider A function that returns a [CoroutineScope].
+     */
     fun setCoroutineScopeProvider(provider: () -> CoroutineScope)
 
     /**
      * Register the given shutdown hook to be invoked when the application terminates.
+     *
+     * @param hook The function to be invoked on shutdown.
      */
     fun addShutdownHook(hook: () -> Unit)
 
@@ -112,10 +122,10 @@ interface Backend {
     fun createMarker(key: String, name: String, isEnabled: Boolean): Marker
 
     /**
-     * Creates a new logger with the specified name and configuration.
+     * Creates a new logger with the specified name and context specification.
      *
      * @param name The name of the logger, typically following a hierarchical naming convention.
-     * @param configSpec The configuration specification for the logger. Defaults to the backend's default configuration.
+     * @param contextSpec The context specification for the logger.
      * @return A new logger instance.
      */
     fun createLogger(

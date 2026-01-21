@@ -24,7 +24,7 @@ interface Marker {
 }
 
 /**
- * Create a default log marker which is enabled by default.
+ * Creates a default log marker which is enabled by default.
  *
  * @param key The key the marker is identified by.
  * @param name The name of the marker that is actually printed when {{marker}} is used.

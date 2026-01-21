@@ -32,6 +32,10 @@ interface Context {
 
     /**
      * Returns the element associated with [key] or null if none exist.
+     *
+     * @param T The type of the element.
+     * @param key The key to look up.
+     * @return The element associated with the key, or null if not found.
      */
     operator fun <T : Element> get(key: Key<T>): T?
 
@@ -39,6 +43,9 @@ interface Context {
      * Creates a new context that contains the elements of this context plus those
      * from [other]. If the same [Key] appears in both, elements are merged; duplicates
      * (by equality) are de-duplicated.
+     *
+     * @param other The other context to merge with.
+     * @return A new context containing elements from both contexts.
      */
     operator fun plus(other: Context): Context
 }
