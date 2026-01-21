@@ -112,6 +112,11 @@ data class SerializableConfig( // @formatter:off
         }
     }
 
+    /**
+     * Calculates the combined log level.
+     *
+     * @return the resolved log level.
+     */
     fun getCombinedLevel(): Level {
         val defaultLevel = Level.default
         val level = this.level.resolve()
@@ -119,10 +124,18 @@ data class SerializableConfig( // @formatter:off
         else defaultLevel
     }
 
+    /**
+     * Applies this configuration to the given [ConfigBuilder].
+     */
     @ConfigDsl
     context(builder: ConfigBuilder)
     fun applyConfig() = builder.setFrom(cachedConfig)
 
+    /**
+     * Returns this configuration as a [Config] instance.
+     *
+     * @return the [Config] instance.
+     */
     fun asConfig(): Config = cachedConfig
 
     /**

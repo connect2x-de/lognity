@@ -43,11 +43,23 @@ class ConfigExtensionRegistrar internal constructor() {
         return providers[name] as? () -> T
     }
 
+    /**
+     * Registers a configuration provider.
+     *
+     * @param name the name of the provider.
+     * @param provider the provider function.
+     */
     fun registerProvider(name: String, provider: () -> Any?) {
         require(name !in providers) { "Config provider named '$name' already exists" }
         providers[name] = provider
     }
 
+    /**
+     * Registers a formatter type.
+     *
+     * @param name the name of the formatter type.
+     * @param formatter the formatter instance.
+     */
     fun registerFormatterType(name: String, formatter: Formatter) {
         require(name !in formatterTypes) { "Formatter type '$name' already exists" }
         formatterTypes[name] = formatter

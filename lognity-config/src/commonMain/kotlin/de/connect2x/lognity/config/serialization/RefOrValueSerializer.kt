@@ -11,6 +11,16 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonPrimitive
 
+/**
+ * Serializer for [RefOrValue] that handles both direct values and string references.
+ *
+ * References are denoted by curly braces, e.g., `{myReference}`.
+ * If the value is a string, it can also contain multiple references interspersed with literals,
+ * which will be parsed into a [RefOrValue.LerpedString].
+ *
+ * @param T the type of the value being wrapped.
+ * @property valueSerializer the serializer for the underlying value type.
+ */
 @OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)
 class RefOrValueSerializer<T>(
     private val valueSerializer: KSerializer<T>

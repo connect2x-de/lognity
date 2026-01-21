@@ -12,7 +12,18 @@ import kotlinx.serialization.Polymorphic
  */
 @Polymorphic
 interface SerializableCondition {
+    /**
+     * Optional name for this condition.
+     */
     val name: RefOrValue<String?>
 
+    /**
+     * Evaluates the condition.
+     *
+     * @param level the log level.
+     * @param message the log message.
+     * @param marker the log marker.
+     * @return true if the condition is met, false otherwise.
+     */
     operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
 }

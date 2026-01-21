@@ -12,8 +12,23 @@ import kotlinx.serialization.Polymorphic
  */
 @Polymorphic
 interface SerializableAppender {
+    /**
+     * The log pattern to use for this appender.
+     */
     val pattern: RefOrValue<String>
+
+    /**
+     * The name of the formatter to use for this appender.
+     */
     val formatter: RefOrValue<String>
+
+    /**
+     * The filter to apply to this appender.
+     */
     val filter: RefOrValue<SerializableFilter>
+
+    /**
+     * Optional name for this appender.
+     */
     val name: RefOrValue<String?>
 }
