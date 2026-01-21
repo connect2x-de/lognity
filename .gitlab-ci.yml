@@ -15,7 +15,9 @@ variables:
   GRADLE_OPTS: -Dorg.gradle.daemon=false
   GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
   KONAN_DATA_DIR: $CI_PROJECT_DIR/.konan
-  BUILD_LINUX_IMAGE_NAME: registry.gitlab.com/trixnity/kmp-dockerfiles/kmp-dockerfiles-base:latest
+  KOTLIN_DATA_DIR: $CI_PROJECT_DIR/.kotlin
+  BUILD_LINUX_IMAGE_NAME: registry.gitlab.com/connect2x/build-infrastructure/kmp-dockerfiles/kmp-dockerfiles-base:latest
+  FF_USE_FASTZIP: "true"
 
 .artifact-reports: &artifact-reports
   name: reports
