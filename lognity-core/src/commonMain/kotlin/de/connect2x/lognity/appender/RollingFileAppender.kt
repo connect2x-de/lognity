@@ -13,6 +13,20 @@ import kotlinx.io.files.Path
 import kotlinx.io.writeString
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+/**
+ * An appender that writes log messages to files with rolling capabilities.
+ *
+ * @property pattern The pattern used for formatting log messages.
+ * @property formatter The formatter used to format log events.
+ * @property filter The filter used to decide whether to log a message.
+ * @property basePath The base path to the log files.
+ * @property name The optional name of the appender.
+ * @param fileCount The maximum number of log files to keep.
+ * @param maxFileSize The maximum size in bytes for a single log file.
+ * @param useTimestamps If true, timestamps will be used in log file names.
+ * @param deleteExisting If true, any existing files at the given path will be deleted upon initialization.
+ * @param latestSuffix The suffix used for the current active log file.
+ */
 @OptIn(ExperimentalAtomicApi::class)
 class RollingFileAppender(
     override val pattern: String,
@@ -27,12 +41,26 @@ class RollingFileAppender(
     latestSuffix: String = DEFAULT_LATEST_SUFFIX
 ) : Appender {
     companion object {
+        /**
+         * Default maximum number of log files to keep.
+         */
         const val DEFAULT_FILE_COUNT: Int = 8
+
+        /**
+         * Default maximum size in bytes for a single log file (10MB).
+         */
         const val DEFAULT_FILE_SIZE: Long = 1024 * 1024 * 10 // 10MB
+
+        /**
+         * Default suffix used for the current active log file.
+         */
         const val DEFAULT_LATEST_SUFFIX: String = "-latest"
     }
 
-    private val sink: RollingAsyncSink =
+    /**
+     * The asynchronous sink used for writing to files with rolling capabilities.
+     */
+    val sink: RollingAsyncSink =
         RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps, deleteExisting, latestSuffix)
 
     init {

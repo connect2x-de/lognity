@@ -12,6 +12,16 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 
+/**
+ * An asynchronous, thread-safe wrapper around a [kotlinx.io.Sink] for file operations.
+ *
+ * It uses a [Channel] to queue write tasks which are executed sequentially by a
+ * dedicated coroutine. This ensures that file I/O doesn't block the calling thread
+ * and provides thread-safety for concurrent writes.
+ *
+ * @property path The file system path to write to.
+ * @property deleteExisting If true, any existing file at [path] will be deleted before starting.
+ */
 class AsyncSink( // @formatter:off
     val path: Path,
     val deleteExisting: Boolean = false
@@ -31,12 +41,20 @@ class AsyncSink( // @formatter:off
         }
     }
 
+    /**
+     * Enqueues a write task to be executed asynchronously.
+     *
+     * @param task A lambda with [Sink] as receiver to perform write operations.
+     */
     fun write(task: Sink.() -> Unit) {
         DefaultBackend.coroutineScope.launch {
             channel.send(task)
         }
     }
 
+    /**
+     * Closes the sink by closing the underlying channel and waiting for all pending tasks to complete.
+     */
     override fun close() {
         channel.close()
         job.joinBlocking()

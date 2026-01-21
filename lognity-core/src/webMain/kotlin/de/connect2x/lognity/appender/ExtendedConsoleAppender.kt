@@ -20,6 +20,23 @@ internal external interface Console {
 @JsName("console")
 internal external val console: Console
 
+/**
+ * A console appender for web that leverages the JavaScript console's log levels.
+ *
+ * This appender maps [Level]s to their corresponding `console` methods:
+ * - [Level.DEBUG] and [Level.TRACE] -> `console.debug`
+ * - [Level.INFO] -> `console.info`
+ * - [Level.WARN] -> `console.warn`
+ * - [Level.ERROR] and [Level.FATAL] -> `console.error`
+ *
+ * It also handles ANSI escape codes, preserving them for Chrome and Node.js environments
+ * while cleaning them for others.
+ *
+ * @param pattern The formatting pattern string used by this appender.
+ * @param formatter The formatter that produces the final message from [pattern].
+ * @param filter A filter that decides whether a given message should be written.
+ * @param name Optional name for this appender.
+ */
 class ExtendedConsoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter,

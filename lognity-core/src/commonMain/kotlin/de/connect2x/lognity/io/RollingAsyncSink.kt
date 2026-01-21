@@ -17,6 +17,20 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * An asynchronous, thread-safe sink that supports rolling files based on size and count.
+ *
+ * It uses a [Channel] to queue write tasks which are executed sequentially by a
+ * dedicated coroutine. This ensures that file I/O doesn't block the calling thread
+ * and provides thread-safety for concurrent writes.
+ *
+ * @property basePath The base file system path for the log files.
+ * @property fileCount The maximum number of log files to keep.
+ * @property maxFileSize The maximum size in bytes for a single log file before rolling.
+ * @property useTimestamps Whether to include timestamps in the rolled file names.
+ * @property deleteExisting Whether to delete all existing log files matching the pattern on startup.
+ * @property latestSuffix The suffix used for the current active log file.
+ */
 @OptIn(ExperimentalAtomicApi::class)
 class RollingAsyncSink( // @formatter:off
     val basePath: Path,
@@ -27,8 +41,19 @@ class RollingAsyncSink( // @formatter:off
     val latestSuffix: String
 ) : AutoCloseable { // @formatter:on
     companion object {
+        /**
+         * Group index for the base file name in the regex match.
+         */
         const val FILE_NAME_GROUP: Int = 1
+
+        /**
+         * Group index for the file sequence number in the regex match.
+         */
         const val FILE_INDEX_GROUP: Int = 2
+
+        /**
+         * Group index for the timestamp in the regex match.
+         */
         const val FILE_TIMESTAMP_GROUP: Int = 3
     }
 
@@ -184,10 +209,18 @@ class RollingAsyncSink( // @formatter:off
         return Path(parentPath, "$fileNameWithoutExt.$index$timestamp$latestSuffix.$fileExt")
     }
 
+    /**
+     * Enqueues a write task to be executed asynchronously.
+     *
+     * @param task A lambda with [Sink] as receiver to perform write operations.
+     */
     fun write(task: Sink.() -> Unit) {
         channel.trySend(task)
     }
 
+    /**
+     * Closes the sink by closing the underlying channel and waiting for all pending tasks to complete.
+     */
     override fun close() {
         channel.close()
         job.joinBlocking()

@@ -20,6 +20,17 @@ import platform.windows.ReportEventW
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * Appender that writes log messages to the Windows Event Log.
+ *
+ * It maps Lognity's [Level] to Windows event types and uses the [Logger] name as the event source.
+ * Each log message is reported as a separate event in the Windows Event Log.
+ *
+ * @property pattern The formatting pattern string used by this appender.
+ * @property formatter The formatter that produces the final message from [pattern].
+ * @property filter A filter that decides whether a given message should be written.
+ * @property name Optional name for this appender.
+ */
 @OptIn(ExperimentalForeignApi::class)
 class EventAppender( // @formatter:off
     override val pattern: String,

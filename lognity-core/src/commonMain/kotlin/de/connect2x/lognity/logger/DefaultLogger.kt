@@ -7,25 +7,32 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Default implementation of the [Logger] interface.
+ *
+ * This implementation uses atomic variables to manage the log level and enabled state,
+ * ensuring thread-safety for these properties.
+ */
 @OptIn(ExperimentalAtomicApi::class, ExperimentalTime::class)
-@PublishedApi
-internal class DefaultLogger( // @formatter:off
+class DefaultLogger( // @formatter:off
     override val config: Config,
     override val context: Context
 ) : Logger { // @formatter:on
-    private val _level: AtomicInt = AtomicInt(config.initialLevel.ordinal)
+    private val _level: AtomicReference<Level> = AtomicReference(config.initialLevel)
+
     override var level: Level
-        get() = Level.entries[_level.load()]
+        get() = _level.load()
         set(value) {
-            _level.store(value.ordinal)
+            _level.store(value)
         }
 
     private val _isEnabled: AtomicBoolean = AtomicBoolean(config.initialEnableState)
+
     override var isEnabled: Boolean
         get() = _isEnabled.load()
         set(value) {

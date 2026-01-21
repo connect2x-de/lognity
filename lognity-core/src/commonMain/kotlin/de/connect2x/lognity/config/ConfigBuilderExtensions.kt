@@ -17,6 +17,7 @@ import de.connect2x.lognity.backend.createSystemRollingFileAppender
  * @param pattern The formatting pattern to apply to all messages passed to the new appender.
  * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
  * @param filter The filter to apply for every message to determine whether it should be logged.
+ * @param name The name of the appender.
  */
 @ConfigDsl
 fun ConfigBuilder.consoleAppender( // @formatter:off
@@ -54,6 +55,7 @@ fun ConfigBuilder.systemLogAppender( // @formatter:off
  * @param pattern The formatting pattern to apply to all messages passed to the new appender.
  * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
  * @param filter The filter to apply for every message to determine whether it should be logged.
+ * @param name The name of the appender.
  */
 @ConfigDsl
 fun ConfigBuilder.systemConsoleAppender( // @formatter:off
@@ -72,6 +74,8 @@ fun ConfigBuilder.systemConsoleAppender( // @formatter:off
  * @param path The file path at which to save the log.
  * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
  * @param filter The filter to apply for every message to determine whether it should be logged.
+ * @param name The name of the appender.
+ * @param deleteExisting Whether to delete the existing log file at [path] on startup.
  */
 @ConfigDsl
 fun ConfigBuilder.fileAppender( // @formatter:off
@@ -92,6 +96,12 @@ fun ConfigBuilder.fileAppender( // @formatter:off
  * @param basePath The base file path at which to save the logs.
  * @param formatter The formatter used to apply the specified pattern to each message. See [Formatter].
  * @param filter The filter to apply for every message to determine whether it should be logged.
+ * @param name The name of the appender.
+ * @param maxFileCount The maximum number of log files to keep.
+ * @param maxFileSize The maximum size in bytes for a single log file before it is rolled.
+ * @param useTimestamps Whether to include timestamps in the rolled file names.
+ * @param deleteExisting Whether to delete existing log files matching the pattern on startup.
+ * @param latestSuffix The suffix used for the current active log file.
  */
 @ConfigDsl
 fun ConfigBuilder.rollingFileAppender( // @formatter:off
