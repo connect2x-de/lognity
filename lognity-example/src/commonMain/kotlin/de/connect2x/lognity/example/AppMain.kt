@@ -26,6 +26,7 @@ suspend fun appMain() {
     // Configure Lognity based on platform
     // Register core config extension for builtin appenders and conditions before loading any configs
     SerializableConfig uses CoreConfigExtension
+    // Register custom providers to use in the config with {NAME} notation
     SerializableConfig uses ConfigExtension {
         registerProvider("DEFAULT_LOG_LEVEL") { Level.TRACE }
         registerProvider("LOG_DIRECTORY") { "logs" }
