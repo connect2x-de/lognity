@@ -9,12 +9,16 @@ sealed interface RefOrValue<out T> {
         override fun resolve(): T {
             return checkNotNull(SerializableConfig.extensionRegistrar.findProvider<T>(name)) {
                 "Could not resolve provider for config reference '$name'"
-            }.value
+            }()
         }
     }
 
     data class Value<out T>(val value: T) : RefOrValue<T> {
         override fun resolve(): T = value
+    }
+
+    data class LerpedString(val segments: List<RefOrValue<*>>) : RefOrValue<String> {
+        override fun resolve(): String = segments.joinToString("") { seg -> seg.resolve().toString() }
     }
 
     fun resolve(): T

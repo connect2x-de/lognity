@@ -26,8 +26,8 @@
                 },
                 {
                     "type": "string",
-                    "pattern": "^\\$\\$([\\w\\-._]+)",
-                    "default": "$$MY_PROVIDER"
+                    "pattern": "^\\{([\\w\\-._]+)}$",
+                    "default": "{MY_PROVIDER}"
                 }
             ]
         },
@@ -40,8 +40,8 @@
                 },
                 {
                     "type": "string",
-                    "pattern": "^\\$\\$([\\w\\-._]+)",
-                    "default": "$$MY_PROVIDER"
+                    "pattern": "^\\{([\\w\\-._]+)}$",
+                    "default": "{MY_PROVIDER}"
                 }
             ]
         },
@@ -75,8 +75,8 @@
                             },
                             {
                                 "type": "string",
-                                "pattern": "^\\$\\$([\\w\\-._]+)",
-                                "default": "$$MY_PROVIDER"
+                                "pattern": "^\\{([\\w\\-._]+)}$",
+                                "default": "{MY_PROVIDER}"
                             }
                         ]
                     },
@@ -89,8 +89,8 @@
                             },
                             {
                                 "type": "string",
-                                "pattern": "^\\$\\$([\\w\\-._]+)",
-                                "default": "$$MY_PROVIDER"
+                                "pattern": "^\\{([\\w\\-._]+)}$",
+                                "default": "{MY_PROVIDER}"
                             }
                         ]
                     },
@@ -98,14 +98,14 @@
                         "oneOf": [
                             {
                                 "type": "string",
-                                "pattern": "^(?!\\$\\$).*",
+                                "pattern": "^(?!\\{).*",
                                 "description": "The formatter this appender invokes with the pattern to format messages.",
                                 "default": "default"
                             },
                             {
                                 "type": "string",
-                                "pattern": "^\\$\\$([\\w\\-._]+)",
-                                "default": "$$MY_PROVIDER"
+                                "pattern": "^\\{([\\w\\-._]+)}$",
+                                "default": "{MY_PROVIDER}"
                             }
                         ]
                     },
@@ -138,8 +138,8 @@
                                                 },
                                                 {
                                                     "type": "string",
-                                                    "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                    "default": "$$MY_PROVIDER"
+                                                    "pattern": "^\\{([\\w\\-._]+)}$",
+                                                    "default": "{MY_PROVIDER}"
                                                 }
                                             ]
                                         }
@@ -172,8 +172,8 @@
                                                     },
                                                     {
                                                         "type": "string",
-                                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                        "default": "$$MY_PROVIDER"
+                                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                                        "default": "{MY_PROVIDER}"
                                                     }
                                                 ]
                                             },
@@ -185,8 +185,8 @@
                                                     },
                                                     {
                                                         "type": "string",
-                                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                        "default": "$$MY_PROVIDER"
+                                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                                        "default": "{MY_PROVIDER}"
                                                     }
                                                 ]
                                             }
@@ -221,8 +221,8 @@
                                                         },
                                                         {
                                                             "type": "string",
-                                                            "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                            "default": "$$MY_PROVIDER"
+                                                            "pattern": "^\\{([\\w\\-._]+)}$",
+                                                            "default": "{MY_PROVIDER}"
                                                         }
                                                     ]
                                                 },
@@ -234,8 +234,8 @@
                                                         },
                                                         {
                                                             "type": "string",
-                                                            "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                            "default": "$$MY_PROVIDER"
+                                                            "pattern": "^\\{([\\w\\-._]+)}$",
+                                                            "default": "{MY_PROVIDER}"
                                                         }
                                                     ]
                                                 }
@@ -270,8 +270,8 @@
                                                             },
                                                             {
                                                                 "type": "string",
-                                                                "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                                "default": "$$MY_PROVIDER"
+                                                                "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                "default": "{MY_PROVIDER}"
                                                             }
                                                         ]
                                                     },
@@ -292,8 +292,8 @@
                                                             },
                                                             {
                                                                 "type": "string",
-                                                                "pattern": "^\\$\\$([\\w\\-._]+)",
-                                                                "default": "$$MY_PROVIDER"
+                                                                "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                "default": "{MY_PROVIDER}"
                                                             }
                                                         ]
                                                     }
@@ -332,8 +332,8 @@
                                 },
                                 {
                                     "type": "string",
-                                    "pattern": "^\\$\\$([\\w\\-._]+)",
-                                    "default": "$$MY_PROVIDER"
+                                    "pattern": "^\\{([\\w\\-._]+)}$",
+                                    "default": "{MY_PROVIDER}"
                                 }
                             ]
                         }
@@ -362,8 +362,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             },
@@ -376,8 +376,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             },
@@ -390,8 +390,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             },
@@ -404,8 +404,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             },
@@ -418,8 +418,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             },
@@ -433,8 +433,8 @@
                                     },
                                     {
                                         "type": "string",
-                                        "pattern": "^\\$\\$([\\w\\-._]+)",
-                                        "default": "$$MY_PROVIDER"
+                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                        "default": "{MY_PROVIDER}"
                                     }
                                 ]
                             }

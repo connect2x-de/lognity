@@ -6,7 +6,6 @@ import de.connect2x.lognity.config.SerializableConfigDsl
 import de.connect2x.lognity.config.appender.AppenderFactory
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.SerializableCondition
-import de.connect2x.lognity.config.provider.Provider
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -37,16 +36,16 @@ class ConfigExtensionRegistrar internal constructor() {
         AtomicReference {}
 
     internal val formatterTypes: SharedHashMap<String, Formatter> = SharedHashMap()
-    internal val providers: SharedHashMap<String, Provider<*>> = SharedHashMap()
+    internal val providers: SharedHashMap<String, () -> Any?> = SharedHashMap()
 
     @Suppress("UNCHECKED_CAST")
-    internal fun <T> findProvider(name: String): Provider<T>? {
-        return providers[name] as? Provider<T>
+    internal fun <T> findProvider(name: String): (() -> T)? {
+        return providers[name] as? () -> T
     }
 
-    fun registerProvider(provider: Provider<*>) {
-        require(provider.name !in providers) { "Config provider named '${provider.name}' already exists" }
-        providers[provider.name] = provider
+    fun registerProvider(name: String, provider: () -> Any?) {
+        require(name !in providers) { "Config provider named '$name' already exists" }
+        providers[name] = provider
     }
 
     fun registerFormatterType(name: String, formatter: Formatter) {

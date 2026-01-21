@@ -7,7 +7,6 @@ import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.extension.ConfigExtension
-import de.connect2x.lognity.config.provider.Provider
 import de.connect2x.lognity.config.withDefaultConfig
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -28,7 +27,8 @@ suspend fun appMain() {
     // Register core config extension for builtin appenders and conditions before loading any configs
     SerializableConfig uses CoreConfigExtension
     SerializableConfig uses ConfigExtension {
-        registerProvider(Provider.named("DEFAULT_LOG_LEVEL", Level.TRACE))
+        registerProvider("DEFAULT_LOG_LEVEL") { Level.TRACE }
+        registerProvider("LOG_DIRECTORY") { "logs" }
     }
     // Load the JSON based config using the lognity-config module
     Backend.withDefaultConfig("example_config.json") {
