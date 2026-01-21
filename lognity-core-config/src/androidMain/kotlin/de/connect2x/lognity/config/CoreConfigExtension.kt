@@ -6,6 +6,10 @@ import de.connect2x.lognity.appender.LogcatAppender as LogcatAppenderImpl
 
 internal actual fun ConfigExtensionRegistrar.registerPlatformAppenderTypes() {
     registerAppenderType<LogcatAppender> { config, formatter ->
-        appender(LogcatAppenderImpl(config.pattern, formatter, config.filter, config.name))
+        appender(
+            LogcatAppenderImpl(
+                config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve()
+            )
+        )
     }
 }

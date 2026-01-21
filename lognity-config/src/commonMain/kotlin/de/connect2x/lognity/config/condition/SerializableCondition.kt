@@ -2,6 +2,7 @@ package de.connect2x.lognity.config.condition
 
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.Polymorphic
 
 /**
@@ -11,7 +12,7 @@ import kotlinx.serialization.Polymorphic
  */
 @Polymorphic
 interface SerializableCondition {
-    val name: String?
+    val name: RefOrValue<String?>
 
     operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
 }

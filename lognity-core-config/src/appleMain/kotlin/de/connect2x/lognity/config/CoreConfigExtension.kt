@@ -6,6 +6,6 @@ import de.connect2x.lognity.appender.OsAppender as OsAppenderImpl
 
 internal actual fun ConfigExtensionRegistrar.registerPlatformAppenderTypes() {
     registerAppenderType<OsAppender> { config, formatter ->
-        appender(OsAppenderImpl(config.pattern, formatter, config.filter, config.name))
+        appender(OsAppenderImpl(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve()))
     }
 }

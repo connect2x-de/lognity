@@ -45,7 +45,7 @@ data class SerializableConfig( // @formatter:off
          */
         const val VERSION: Int = 1
 
-        private val extensionRegistrar: ConfigExtensionRegistrar = ConfigExtensionRegistrar()
+        internal val extensionRegistrar: ConfigExtensionRegistrar = ConfigExtensionRegistrar()
 
         /**
          * Registers a configuration extension.
@@ -104,7 +104,7 @@ data class SerializableConfig( // @formatter:off
             level = getCombinedLevel()
             isEnabled = enabled
             for (appender in appenders) {
-                val formatter = extensionRegistrar.formatterTypes[appender.formatter] ?: continue
+                val formatter = extensionRegistrar.formatterTypes[appender.formatter.resolve()] ?: continue
                 val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
                 factory(appender, formatter)
             }

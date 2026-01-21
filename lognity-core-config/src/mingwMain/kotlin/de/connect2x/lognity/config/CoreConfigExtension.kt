@@ -6,6 +6,6 @@ import de.connect2x.lognity.appender.EventAppender as EventAppenderImpl
 
 internal actual fun ConfigExtensionRegistrar.registerPlatformAppenderTypes() {
     registerAppenderType<EventAppender> { config, formatter ->
-        appender(EventAppenderImpl(config.pattern, formatter, config.filter, config.name))
+        appender(EventAppenderImpl(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve()))
     }
 }
