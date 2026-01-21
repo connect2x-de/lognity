@@ -2,6 +2,7 @@
 
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.setProjectInfo
+import de.connect2x.conventions.withJavadocJar
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -18,11 +19,12 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    withSourcesJar()
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
         freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-first-with-warning")
     }
+    withSourcesJar()
+    withJavadocJar()
     mingwX64()
     linuxX64()
     linuxArm64()
