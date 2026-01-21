@@ -34,7 +34,7 @@ data class SerializableConfig( // @formatter:off
     val version: Int = VERSION,
     val level: RefOrValue<Level> = RefOrValue.Value(Level.default),
     val enabled: RefOrValue<Boolean> = RefOrValue.Value(true),
-    val appenders: List<SerializableAppender> = emptyList(),
+    val appenders: List<SerializableAppender> = emptyList()
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].

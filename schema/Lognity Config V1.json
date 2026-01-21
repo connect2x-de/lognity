@@ -5,24 +5,45 @@
     "properties": {
         "version": {
             "type": "integer",
+            "description": "The Lognity config version.",
             "minimum": 1,
-            "description": "The Lognity config version."
+            "default": 1
         },
         "level": {
-            "type": "string",
-            "enum": [
-                "TRACE",
-                "DEBUG",
-                "INFO",
-                "WARN",
-                "ERROR",
-                "FATAL"
-            ],
-            "description": "The default log level of all loggers."
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "TRACE",
+                        "DEBUG",
+                        "INFO",
+                        "WARN",
+                        "ERROR",
+                        "FATAL"
+                    ],
+                    "default": "INFO",
+                    "description": "The default log level of all loggers."
+                },
+                {
+                    "type": "string",
+                    "pattern": "^\\$\\$([\\w\\-._]+)",
+                    "default": "$$MY_PROVIDER"
+                }
+            ]
         },
         "enabled": {
-            "type": "boolean",
-            "description": "The default enable state of all loggers."
+            "oneOf": [
+                {
+                    "type": "boolean",
+                    "description": "The default enable state of all loggers.",
+                    "default": true
+                },
+                {
+                    "type": "string",
+                    "pattern": "^\\$\\$([\\w\\-._]+)",
+                    "default": "$$MY_PROVIDER"
+                }
+            ]
         },
         "appenders": {
             "type": "array",
@@ -42,19 +63,51 @@
                             "logcat",
                             "winevent"
                         ],
+                        "default": "system_console",
                         "description": "The type of appender."
                     },
                     "name": {
-                        "type": "string",
-                        "description": "The internal name this appender may be referenced by."
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "description": "The internal name this appender may be referenced by.",
+                                "default": "my_appender"
+                            },
+                            {
+                                "type": "string",
+                                "pattern": "^\\$\\$([\\w\\-._]+)",
+                                "default": "$$MY_PROVIDER"
+                            }
+                        ]
                     },
                     "pattern": {
-                        "type": "string",
-                        "description": "The message pattern this appender uses for formatting log messages."
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "description": "The message pattern this appender uses for formatting log messages.",
+                                "default": "{{message}}{{r}}"
+                            },
+                            {
+                                "type": "string",
+                                "pattern": "^\\$\\$([\\w\\-._]+)",
+                                "default": "$$MY_PROVIDER"
+                            }
+                        ]
                     },
                     "formatter": {
-                        "type": "string",
-                        "description": "The formatter this appender invokes with the pattern to format messages."
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "pattern": "^(?!\\$\\$).*",
+                                "description": "The formatter this appender invokes with the pattern to format messages.",
+                                "default": "default"
+                            },
+                            {
+                                "type": "string",
+                                "pattern": "^\\$\\$([\\w\\-._]+)",
+                                "default": "$$MY_PROVIDER"
+                            }
+                        ]
                     },
                     "filter": {
                         "type": "object",
@@ -74,11 +127,21 @@
                                                 "message",
                                                 "level"
                                             ],
+                                            "default": "always",
                                             "description": "The type of condition."
                                         },
                                         "name": {
-                                            "type": "string",
-                                            "description": "The internal name of the condition."
+                                            "oneOf": [
+                                                {
+                                                    "type": "string",
+                                                    "description": "The internal name of the condition."
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                    "default": "$$MY_PROVIDER"
+                                                }
+                                            ]
                                         }
                                     },
                                     "if": {
@@ -91,22 +154,41 @@
                                     "then": {
                                         "properties": {
                                             "condition": {
-                                                "type": "string",
-                                                "enum": [
-                                                    "KEY_EQUALS",
-                                                    "KEY_NOT_EQUALS",
-                                                    "KEY_CONTAINS",
-                                                    "KEY_NOT_CONTAINS",
-                                                    "NAME_EQUALS",
-                                                    "NAME_NOT_EQUALS",
-                                                    "NAME_CONTAINS",
-                                                    "NAME_NOT_CONTAINS"
-                                                ],
-                                                "description": "The conditional rule to apply on every log marker."
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "KEY_EQUALS",
+                                                            "KEY_NOT_EQUALS",
+                                                            "KEY_CONTAINS",
+                                                            "KEY_NOT_CONTAINS",
+                                                            "NAME_EQUALS",
+                                                            "NAME_NOT_EQUALS",
+                                                            "NAME_CONTAINS",
+                                                            "NAME_NOT_CONTAINS"
+                                                        ],
+                                                        "default": "KEY_EQUALS",
+                                                        "description": "The conditional rule to apply on every log marker."
+                                                    },
+                                                    {
+                                                        "type": "string",
+                                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                        "default": "$$MY_PROVIDER"
+                                                    }
+                                                ]
                                             },
                                             "value": {
-                                                "type": "string",
-                                                "description": "The literal string value to check all markers against."
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "description": "The literal string value to check all markers against."
+                                                    },
+                                                    {
+                                                        "type": "string",
+                                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                        "default": "$$MY_PROVIDER"
+                                                    }
+                                                ]
                                             }
                                         },
                                         "required": [
@@ -125,18 +207,37 @@
                                         "then": {
                                             "properties": {
                                                 "condition": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "EQUALS",
-                                                        "NOT_EQUALS",
-                                                        "CONTAINS",
-                                                        "NOT_CONTAINS"
-                                                    ],
-                                                    "description": "The conditional rule to apply to every log message."
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "EQUALS",
+                                                                "NOT_EQUALS",
+                                                                "CONTAINS",
+                                                                "NOT_CONTAINS"
+                                                            ],
+                                                            "default": "EQUALS",
+                                                            "description": "The conditional rule to apply to every log message."
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                            "default": "$$MY_PROVIDER"
+                                                        }
+                                                    ]
                                                 },
                                                 "value": {
-                                                    "type": "string",
-                                                    "description": "The literal string value to check all messages against."
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "string",
+                                                            "description": "The literal string value to check all messages against."
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                            "default": "$$MY_PROVIDER"
+                                                        }
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -155,26 +256,46 @@
                                             "then": {
                                                 "properties": {
                                                     "condition": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                            "EQUALS",
-                                                            "NOT_EQUALS",
-                                                            "BELOW",
-                                                            "ABOVE"
-                                                        ],
-                                                        "description": "The conditional rule to apply to all log levels."
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "EQUALS",
+                                                                    "NOT_EQUALS",
+                                                                    "BELOW",
+                                                                    "ABOVE"
+                                                                ],
+                                                                "default": "EQUALS",
+                                                                "description": "The conditional rule to apply to all log levels."
+                                                            },
+                                                            {
+                                                                "type": "string",
+                                                                "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                                "default": "$$MY_PROVIDER"
+                                                            }
+                                                        ]
                                                     },
                                                     "value": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                            "TRACE",
-                                                            "DEBUG",
-                                                            "INFO",
-                                                            "WARN",
-                                                            "ERROR",
-                                                            "FATAL"
-                                                        ],
-                                                        "description": "The log level to check all incoming log levels agsinst."
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "TRACE",
+                                                                    "DEBUG",
+                                                                    "INFO",
+                                                                    "WARN",
+                                                                    "ERROR",
+                                                                    "FATAL"
+                                                                ],
+                                                                "default": "INFO",
+                                                                "description": "The log level to check all incoming log levels agsinst."
+                                                            },
+                                                            {
+                                                                "type": "string",
+                                                                "pattern": "^\\$\\$([\\w\\-._]+)",
+                                                                "default": "$$MY_PROVIDER"
+                                                            }
+                                                        ]
                                                     }
                                                 },
                                                 "required": [
@@ -184,7 +305,9 @@
                                             }
                                         }
                                     },
-                                    "required": ["type"]
+                                    "required": [
+                                        "type"
+                                    ]
                                 }
                             }
                         }
@@ -200,8 +323,19 @@
                 "then": {
                     "properties": {
                         "path": {
-                            "type": "string",
-                            "description": "The relative path to the log file for plain file appenders."
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "pattern": "^(?:\\.{1,2}|/)?(?:[^/]+|\\.{1,2})(?:/(?:[^/]+|\\.{1,2}))*/?$",
+                                    "description": "The relative path to the log file for plain file appenders.",
+                                    "default": "logs/my_log.log"
+                                },
+                                {
+                                    "type": "string",
+                                    "pattern": "^\\$\\$([\\w\\-._]+)",
+                                    "default": "$$MY_PROVIDER"
+                                }
+                            ]
                         }
                     },
                     "required": [
@@ -219,33 +353,90 @@
                     "then": {
                         "properties": {
                             "base_path": {
-                                "type": "string",
-                                "description": "The base path of the rolling file segment files."
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "pattern": "^(?:\\.{1,2}|/)?(?:[^/]+|\\.{1,2})(?:/(?:[^/]+|\\.{1,2}))*/?$",
+                                        "description": "The base path of the rolling file segment files.",
+                                        "default": "logs/my_log.log"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             },
                             "file_count": {
-                                "type": "integer",
-                                "description": "The number of files used as a ring buffer.",
-                                "default": 10
+                                "oneOf": [
+                                    {
+                                        "type": "integer",
+                                        "description": "The number of files used as a ring buffer.",
+                                        "default": 10
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             },
                             "max_file_size": {
-                                "type": "integer",
-                                "description": "The maximum size of each segment file.",
-                                "default": 1048576
+                                "oneOf": [
+                                    {
+                                        "type": "integer",
+                                        "description": "The maximum size of each segment file.",
+                                        "default": 1048576
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             },
                             "use_timestamps": {
-                                "type": "boolean",
-                                "description": "Whether this appender adds timestamps to the file name when updating segments.",
-                                "default": true
+                                "oneOf": [
+                                    {
+                                        "type": "boolean",
+                                        "description": "Whether this appender adds timestamps to the file name when updating segments.",
+                                        "default": true
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             },
                             "delete_existing": {
-                                "type": "boolean",
-                                "description": "Whether existing log files are deleted before logging begins.",
-                                "default": false
+                                "oneOf": [
+                                    {
+                                        "type": "boolean",
+                                        "description": "Whether existing log files are deleted before logging begins.",
+                                        "default": false
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             },
                             "latest_suffix": {
-                                "type": "string",
-                                "description": "The suffix added to the last touched log file.",
-                                "default": "-latest"
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "pattern": "^[a-zA-Z\\-_.]+[a-zA-Z\\-_.0-9]*$",
+                                        "description": "The suffix added to the last touched log file.",
+                                        "default": "-latest"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "pattern": "^\\$\\$([\\w\\-._]+)",
+                                        "default": "$$MY_PROVIDER"
+                                    }
+                                ]
                             }
                         },
                         "required": [
