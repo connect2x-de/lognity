@@ -13,18 +13,14 @@ import kotlinx.io.files.Path
 import kotlinx.io.writeString
 
 /**
- * Appender that writes log messages to a file.
+ * An appender that writes log messages to a file.
  *
- * This implementation
- * - reuses a shared buffered Sink per file path across instances using simple reference counting,
- * - is thread-safe via a Mutex around writes,
- * - strips ANSI escape sequences from messages before writing to keep the file clean, and
- * - registers a shutdown hook with the Backend to flush and close the file handle when the process ends.
- *
- * @property pattern The formatting pattern string used by this appender. Passed to and interpreted by [formatter].
- * @property formatter The formatter that produced the final message from [pattern] and log context.
- * @property filter A filter that decides whether a given message should be written.
- * @property path The file system path to which log lines will be appended. The file is opened in append mode.
+ * @property pattern The pattern used for formatting log messages.
+ * @property formatter The formatter used to format log events.
+ * @property filter The filter used to decide whether to log a message.
+ * @property path The path to the log file.
+ * @property name The optional name of the appender.
+ * @param deleteExisting If true, any existing file at the given path will be deleted upon initialization.
  */
 class FileAppender( // @formatter:off
     override val pattern: String,
@@ -34,6 +30,9 @@ class FileAppender( // @formatter:off
     override val name: String? = null,
     deleteExisting: Boolean = false
 ) : Appender { // @formatter:on
+    /**
+     * The asynchronous sink used for writing to the file.
+     */
     val sink: AsyncSink = AsyncSink(path, deleteExisting)
 
     init {

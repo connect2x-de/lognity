@@ -1,6 +1,7 @@
 package de.connect2x.lognity.config.appender
 
 import de.connect2x.lognity.config.SerializableFilter
+import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.Polymorphic
 
 /**
@@ -11,8 +12,23 @@ import kotlinx.serialization.Polymorphic
  */
 @Polymorphic
 interface SerializableAppender {
-    val pattern: String
-    val formatter: String
-    val filter: SerializableFilter
-    val name: String?
+    /**
+     * The log pattern to use for this appender.
+     */
+    val pattern: RefOrValue<String>
+
+    /**
+     * The name of the formatter to use for this appender.
+     */
+    val formatter: RefOrValue<String>
+
+    /**
+     * The filter to apply to this appender.
+     */
+    val filter: RefOrValue<SerializableFilter>
+
+    /**
+     * Optional name for this appender.
+     */
+    val name: RefOrValue<String?>
 }

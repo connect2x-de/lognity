@@ -48,6 +48,9 @@ class ContextBuilder @PublishedApi internal constructor() {
 
     /**
      * Adds the given [value].
+     *
+     * @param T The type of the element.
+     * @param value The element to add.
      */
     fun <T : Context.Element> value(value: T) {
         values[value.key] = value
@@ -55,6 +58,9 @@ class ContextBuilder @PublishedApi internal constructor() {
 
     /**
      * DSL alias for [value].
+     *
+     * @param T The type of the element.
+     * @param value The element to add.
      */
     operator fun <T : Context.Element> plusAssign(value: T) = value(value)
 
@@ -72,9 +78,14 @@ typealias ContextSpec = ContextBuilder.() -> Unit
  *
  * Example:
  *
- * val ctx = context {
- *     value(UserIdKey, UserId("42"))
+ * ```kotlin
+ * val ctx = Context {
+ *     this += UserId("42")
  * }
+ * ```
+ *
+ * @param spec The DSL specification to build the context.
+ * @return A new [Context] instance.
  */
 @OptIn(ExperimentalContracts::class)
 inline fun Context(spec: ContextSpec): Context {

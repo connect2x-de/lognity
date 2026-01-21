@@ -6,17 +6,14 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import kotlinx.coroutines.sync.Mutex
 
 /**
  * Appender that prints formatted log messages to the standard output.
  *
- * This appender is cross-platform and keeps console output readable by serializing
- * writes to the console using a [Mutex] guarded section.
- *
  * @param pattern Defines the format template interpreted by the provided [formatter].
  * @param formatter Renders the final message string from a log event.
  * @param filter Decides whether a log event should be emitted at all.
+ * @property name Optional name for this appender.
  */
 open class ConsoleAppender( // @formatter:off
     override val pattern: String,

@@ -5,7 +5,7 @@ import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 @OptIn(ExperimentalAtomicApi::class)
-internal class DefaultMarker( // @formatter:off
+class DefaultMarker( // @formatter:off
     override val key: String,
     override val name: String,
     isEnabled: Boolean

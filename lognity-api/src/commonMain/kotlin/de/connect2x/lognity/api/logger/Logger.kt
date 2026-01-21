@@ -92,7 +92,7 @@ interface Logger {
      * Log a message at the [Level.TRACE] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.TRACE, message)
+     * logger.log(Level.TRACE, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -103,7 +103,7 @@ interface Logger {
      * Log a message at the [Level.DEBUG] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.DEBUG, message)
+     * logger.log(Level.DEBUG, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -114,7 +114,7 @@ interface Logger {
      * Log a message at the [Level.INFO] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.INFO, message)
+     * logger.log(Level.INFO, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -125,7 +125,7 @@ interface Logger {
      * Log a message at the [Level.WARN] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.WARN, message)
+     * logger.log(Level.WARN, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -136,7 +136,7 @@ interface Logger {
      * Log a message at the [Level.ERROR] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.ERROR, message)
+     * logger.log(Level.ERROR, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -147,7 +147,7 @@ interface Logger {
      * Log a message at the [Level.FATAL] level if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(LogLevel.FATAL, message)
+     * logger.log(Level.FATAL, message)
      * ```
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
@@ -155,10 +155,10 @@ interface Logger {
     fun fatal(message: AnsiScope.() -> Any) = log(Level.FATAL, message)
 
     /**
-     * Log a message at the [Level.TRACE] level and with the given marker if both are enabled.
+     * Log a message at the [Level.TRACE] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.TRACE, message)
+     * logger.log(marker, Level.TRACE, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -167,10 +167,10 @@ interface Logger {
     fun trace(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.TRACE, message)
 
     /**
-     * Log a message at the [Level.DEBUG] level and with the given marker if both are enabled.
+     * Log a message at the [Level.DEBUG] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.DEBUG, message)
+     * logger.log(marker, Level.DEBUG, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -179,10 +179,10 @@ interface Logger {
     fun debug(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.DEBUG, message)
 
     /**
-     * Log a message at the [Level.INFO] level and with the given marker if both are enabled.
+     * Log a message at the [Level.INFO] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.INFO, message)
+     * logger.log(marker, Level.INFO, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -191,10 +191,10 @@ interface Logger {
     fun info(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.INFO, message)
 
     /**
-     * Log a message at the [Level.WARN] level and with the given marker if both are enabled.
+     * Log a message at the [Level.WARN] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.WARN, message)
+     * logger.log(marker, Level.WARN, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -203,10 +203,10 @@ interface Logger {
     fun warn(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.WARN, message)
 
     /**
-     * Log a message at the [Level.ERROR] level and with the given marker if both are enabled.
+     * Log a message at the [Level.ERROR] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.ERROR, message)
+     * logger.log(marker, Level.ERROR, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -215,10 +215,10 @@ interface Logger {
     fun error(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.ERROR, message)
 
     /**
-     * Log a message at the [Level.FATAL] level and with the given marker if both are enabled.
+     * Log a message at the [Level.FATAL] level with the given marker if enabled.
      * Semantically equal to
      * ```kotlin
-     * Logger.log(marker, LogLevel.FATAL, message)
+     * logger.log(marker, Level.FATAL, message)
      * ```
      *
      * @param marker The marker with which to tag the logged message if not null.
@@ -227,7 +227,7 @@ interface Logger {
     fun fatal(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.FATAL, message)
 
     /**
-     * Flushed all appenders that are associated with this logger instance.
+     * Flushes all underlying appenders of this logger instance.
      * See [Appender.flush].
      */
     fun flush() {
@@ -238,7 +238,7 @@ interface Logger {
 }
 
 /**
- * Create a new [Logger] instance with the given name.
+ * Creates a new [Logger] instance with the given name and context.
  *
  * @param name The name of the newly created logger instance.
  * @param contextSpec The [Context] applied to the newly created logger instance.
@@ -249,7 +249,7 @@ fun Logger(name: String? = null, contextSpec: ContextSpec = {}): Logger {
 }
 
 /**
- * Create a new Logger that derives from this instance.
+ * Creates a new [Logger] that derives from this instance.
  *
  * The derived logger keeps the same name as this logger (if any) and starts with a copy
  * of this logger's Context. The provided contextSpec is then applied on top, allowing you

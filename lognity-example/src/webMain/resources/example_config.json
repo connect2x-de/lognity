@@ -1,7 +1,7 @@
 {
     "$schema": "../../../../schema/Lognity Config V1.json",
     "version": 1,
-    "level": "TRACE",
+    "level": "{DEFAULT_LOG_LEVEL}",
     "enabled": true,
     "appenders": [
         {

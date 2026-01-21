@@ -33,33 +33,39 @@ object CoreConfigExtension : ConfigExtension {
     private fun ConfigExtensionRegistrar.registerAppenderTypes() {
         // Regular console appender which writes to stdout and stderr
         registerAppenderType<ConsoleAppender> { config, formatter ->
-            consoleAppender(config.pattern, formatter, config.filter, config.name)
+            consoleAppender(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve())
         }
         // System specific console appender, which may provide additional functionality
         registerAppenderType<SystemConsoleAppender> { config, formatter ->
-            systemConsoleAppender(config.pattern, formatter, config.filter, config.name)
+            systemConsoleAppender(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve())
         }
         // System specific appender for the systems underlying log mechanism if present, console otherwise
         registerAppenderType<SystemLogAppender> { config, formatter ->
-            systemLogAppender(config.pattern, formatter, config.filter, config.name)
+            systemLogAppender(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve())
         }
         // Fixed path
         registerAppenderType<FileAppender> { config, formatter ->
-            fileAppender(config.path, config.pattern, formatter, config.filter, config.name)
+            fileAppender(
+                config.path.resolve(),
+                config.pattern.resolve(),
+                formatter,
+                config.filter.resolve(),
+                config.name.resolve()
+            )
         }
         // Rolling file
         registerAppenderType<RollingFileAppender> { config, formatter ->
             rollingFileAppender(
-                config.basePath,
-                config.pattern,
+                config.basePath.resolve(),
+                config.pattern.resolve(),
                 formatter,
-                config.filter,
-                config.name,
-                config.fileCount,
-                config.maxFileSize,
-                config.useTimestamps,
-                config.deleteExisting,
-                config.latestSuffix
+                config.filter.resolve(),
+                config.name.resolve(),
+                config.fileCount.resolve(),
+                config.maxFileSize.resolve(),
+                config.useTimestamps.resolve(),
+                config.deleteExisting.resolve(),
+                config.latestSuffix.resolve()
             )
         }
         registerPlatformAppenderTypes()

@@ -120,6 +120,43 @@ suspend fun main() {
 }
 ```
 
+#### Config providers
+
+Config providers offer a convenient way to pass dynamic data from your code to the JSON configuration.  
+This is done through a special reference syntax `{...}` which gets resolved to dynamic values registered  
+with the `SerializableConfig` class.
+
+The following illustrates a simple example on how to use config providers:
+
+```kotlin
+fun main() {
+    Backend.set(DefaultBackend)
+    SerializableConfig uses CoreConfigExtension
+    SerializableConfig uses ConfigExtension {
+        registerProvider("MY_DYNAMIC_PATH") { /* ... */ }
+    }
+    // Load config, setup loggers etc..
+}
+```
+
+Which can then be used in the JSON config:
+
+```json
+{
+    // ...
+    "appenders": [
+        {
+            "type": "rolling_file",
+            "base_path": "{MY_DYNAMIC_PATH}/logfile.log",
+            // ...
+        }
+    ]
+}
+```
+
+> **Tip**: in order to get a hint which properties may use config providers,  
+> it is strongly recommended to use the Lognity config JSON schema.
+
 ---
 
 ### Creating a Logger

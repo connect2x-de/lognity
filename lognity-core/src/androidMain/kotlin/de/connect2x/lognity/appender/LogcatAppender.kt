@@ -10,6 +10,18 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.logcatLevel
 
+/**
+ * Appender that writes log messages to Android's Logcat.
+ *
+ * It maps Lognity's [Level] to Android's [Log] levels and uses the [Marker] name
+ * (if present) as the Logcat tag. ANSI escape sequences are stripped from the
+ * message before writing.
+ *
+ * @property pattern The formatting pattern string used by this appender.
+ * @property formatter The formatter that produces the final message from [pattern].
+ * @property filter A filter that decides whether a given message should be written.
+ * @property name Optional name for this appender.
+ */
 class LogcatAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,

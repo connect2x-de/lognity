@@ -62,6 +62,16 @@ internal expect fun createSystemRollingFileAppender( // @formatter:off
     latestSuffix: String
 ): Appender // @formatter:on
 
+/**
+ * The default implementation of the Lognity [Backend].
+ *
+ * This object manages the lifecycle of the logging system, including:
+ * - Providing the default [Level] and [Formatter].
+ * - Handling [ConfigSpec] and [ContextSpec].
+ * - Creating [Logger] and [Marker] instances.
+ * - Managing a [CoroutineScope] for asynchronous operations like file writing.
+ * - Registering shutdown hooks to ensure proper cleanup.
+ */
 @OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
     override val name: String = "Lognity"

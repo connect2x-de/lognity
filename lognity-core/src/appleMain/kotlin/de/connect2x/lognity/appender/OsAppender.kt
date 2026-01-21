@@ -13,6 +13,17 @@ import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
 import platform.darwin.os_log_t
 
+/**
+ * Appender that writes log messages to the Apple unified logging system (os_log).
+ *
+ * It creates a separate `os_log_t` for each [Logger] using the logger's name as the category.
+ * Lognity's [Level] is mapped to the corresponding `os_log_type_t`.
+ *
+ * @property pattern The formatting pattern string used by this appender.
+ * @property formatter The formatter that produces the final message from [pattern].
+ * @property filter A filter that decides whether a given message should be written.
+ * @property name Optional name for this appender.
+ */
 class OsAppender( // @formatter:off
     override val pattern: String,
     override val formatter: Formatter,

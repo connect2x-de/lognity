@@ -66,6 +66,9 @@ typealias ConfigSpec = ConfigBuilder.() -> Unit
 
 /**
  * Creates a new immutable [Config] using the provided [spec] DSL.
+ *
+ * @param spec The DSL specification to build the configuration.
+ * @return A new [Config] instance.
  */
 @OptIn(ExperimentalContracts::class)
 inline fun Config(spec: ConfigSpec): Config {

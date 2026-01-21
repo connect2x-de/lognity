@@ -10,6 +10,7 @@ import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
+import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.io.Source
 import kotlinx.io.readString
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -31,9 +32,9 @@ import kotlin.math.max
 @Serializable
 data class SerializableConfig( // @formatter:off
     val version: Int = VERSION,
-    val level: Level = Level.default,
-    val enabled: Boolean = true,
-    val appenders: List<SerializableAppender> = emptyList(),
+    val level: RefOrValue<Level> = RefOrValue.Value(Level.default),
+    val enabled: RefOrValue<Boolean> = RefOrValue.Value(true),
+    val appenders: List<SerializableAppender> = emptyList()
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].
@@ -45,7 +46,7 @@ data class SerializableConfig( // @formatter:off
          */
         const val VERSION: Int = 1
 
-        private val extensionRegistrar: ConfigExtensionRegistrar = ConfigExtensionRegistrar()
+        internal val extensionRegistrar: ConfigExtensionRegistrar = ConfigExtensionRegistrar()
 
         /**
          * Registers a configuration extension.
@@ -102,25 +103,39 @@ data class SerializableConfig( // @formatter:off
     private val cachedConfig: Config by lazy {
         Config {
             level = getCombinedLevel()
-            isEnabled = enabled
+            isEnabled = enabled.resolve()
             for (appender in appenders) {
-                val formatter = extensionRegistrar.formatterTypes[appender.formatter] ?: continue
+                val formatter = extensionRegistrar.formatterTypes[appender.formatter.resolve()] ?: continue
                 val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
                 factory(appender, formatter)
             }
         }
     }
 
+    /**
+     * Calculates the combined log level.
+     *
+     * @return the resolved log level.
+     */
     fun getCombinedLevel(): Level {
         val defaultLevel = Level.default
+        val level = this.level.resolve()
         return if (level < defaultLevel) level
         else defaultLevel
     }
 
+    /**
+     * Applies this configuration to the given [ConfigBuilder].
+     */
     @ConfigDsl
     context(builder: ConfigBuilder)
     fun applyConfig() = builder.setFrom(cachedConfig)
 
+    /**
+     * Returns this configuration as a [Config] instance.
+     *
+     * @return the [Config] instance.
+     */
     fun asConfig(): Config = cachedConfig
 
     /**
@@ -137,11 +152,11 @@ data class SerializableConfig( // @formatter:off
      */
     operator fun plus(other: SerializableConfig): SerializableConfig = copy( // @formatter:off
         version = max(version, other.version),
-        level = when {
-            level < other.level -> other.level
-            else -> level
-        },
-        enabled = enabled && other.enabled,
+        level = RefOrValue.Value(when {
+            level.resolve() < other.level.resolve() -> other.level.resolve()
+            else -> level.resolve()
+        }),
+        enabled = RefOrValue.Value(enabled.resolve() && other.enabled.resolve()),
         appenders = appenders + other.appenders
     ) // @formatter:on
 }

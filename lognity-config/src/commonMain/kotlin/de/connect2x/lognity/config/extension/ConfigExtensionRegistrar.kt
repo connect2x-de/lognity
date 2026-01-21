@@ -36,9 +36,30 @@ class ConfigExtensionRegistrar internal constructor() {
         AtomicReference {}
 
     internal val formatterTypes: SharedHashMap<String, Formatter> = SharedHashMap()
+    internal val providers: SharedHashMap<String, () -> Any?> = SharedHashMap()
 
+    @Suppress("UNCHECKED_CAST")
+    internal fun <T> findProvider(name: String): (() -> T)? {
+        return providers[name] as? () -> T
+    }
+
+    /**
+     * Registers a configuration provider.
+     *
+     * @param name the name of the provider.
+     * @param provider the provider function.
+     */
+    fun registerProvider(name: String, provider: () -> Any?) {
+        providers[name] = provider
+    }
+
+    /**
+     * Registers a formatter type.
+     *
+     * @param name the name of the formatter type.
+     * @param formatter the formatter instance.
+     */
     fun registerFormatterType(name: String, formatter: Formatter) {
-        require(name !in formatterTypes) { "Formatter type '$name' already exists" }
         formatterTypes[name] = formatter
     }
 

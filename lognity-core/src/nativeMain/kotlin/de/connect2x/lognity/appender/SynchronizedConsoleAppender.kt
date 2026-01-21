@@ -12,7 +12,8 @@ import kotlinx.coroutines.sync.withLock
 private val ioMutex: Mutex = Mutex()
 
 /**
- * println in Kotlin/Native is not thread-safe by itself, so we need to wrap it in a Mutex..
+ * Same as [ConsoleAppender], except that all writes all guarded by a [Mutex]
+ * to prevent mangled lines when printing from many coroutines.
  */
 class SynchronizedConsoleAppender( // @formatter:off
     pattern: String,
