@@ -21,6 +21,7 @@ configureJava(libs.versions.java)
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-first-with-warning")
     }
     withSourcesJar()
     mingwX64()

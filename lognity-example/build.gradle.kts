@@ -12,6 +12,9 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-first-with-warning")
+    }
     jvm {
         binaries {
             executable {

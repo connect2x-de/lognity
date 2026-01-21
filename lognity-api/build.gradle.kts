@@ -16,6 +16,9 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-first-with-warning")
+    }
     withSourcesJar()
     mingwX64()
     linuxX64()
