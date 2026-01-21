@@ -28,7 +28,6 @@ class RefOrValueSerializer<T>(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun deserialize(decoder: Decoder): RefOrValue<T> {
         require(decoder is JsonDecoder) { "RefOrValueSerializer only supports JSON" }
         val element = decoder.decodeJsonElement()
@@ -36,13 +35,10 @@ class RefOrValueSerializer<T>(
             element is JsonPrimitive && element.isString -> {
                 val content = element.content
                 if (content.startsWith(REFERENCE_PREFIX)) RefOrValue.Ref(content.substringAfter(REFERENCE_PREFIX))
-                else RefOrValue.Value(content) as RefOrValue<T>
+                else RefOrValue.Value(decoder.json.decodeFromJsonElement(valueSerializer, element))
             }
 
-            else -> {
-                val value = decoder.json.decodeFromJsonElement(valueSerializer, element)
-                RefOrValue.Value(value)
-            }
+            else -> RefOrValue.Value(decoder.json.decodeFromJsonElement(valueSerializer, element))
         }
     }
 }
