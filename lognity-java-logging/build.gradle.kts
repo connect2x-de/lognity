@@ -2,6 +2,7 @@
 
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.setProjectInfo
+import de.connect2x.conventions.withJavadocJar
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -16,6 +17,7 @@ configureJava(libs.versions.java)
 
 kotlin {
     withSourcesJar()
+    withJavadocJar()
     jvm()
     androidTarget {
         publishLibraryVariants("debug", "release")

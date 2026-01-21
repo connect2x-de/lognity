@@ -48,18 +48,11 @@ subprojects {
         }
     }
 
-    val javadocJar by tasks.registering(Jar::class) {
-        archiveClassifier = "javadoc"
-        dependsOn(tasks.dokkaGeneratePublicationHtml)
-        from(tasks.dokkaGeneratePublicationHtml)
-    }
-
     publishing {
         repositories {
             authenticatedPackageRegistry()
         }
         publications.withType<MavenPublication> {
-            artifact(javadocJar)
             pom {
                 apache2()
                 c2xOrganization()
