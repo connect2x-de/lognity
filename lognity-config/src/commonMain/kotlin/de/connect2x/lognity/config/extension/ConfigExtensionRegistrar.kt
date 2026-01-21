@@ -50,7 +50,6 @@ class ConfigExtensionRegistrar internal constructor() {
      * @param provider the provider function.
      */
     fun registerProvider(name: String, provider: () -> Any?) {
-        require(name !in providers) { "Config provider named '$name' already exists" }
         providers[name] = provider
     }
 
@@ -61,7 +60,6 @@ class ConfigExtensionRegistrar internal constructor() {
      * @param formatter the formatter instance.
      */
     fun registerFormatterType(name: String, formatter: Formatter) {
-        require(name !in formatterTypes) { "Formatter type '$name' already exists" }
         formatterTypes[name] = formatter
     }
 
