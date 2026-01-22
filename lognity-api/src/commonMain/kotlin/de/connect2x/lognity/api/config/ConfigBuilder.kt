@@ -2,7 +2,6 @@ package de.connect2x.lognity.api.config
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.logger.Level
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -70,7 +69,6 @@ typealias ConfigSpec = ConfigBuilder.() -> Unit
  * @param spec The DSL specification to build the configuration.
  * @return A new [Config] instance.
  */
-@OptIn(ExperimentalContracts::class)
 inline fun Config(spec: ConfigSpec): Config {
     contract {
         callsInPlace(spec, InvocationKind.EXACTLY_ONCE)

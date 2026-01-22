@@ -1,21 +1,20 @@
+import com.vanniktech.maven.publish.MavenPublishBasePlugin
 import de.connect2x.conventions.apache2
-import de.connect2x.conventions.authenticatedPackageRegistry
-import de.connect2x.conventions.authenticatedSonatype
 import de.connect2x.conventions.c2xOrganization
 import de.connect2x.conventions.defaultDependencyLocking
+import de.connect2x.conventions.defaultPublishing
 import de.connect2x.conventions.signPublications
 import de.connect2x.conventions.withVersionSuffix
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import java.time.Duration
 import java.time.ZonedDateTime
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform) apply false
     alias(sharedLibs.plugins.android.library) apply false
-    alias(sharedLibs.plugins.c2xConventions)
     alias(sharedLibs.plugins.kotlin.kapt) apply false
+    alias(sharedLibs.plugins.mavenPublish) apply false
+    alias(sharedLibs.plugins.c2xConventions)
     alias(sharedLibs.plugins.dokka)
-    alias(sharedLibs.plugins.gradleNexus)
     `maven-publish`
     signing
 }
@@ -31,8 +30,10 @@ subprojects {
     if ("example" in project.name) return@subprojects
 
     apply<MavenPublishPlugin>()
+    apply<MavenPublishBasePlugin>()
     apply<SigningPlugin>()
     apply<DokkaPlugin>()
+    defaultPublishing()
 
     signing {
         signPublications()
@@ -49,9 +50,6 @@ subprojects {
     }
 
     publishing {
-        repositories {
-            authenticatedPackageRegistry()
-        }
         publications.withType<MavenPublication> {
             pom {
                 apache2()
@@ -59,10 +57,4 @@ subprojects {
             }
         }
     }
-}
-
-nexusPublishing {
-    authenticatedSonatype()
-    connectTimeout = Duration.ofSeconds(30)
-    clientTimeout = Duration.ofMinutes(45)
 }

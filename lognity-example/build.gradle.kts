@@ -1,4 +1,5 @@
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.defaultCompilerOptions
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -12,9 +13,7 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-first-with-warning")
-    }
+    defaultCompilerOptions()
     jvm {
         binaries {
             executable {

@@ -1,8 +1,11 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import de.connect2x.conventions.configureJava
+import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
+import de.connect2x.conventions.withAndroid
 import de.connect2x.conventions.withJavadocJar
+import de.connect2x.conventions.withJvm
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 
@@ -10,20 +13,16 @@ plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
     alias(sharedLibs.plugins.kotlin.kapt)
-    alias(sharedLibs.plugins.dokka)
-    `maven-publish`
-    signing
 }
 
 configureJava(libs.versions.java)
 
 kotlin {
+    defaultCompilerOptions()
     withSourcesJar()
     withJavadocJar()
-    jvm()
-    androidTarget {
-        publishLibraryVariants("debug", "release")
-    }
+    withJvm()
+    withAndroid()
     applyDefaultHierarchyTemplate {
         common {
             group("jvmAndAndroid") {
@@ -38,7 +37,7 @@ kotlin {
                 api(projects.lognityApi)
             }
         }
-        @Suppress("UNUSED")
+        @Suppress("UNUSED") //
         val jvmAndAndroidMain by getting {
             dependencies {
                 api(sharedLibs.slf4j.api)

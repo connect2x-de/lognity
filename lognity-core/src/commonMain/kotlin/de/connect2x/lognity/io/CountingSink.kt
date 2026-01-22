@@ -3,9 +3,7 @@ package de.connect2x.lognity.io
 import kotlinx.io.Buffer
 import kotlinx.io.RawSink
 import kotlin.concurrent.atomics.AtomicLong
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
-@OptIn(ExperimentalAtomicApi::class)
 internal class CountingSink( // @formatter:off
     private val delegate: RawSink,
     initialBytesWritten: Long

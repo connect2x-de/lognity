@@ -4,14 +4,12 @@ import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
  * A function which represents a transformation applied for a given template variable
  * in the log pattern.
  */
-@OptIn(ExperimentalTime::class)
 @Suppress("NOTHING_TO_INLINE")
 fun interface Formatter {
     companion object {

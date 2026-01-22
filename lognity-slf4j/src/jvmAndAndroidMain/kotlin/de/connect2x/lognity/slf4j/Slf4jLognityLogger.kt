@@ -10,10 +10,8 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import org.slf4j.Logger as Slf4jLogger
 
-@OptIn(ExperimentalTime::class)
 internal class Slf4jLognityLogger(
     val delegate: Slf4jLogger
 ) : Logger {

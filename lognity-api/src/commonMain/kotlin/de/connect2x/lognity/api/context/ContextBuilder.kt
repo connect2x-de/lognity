@@ -1,6 +1,5 @@
 package de.connect2x.lognity.api.context
 
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -87,7 +86,6 @@ typealias ContextSpec = ContextBuilder.() -> Unit
  * @param spec The DSL specification to build the context.
  * @return A new [Context] instance.
  */
-@OptIn(ExperimentalContracts::class)
 inline fun Context(spec: ContextSpec): Context {
     contract {
         callsInPlace(spec, InvocationKind.EXACTLY_ONCE)

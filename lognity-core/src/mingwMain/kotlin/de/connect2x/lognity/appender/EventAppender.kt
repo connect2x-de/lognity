@@ -17,7 +17,6 @@ import platform.windows.DeregisterEventSource
 import platform.windows.HANDLE
 import platform.windows.RegisterEventSourceW
 import platform.windows.ReportEventW
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 /**
@@ -53,7 +52,6 @@ class EventAppender( // @formatter:off
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = memScoped {
         if (!filter(level, message, marker)) return@memScoped
         val eventSource = getOrCreateEventSource(logger)
