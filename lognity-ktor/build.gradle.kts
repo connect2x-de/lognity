@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
+    alias(sharedLibs.plugins.mavenPublish)
 }
 
 configureJava(libs.versions.java)

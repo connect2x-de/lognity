@@ -9,6 +9,7 @@ plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
     alias(sharedLibs.plugins.android.library)
     alias(sharedLibs.plugins.kotlin.serialization)
+    alias(sharedLibs.plugins.mavenPublish)
 }
 
 configureJava(libs.versions.java)
