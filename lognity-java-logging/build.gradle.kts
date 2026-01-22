@@ -4,7 +4,6 @@ import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroid
-import de.connect2x.conventions.withJavadocJar
 import de.connect2x.conventions.withJvm
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -19,7 +18,6 @@ configureJava(libs.versions.java)
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
-    withJavadocJar()
     withJvm()
     withAndroid()
     applyDefaultHierarchyTemplate {
