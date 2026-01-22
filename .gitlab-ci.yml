@@ -49,7 +49,7 @@ build:
   rules:
     - *if-merge-request
   script:
-    - ./gradlew clean build
+    - ./gradlew build
 
 security:dependencies:
   stage: security
