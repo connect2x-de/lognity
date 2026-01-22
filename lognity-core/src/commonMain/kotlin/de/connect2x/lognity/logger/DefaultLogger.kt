@@ -8,9 +8,7 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 /**
  * Default implementation of the [Logger] interface.
@@ -18,7 +16,6 @@ import kotlin.time.ExperimentalTime
  * This implementation uses atomic variables to manage the log level and enabled state,
  * ensuring thread-safety for these properties.
  */
-@OptIn(ExperimentalAtomicApi::class, ExperimentalTime::class)
 class DefaultLogger( // @formatter:off
     override val config: Config,
     override val context: Context

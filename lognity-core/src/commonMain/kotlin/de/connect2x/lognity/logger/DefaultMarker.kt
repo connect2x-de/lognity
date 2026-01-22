@@ -2,9 +2,7 @@ package de.connect2x.lognity.logger
 
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
-@OptIn(ExperimentalAtomicApi::class)
 class DefaultMarker( // @formatter:off
     override val key: String,
     override val name: String,

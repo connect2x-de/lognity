@@ -14,7 +14,6 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
@@ -33,7 +32,6 @@ import kotlin.time.Instant
  *   format strings. The keys represent placeholder names that can be used in format strings and the
  *   values define how those placeholders are rendered from a [FormatterContext].
  */
-@OptIn(ExperimentalTime::class)
 class SimpleFormatter(
     private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
 ) : Formatter {
@@ -56,26 +54,25 @@ class SimpleFormatter(
         internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
             DateTimeComponents.Format { secondFraction(3, 3) }
 
-        @OptIn(ExperimentalTime::class)
-            /**
-             * A preconfigured [SimpleFormatter] that exposes a useful set of variables commonly needed in log output.
-             *
-             * Available variables in format strings:
-             * - r: ANSI reset sequence
-             * - levelColor: ANSI color sequence for the log [Level]
-             * - marker: optional [Marker] name
-             * - message: log message content
-             * - thread: current thread name
-             * - threadId: current thread id
-             * - level: fixed-width level name padded to the longest level
-             * - levelSymbol: short symbol representing the level
-             * - name: [Logger] name
-             * - yyyy, MM, dd, hh, mm, ss, SSS: current date-time components
-             *
-             * Notes:
-             * - Date/time variables are evaluated at call time using [Clock.System.now].
-             * - ANSI sequences depend on the chosen [Level] configuration.
-             */
+        /**
+         * A preconfigured [SimpleFormatter] that exposes a useful set of variables commonly needed in log output.
+         *
+         * Available variables in format strings:
+         * - r: ANSI reset sequence
+         * - levelColor: ANSI color sequence for the log [Level]
+         * - marker: optional [Marker] name
+         * - message: log message content
+         * - thread: current thread name
+         * - threadId: current thread id
+         * - level: fixed-width level name padded to the longest level
+         * - levelSymbol: short symbol representing the level
+         * - name: [Logger] name
+         * - yyyy, MM, dd, hh, mm, ss, SSS: current date-time components
+         *
+         * Notes:
+         * - Date/time variables are evaluated at call time using [Clock.System.now].
+         * - ANSI sequences depend on the chosen [Level] configuration.
+         */
         val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off
             "r" to CompiledFormat.Text(AnsiSequence.reset.toString()),
             "levelColor" to CompiledFormat.Variable { ctx -> ctx.level.ansi.toString() },

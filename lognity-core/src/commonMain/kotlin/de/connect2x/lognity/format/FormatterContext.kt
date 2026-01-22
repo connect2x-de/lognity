@@ -5,7 +5,6 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
@@ -24,7 +23,6 @@ import kotlin.time.Instant
  * @property marker Optional [Marker] attached to the event for additional context or routing.
  * @property timestamp The timestamp of the current log message being formatted.
  */
-@OptIn(ExperimentalTime::class)
 data class FormatterContext( // @formatter:off
     var logger: Logger = NoopLogger,
     var level: Level = Level.default,

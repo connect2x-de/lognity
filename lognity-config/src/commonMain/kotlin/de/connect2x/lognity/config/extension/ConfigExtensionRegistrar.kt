@@ -11,7 +11,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.reflect.KClass
 
 /**
@@ -20,7 +19,6 @@ import kotlin.reflect.KClass
  * This class provides methods to register custom appender and condition types,
  * allowing them to be used in the polymorphic serialization of the configuration.
  */
-@OptIn(ExperimentalAtomicApi::class)
 @SerializableConfigDsl
 class ConfigExtensionRegistrar internal constructor() {
     @PublishedApi

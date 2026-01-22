@@ -13,9 +13,7 @@ import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 /**
  * An asynchronous, thread-safe sink that supports rolling files based on size and count.
@@ -31,7 +29,6 @@ import kotlin.time.ExperimentalTime
  * @property deleteExisting Whether to delete all existing log files matching the pattern on startup.
  * @property latestSuffix The suffix used for the current active log file.
  */
-@OptIn(ExperimentalAtomicApi::class)
 class RollingAsyncSink( // @formatter:off
     val basePath: Path,
     val fileCount: Int,
@@ -196,7 +193,6 @@ class RollingAsyncSink( // @formatter:off
         else Regex("""($fileName)\.([0-9]+)$timestampPattern$suffix""")
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun resolveLatestFilePath(index: Int): Path {
         val parentPath = basePath.parent ?: Path("")
         val fileName = basePath.name

@@ -11,7 +11,6 @@ import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.RollingAsyncSink
 import kotlinx.io.files.Path
 import kotlinx.io.writeString
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * An appender that writes log messages to files with rolling capabilities.
@@ -27,7 +26,6 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  * @param deleteExisting If true, any existing files at the given path will be deleted upon initialization.
  * @param latestSuffix The suffix used for the current active log file.
  */
-@OptIn(ExperimentalAtomicApi::class)
 class RollingFileAppender(
     override val pattern: String,
     override val formatter: Formatter,

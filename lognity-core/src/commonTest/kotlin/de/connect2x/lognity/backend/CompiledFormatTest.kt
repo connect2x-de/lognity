@@ -3,7 +3,6 @@ package de.connect2x.lognity.backend
 import de.connect2x.lognity.format.CompiledFormat
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.ExperimentalTime
 
 class CompiledFormatTest {
     private val variables: Map<String, CompiledFormat.Segment<String>> = mapOf(
@@ -29,7 +28,6 @@ class CompiledFormatTest {
         assertEquals("""The 🦊 goes YIP!""", format("YIP"))
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     fun `Complex format gets interpolated correctly`() {
         val format = CompiledFormat.compile<Unit>(mapOf( // @formatter:off

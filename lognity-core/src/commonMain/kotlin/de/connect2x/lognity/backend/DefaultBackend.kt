@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 internal expect fun getDefaultLogLevel(): Level
 
@@ -72,7 +71,6 @@ internal expect fun createSystemRollingFileAppender( // @formatter:off
  * - Managing a [CoroutineScope] for asynchronous operations like file writing.
  * - Registering shutdown hooks to ensure proper cleanup.
  */
-@OptIn(ExperimentalAtomicApi::class)
 object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()

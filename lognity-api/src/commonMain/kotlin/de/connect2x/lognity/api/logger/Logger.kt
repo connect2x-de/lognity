@@ -8,7 +8,6 @@ import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.context.ContextSpec
 import de.connect2x.lognity.api.marker.Marker
-import kotlin.contracts.ExperimentalContracts
 
 /**
  * An interface which provides functions to log to all appenders of
@@ -261,7 +260,6 @@ fun Logger(name: String? = null, contextSpec: ContextSpec = {}): Logger {
  * @param contextSpec A Context builder that augments the copied context for the derived logger.
  * @return A new Logger sharing the same name and configuration, with an extended Context.
  */
-@OptIn(ExperimentalContracts::class)
 inline fun Logger.derive(crossinline contextSpec: ContextSpec): Logger {
     val name = context[Logger.Name]?.name
     return Backend.createLogger(name) {

@@ -14,12 +14,12 @@ import kotlin.js.JsAny
 import kotlin.js.JsName
 import kotlin.js.Promise
 
-@PublishedApi
 @OptIn(ExperimentalWasmJsInterop::class)
+@PublishedApi
 @JsName("fetch")
 internal external fun fetch(input: String): Promise<Response>
 
-@OptIn(ExperimentalWasmJsInterop::class, DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalWasmJsInterop::class)
 actual suspend inline fun Backend.withDefaultConfig( // @formatter:off
     path: String,
     crossinline block: suspend () -> Unit

@@ -1,6 +1,5 @@
 package de.connect2x.lognity.api.backend
 
-import de.connect2x.lognity.api.backend.Backend.Companion.configSpec
 import de.connect2x.lognity.api.config.ConfigSpec
 import de.connect2x.lognity.api.context.ContextSpec
 import de.connect2x.lognity.api.format.Formatter
@@ -9,10 +8,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import kotlinx.coroutines.CoroutineScope
 import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 // This could be private, but capturing a private top level field in a public companion object triggers a compiler bug
-@OptIn(ExperimentalAtomicApi::class)
 @PublishedApi
 internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
 
@@ -22,7 +19,6 @@ internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBack
  * as well as providing default configuration for the logging system.
  */
 interface Backend {
-    @OptIn(ExperimentalAtomicApi::class)
     companion object : Backend {
         /**
          * Set the backend implementation used for logging.
