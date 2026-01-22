@@ -4,7 +4,6 @@ import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAll
-import de.connect2x.conventions.withJavadocJar
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
@@ -20,7 +19,6 @@ configureJava(libs.versions.java)
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
-    withJavadocJar()
     withAll()
     applyDefaultHierarchyTemplate {
         common {

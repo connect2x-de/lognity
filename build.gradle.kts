@@ -3,7 +3,6 @@ import de.connect2x.conventions.apache2
 import de.connect2x.conventions.c2xOrganization
 import de.connect2x.conventions.defaultDependencyLocking
 import de.connect2x.conventions.defaultPublishing
-import de.connect2x.conventions.signPublications
 import de.connect2x.conventions.withVersionSuffix
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import java.time.ZonedDateTime
@@ -34,10 +33,6 @@ subprojects {
     apply<SigningPlugin>()
     apply<DokkaPlugin>()
     defaultPublishing()
-
-    signing {
-        signPublications()
-    }
 
     dokka {
         moduleName = project.name
