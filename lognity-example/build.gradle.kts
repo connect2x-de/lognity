@@ -13,7 +13,6 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
-    defaultCompilerOptions()
     jvm {
         binaries {
             executable {
@@ -88,6 +87,7 @@ kotlin {
             }
         }
     }
+    defaultCompilerOptions()
     applyDefaultHierarchyTemplate {
         common {
             group("nonWeb") {

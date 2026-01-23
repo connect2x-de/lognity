@@ -1,7 +1,7 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
-import de.connect2x.conventions.withAll
+import de.connect2x.conventions.withDefaultLibraryTargets
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -15,10 +15,10 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    defaultCompilerOptions()
     withSourcesJar()
-    withAll()
+    withDefaultLibraryTargets()
     applyDefaultHierarchyTemplate()
+    defaultCompilerOptions()
     sourceSets {
         commonMain {
             dependencies {
