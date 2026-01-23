@@ -18,7 +18,6 @@ plugins {
 configureJava(libs.versions.java)
 
 kotlin {
-    defaultCompilerOptions()
     withSourcesJar()
     withJvm()
     withAndroid()
@@ -30,6 +29,7 @@ kotlin {
             }
         }
     }
+    defaultCompilerOptions()
     sourceSets {
         commonMain {
             dependencies {
