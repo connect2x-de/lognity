@@ -3,7 +3,7 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
-import de.connect2x.conventions.withAndroid
+import de.connect2x.conventions.withAndroidLibrary
 import de.connect2x.conventions.withJvm
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
@@ -18,9 +18,10 @@ plugins {
 configureJava(libs.versions.java)
 
 kotlin {
+    defaultCompilerOptions()
     withSourcesJar()
+    withAndroidLibrary()
     withJvm()
-    withAndroid()
     applyDefaultHierarchyTemplate {
         common {
             group("jvmAndAndroid") {
@@ -29,7 +30,6 @@ kotlin {
             }
         }
     }
-    defaultCompilerOptions()
     sourceSets {
         commonMain {
             dependencies {
@@ -50,14 +50,6 @@ val kaptConfig = findKaptConfiguration("main")!!
 
 dependencies {
     kaptConfig(sharedLibs.autoService)
-}
-
-android {
-    namespace = "$group.${rootProject.name}"
-    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
-    defaultConfig {
-        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
-    }
 }
 
 publishing {

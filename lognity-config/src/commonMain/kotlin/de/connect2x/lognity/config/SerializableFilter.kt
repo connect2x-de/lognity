@@ -1,7 +1,7 @@
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.appender.Filter
-import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.condition.AlwaysCondition
 import de.connect2x.lognity.config.condition.SerializableCondition
@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
 data class SerializableFilter(
     val conditions: List<SerializableCondition> = listOf(AlwaysCondition)
 ) : Filter {
-    override operator fun invoke(level: Level, message: String, marker: Marker?): Boolean {
-        return conditions.all { cond -> cond(level, message, marker) }
+    override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
+        return conditions.all { cond -> cond(logger.level, message, marker) }
     }
 }

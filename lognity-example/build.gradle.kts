@@ -1,8 +1,13 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
+import de.connect2x.conventions.withJs
+import de.connect2x.conventions.withJvm
+import de.connect2x.conventions.withLinux
+import de.connect2x.conventions.withMacos
+import de.connect2x.conventions.withMingw
+import de.connect2x.conventions.withWasm
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -13,23 +18,18 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
-    jvm {
+    defaultCompilerOptions()
+    withJvm {
         binaries {
             executable {
                 mainClass = "${rootProject.group}.example.MainKt"
             }
         }
     }
-    linuxX64()
-    linuxArm64()
-    macosX64()
-    macosArm64()
-    mingwX64()
-    js {
-        compilerOptions {
-            sourceMap = true
-            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
-        }
+    withLinux()
+    withMacos()
+    withMingw()
+    withJs {
         useCommonJs()
         nodejs {
             binaries.executable()
@@ -55,7 +55,7 @@ kotlin {
             }
         }
     }
-    wasmJs {
+    withWasm {
         nodejs {
             binaries.executable()
             runTask { workingDir = layout.projectDirectory.asFile }
@@ -87,7 +87,6 @@ kotlin {
             }
         }
     }
-    defaultCompilerOptions()
     applyDefaultHierarchyTemplate {
         common {
             group("nonWeb") {

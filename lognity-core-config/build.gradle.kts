@@ -3,7 +3,11 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
-import de.connect2x.conventions.withDefaultLibraryTargets
+import de.connect2x.conventions.withAndroidLibrary
+import de.connect2x.conventions.withJs
+import de.connect2x.conventions.withJvm
+import de.connect2x.conventions.withNative
+import de.connect2x.conventions.withWasm
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
@@ -18,10 +22,20 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    withSourcesJar()
-    withDefaultLibraryTargets()
-    applyDefaultHierarchyTemplate()
     defaultCompilerOptions()
+    withSourcesJar()
+    withAndroidLibrary()
+    withJvm()
+    withNative()
+    withJs {
+        browser()
+        nodejs()
+    }
+    withWasm {
+        browser()
+        nodejs()
+    }
+    applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
             dependencies {
@@ -36,14 +50,6 @@ kotlin {
                 implementation(sharedLibs.kotlin.test)
             }
         }
-    }
-}
-
-android {
-    namespace = "$group.${rootProject.name}"
-    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
-    defaultConfig {
-        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 
