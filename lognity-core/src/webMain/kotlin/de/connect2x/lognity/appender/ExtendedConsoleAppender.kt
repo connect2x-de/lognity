@@ -7,6 +7,7 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.isChrome
+import de.connect2x.lognity.util.isKarma
 import de.connect2x.lognity.util.isNode
 import kotlin.js.JsName
 
@@ -43,12 +44,27 @@ class ExtendedConsoleAppender( // @formatter:off
     filter: Filter,
     name: String? = null
 ) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
+    companion object {
+        private val messageProcessor: (String) -> String = when {
+            isKarma -> ::processKarmaMessage
+            else -> ::processMessage
+        }
+
+        private fun processMessage(message: String): String = when {
+            isChrome || isNode -> message // Chrome and NodeJS support ANSI escape codes properly
+            else -> message.toAnsi().cleanString()
+        }
+
+        // Karma runner messes up newlines..
+        private fun processKarmaMessage(message: String): String = "${processMessage(message)}\n"
+    }
+
     override fun append(
         logger: Logger, level: Level, message: String, marker: Marker?
     ) {
-        if (level < logger.level || message.isEmpty() || !filter(logger, message, marker)) return
+        if (level < logger.level || !filter(logger, message, marker)) return
         // Only Chrome supports ANSI escape codes in the JS console right now
-        val processedMessage = if (isChrome || isNode) message else message.toAnsi().cleanString()
+        val processedMessage = messageProcessor(message)
         when (level) {
             Level.DEBUG, Level.TRACE -> console.debug(processedMessage)
             Level.INFO -> console.info(processedMessage)
