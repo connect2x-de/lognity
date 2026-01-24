@@ -40,7 +40,7 @@ class FileAppender( // @formatter:off
     }
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (level < logger.level || message.isEmpty() || !filter(logger, message, marker)) return
+        if (level < logger.level || !filter(logger, message, marker)) return
         sink.write {
             writeString("${message.toAnsi().cleanString()}\n")
         }

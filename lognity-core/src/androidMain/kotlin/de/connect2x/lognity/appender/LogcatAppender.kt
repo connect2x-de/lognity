@@ -29,7 +29,7 @@ class LogcatAppender( // @formatter:off
     override val name: String? = null
 ) : Appender { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (level < logger.level || message.isEmpty() || !filter(logger, message, marker)) return
+        if (level < logger.level || !filter(logger, message, marker)) return
         Log.println(level.logcatLevel, marker?.name, message.toAnsi().cleanString())
     }
 }

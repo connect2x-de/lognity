@@ -36,7 +36,7 @@ class OsAppender( // @formatter:off
 
     @OptIn(ExperimentalForeignApi::class)
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (level < logger.level || message.isEmpty() || !filter(logger, message, marker)) return
+        if (level < logger.level || !filter(logger, message, marker)) return
         _os_log_internal(null, delegates.getOrPut(logger) {
             val name = logger.context[Logger.Name]?.name ?: logger.toString()
             os_log_create(name, null)
