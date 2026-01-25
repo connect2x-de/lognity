@@ -25,7 +25,7 @@ class TestLoggingTest {
     }
 
     @Test
-    fun blockingTest() {
+    fun `Blocking test`() {
         val logger = Logger()
         for (i in 0..<10) {
             logger.printTestMessages()
@@ -33,7 +33,7 @@ class TestLoggingTest {
     }
 
     @Test
-    fun suspendTest() = runTest {
+    fun `Suspending test`() = runTest {
         TestBackend.withTestScope {
             launch(testScheduler + CoroutineName("Test Coroutine")) {
                 val logger = Logger().deriveSuspend() // Capture name from current coroutine

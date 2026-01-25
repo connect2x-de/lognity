@@ -38,16 +38,14 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.lognityApi)
-                api(sharedLibs.kotlin.test)
-                api(sharedLibs.kotlinx.coroutines.test)
                 api(sharedLibs.jetbrains.annotations)
-                implementation(projects.lognityCore)
+                api(sharedLibs.kotlinx.coroutines.test)
+                api(projects.lognityCore)
             }
         }
         commonTest {
             dependencies {
                 implementation(sharedLibs.kotlin.test)
-                implementation(sharedLibs.kotlinx.coroutines.test)
             }
         }
     }
