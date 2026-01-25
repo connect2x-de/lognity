@@ -38,7 +38,9 @@ object TestBackend : Backend by DefaultBackend {
 
     init { // Increase to debug level for tests by default
         configSpec = {
-            systemConsoleAppender("{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}")
+            systemConsoleAppender(
+                "{{levelColor}}>> {{levelSymbol}} {{hh}}:{{mm}}:{{ss}}.{{SSS}} [{{threadId}}/{{coroutineName}}][{{name}}] {{message}}{{r}}"
+            )
             level = Level.DEBUG
         }
     }
@@ -77,9 +79,9 @@ object TestBackend : Backend by DefaultBackend {
      * @param block The block of code to execute.
      * @return The result of the [block].
      */
-    context(scope: TestScope) inline fun <reified R> withTestScope( // @formatter:off
+    context(scope: TestScope) suspend inline fun <reified R> withTestScope( // @formatter:off
         crossinline config: ConfigSpec = {},
-        block: TestScope.() -> R
+        block: suspend TestScope.() -> R
     ): R { // @formatter:on
         val oldConfig = configSpec
         return try {

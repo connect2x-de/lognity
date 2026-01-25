@@ -38,6 +38,12 @@ interface Logger {
         override val key: Context.Key<*> = Key
     } // @formatter:on
 
+    /** The name of the coroutine this Logger was created/derived in */
+    data class CoroutineName(val name: String) : Context.Element { // @formatter:off
+        companion object Key : Context.Key<CoroutineName>
+        override val key: Context.Key<*> = Key
+    } // @formatter:on
+
     /** The default marker of all messages logged by a given [Logger] */
     data class DefaultMarker(val marker: Marker) : Context.Element { // @formatter:off
         companion object Key : Context.Key<DefaultMarker>
