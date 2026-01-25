@@ -55,7 +55,7 @@ class ConfigExtensionRegistrar internal constructor() {
      * Registers a formatter type.
      *
      * @param name the name of the formatter type.
-     * @param factory
+     * @param factory Factory function for creating new instances of the given formatter.
      */
     fun registerFormatterType(name: String, factory: () -> Formatter) {
         formatterFactories[name] = factory
