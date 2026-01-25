@@ -41,7 +41,7 @@ interface Backend {
 
         @TestOnly
         inline fun setOnce(backend: Backend, block: () -> Unit = {}) {
-            if (!_isFinal.compareAndExchange(expectedValue = false, newValue = true)) return
+            if (_isFinal.compareAndExchange(expectedValue = false, newValue = true)) return
             currentBackend.store(backend)
             block()
         }

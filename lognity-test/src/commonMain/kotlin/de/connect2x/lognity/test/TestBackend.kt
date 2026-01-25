@@ -10,6 +10,7 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.Logger.Name
 import de.connect2x.lognity.backend.DefaultBackend
+import de.connect2x.lognity.config.systemConsoleAppender
 import de.connect2x.lognity.test.TestBackend.testScope
 import kotlinx.coroutines.test.TestScope
 import org.jetbrains.annotations.TestOnly
@@ -36,9 +37,8 @@ object TestBackend : Backend by DefaultBackend {
         }
 
     init { // Increase to debug level for tests by default
-        val defaultConfig = configSpec
         configSpec = {
-            defaultConfig()
+            systemConsoleAppender("{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}")
             level = Level.DEBUG
         }
     }
