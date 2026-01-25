@@ -1,8 +1,12 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
-import de.connect2x.conventions.withDefaultLibraryTargets
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import de.connect2x.conventions.withAndroidLibrary
+import de.connect2x.conventions.withBrowser
+import de.connect2x.conventions.withJvm
+import de.connect2x.conventions.withNative
+import de.connect2x.conventions.withNodeJs
+import de.connect2x.conventions.withWeb
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
@@ -13,30 +17,28 @@ plugins {
 
 configureJava(libs.versions.java)
 
-@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
-    withSourcesJar()
-    withDefaultLibraryTargets()
-    applyDefaultHierarchyTemplate()
     defaultCompilerOptions()
+    withSourcesJar()
+    withAndroidLibrary()
+    withJvm()
+    withNative()
+    withWeb {
+        withBrowser()
+        withNodeJs()
+    }
+    applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
             dependencies {
                 api(sharedLibs.kotlinx.io.core)
                 api(sharedLibs.kotlinx.io.bytestring)
+                api(sharedLibs.jetbrains.annotations)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
                 implementation(sharedLibs.kotlinx.serialization.core)
             }
         }
-    }
-}
-
-android {
-    namespace = "$group.${rootProject.name}"
-    compileSdk = sharedLibs.versions.androidCompileSDK.get().toInt()
-    defaultConfig {
-        minSdk = sharedLibs.versions.androidMinimalSDK.get().toInt()
     }
 }
 

@@ -36,6 +36,4 @@ inline fun Marker( // @formatter:off
     key: String,
     name: String = key,
     isEnabled: Boolean = true
-): Marker { // @formatter:on
-    return Backend.createMarker(key, name, isEnabled)
-}
+): Marker = Backend.createMarker(key, name, isEnabled) // @formatter:on

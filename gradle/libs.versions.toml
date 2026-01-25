@@ -2,7 +2,7 @@
 
 java = "17"
 
-lognity = "1.2.1"
+lognity = "1.2.2"
 stately = "2.1.0" # https://github.com/touchlab/Stately/releases
 
 [libraries]

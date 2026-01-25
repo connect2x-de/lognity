@@ -66,7 +66,7 @@ data class SerializableConfig( // @formatter:off
         init { // Default implementations extension
             this uses ConfigExtension {
                 registerConditionType<AlwaysCondition>()
-                registerFormatterType("default", Formatter.default)
+                registerFormatterType("default", Formatter::default)
             }
         }
 
@@ -105,9 +105,9 @@ data class SerializableConfig( // @formatter:off
             level = getCombinedLevel()
             isEnabled = enabled.resolve()
             for (appender in appenders) {
-                val formatter = extensionRegistrar.formatterTypes[appender.formatter.resolve()] ?: continue
+                val formatter = extensionRegistrar.formatterFactories[appender.formatter.resolve()] ?: continue
                 val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
-                factory(appender, formatter)
+                factory(appender, formatter())
             }
         }
     }
@@ -128,8 +128,7 @@ data class SerializableConfig( // @formatter:off
      * Applies this configuration to the given [ConfigBuilder].
      */
     @ConfigDsl
-    context(builder: ConfigBuilder)
-    fun applyConfig() = builder.setFrom(cachedConfig)
+    context(builder: ConfigBuilder) fun applyConfig() = builder.setFrom(cachedConfig)
 
     /**
      * Returns this configuration as a [Config] instance.

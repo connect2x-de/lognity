@@ -132,7 +132,7 @@ class RollingAsyncSink( // @formatter:off
 
                     if (latestSuffix.isNotEmpty()) {
                         val oldRenamedPath = removeLatestSuffix(path)
-                        SystemFileSystem.atomicMove(path, oldRenamedPath)
+                        if (SystemFileSystem.exists(path)) SystemFileSystem.atomicMove(path, oldRenamedPath)
                         pathBuffer[fileIndex] = oldRenamedPath
                     }
 

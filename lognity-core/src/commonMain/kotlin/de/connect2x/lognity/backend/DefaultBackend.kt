@@ -89,7 +89,7 @@ object DefaultBackend : Backend {
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         systemLogAppender(
-            "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}"
+            "{{levelColor}}>> {{levelSymbol}} {{hh}}:{{mm}}:{{ss}}.{{SSS}} [{{threadId}}/{{coroutineName}}][{{name}}] {{message}}{{r}}"
         )
     }
 

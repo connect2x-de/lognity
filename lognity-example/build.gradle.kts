@@ -1,8 +1,14 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
+import de.connect2x.conventions.withBrowser
+import de.connect2x.conventions.withJvm
+import de.connect2x.conventions.withLinux
+import de.connect2x.conventions.withMacos
+import de.connect2x.conventions.withMingw
+import de.connect2x.conventions.withNodeJs
+import de.connect2x.conventions.withWeb
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -13,70 +19,30 @@ configureJava(libs.versions.java)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
-    jvm {
+    defaultCompilerOptions()
+    withJvm {
         binaries {
             executable {
                 mainClass = "${rootProject.group}.example.MainKt"
             }
         }
     }
-    linuxX64()
-    linuxArm64()
-    macosX64()
-    macosArm64()
-    mingwX64()
-    js {
-        compilerOptions {
-            sourceMap = true
-            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
-        }
+    withLinux()
+    withMacos()
+    withMingw()
+    withWeb {
         useCommonJs()
-        nodejs {
+        withNodeJs {
             binaries.executable()
             runTask { workingDir = layout.projectDirectory.asFile }
-            testTask {
-                useKarma {
-                    useFirefoxHeadless()
-                }
-            }
         }
-        browser {
+        withBrowser {
             binaries.executable()
             runTask {
                 mainOutputFileName = "${project.name}.js"
             }
             webpackTask {
                 mainOutputFileName = "${project.name}.js"
-            }
-            testTask {
-                useKarma {
-                    useFirefoxHeadless()
-                }
-            }
-        }
-    }
-    wasmJs {
-        nodejs {
-            binaries.executable()
-            runTask { workingDir = layout.projectDirectory.asFile }
-            testTask {
-                useKarma {
-                    useFirefoxHeadless()
-                }
-            }
-        }
-        browser {
-            binaries.executable()
-            runTask {
-                mainOutputFileName = "${project.name}.js"
-            }
-            webpackTask {
-                mainOutputFileName = "${project.name}.js"
-            }
-            testTask {
-                useKarma {
-                    useFirefoxHeadless()
-                }
             }
         }
     }
@@ -87,7 +53,6 @@ kotlin {
             }
         }
     }
-    defaultCompilerOptions()
     applyDefaultHierarchyTemplate {
         common {
             group("nonWeb") {

@@ -43,12 +43,19 @@ class ExtendedConsoleAppender( // @formatter:off
     filter: Filter,
     name: String? = null
 ) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
+    companion object {
+        private val messageProcessor: (String) -> String = when {
+            isChrome || isNode -> { message -> message }
+            else -> { message -> message.toAnsi().cleanString() }
+        }
+    }
+
     override fun append(
         logger: Logger, level: Level, message: String, marker: Marker?
     ) {
-        if (message.isEmpty() || level < logger.level) return
+        if (level < logger.level || !filter(logger, message, marker)) return
         // Only Chrome supports ANSI escape codes in the JS console right now
-        val processedMessage = if (isChrome || isNode) message else message.toAnsi().cleanString()
+        val processedMessage = messageProcessor(message)
         when (level) {
             Level.DEBUG, Level.TRACE -> console.debug(processedMessage)
             Level.INFO -> console.info(processedMessage)
