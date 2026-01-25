@@ -16,7 +16,7 @@ import kotlin.time.Clock
  * This implementation uses atomic variables to manage the log level and enabled state,
  * ensuring thread-safety for these properties.
  */
-class DefaultLogger( // @formatter:off
+open class DefaultLogger( // @formatter:off
     override val config: Config,
     override val context: Context
 ) : Logger { // @formatter:on

@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroidLibrary
@@ -10,18 +9,13 @@ import de.connect2x.conventions.withNative
 import de.connect2x.conventions.withNodeJs
 import de.connect2x.conventions.withWeb
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
-    alias(sharedLibs.plugins.kotlin.serialization)
     alias(sharedLibs.plugins.android.library)
     alias(sharedLibs.plugins.mavenPublish)
 }
 
-configureJava(libs.versions.java)
-
-@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
@@ -32,14 +26,22 @@ kotlin {
         withBrowser()
         withNodeJs()
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withAndroidTarget()
+            }
+        }
+    }
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.lognityConfig)
-                api(projects.lognityCore)
-                implementation(sharedLibs.kotlinx.serialization.core)
-                implementation(sharedLibs.kotlinx.serialization.json)
+                api(projects.lognityApi)
+                api(sharedLibs.kotlin.test)
+                api(sharedLibs.kotlinx.coroutines.test)
+                api(sharedLibs.jetbrains.annotations)
+                implementation(projects.lognityCore)
             }
         }
         commonTest {
@@ -55,8 +57,8 @@ publishing {
     publications.withType<MavenPublication> {
         pom {
             setProjectInfo(
-                name = "Lognity Core Config",
-                description = "Lognity Config extension for Lognity Core",
+                name = "Lognity Test",
+                description = "Test harness for kotlinx.test and the Lognity logging API",
                 repository = "https://gitlab.com/connect2x/lognity"
             )
         }

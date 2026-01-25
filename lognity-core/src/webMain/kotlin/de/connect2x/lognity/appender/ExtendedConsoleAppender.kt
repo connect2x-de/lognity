@@ -7,7 +7,6 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.isChrome
-import de.connect2x.lognity.util.isKarma
 import de.connect2x.lognity.util.isNode
 import kotlin.js.JsName
 
@@ -46,17 +45,9 @@ class ExtendedConsoleAppender( // @formatter:off
 ) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
     companion object {
         private val messageProcessor: (String) -> String = when {
-            isKarma -> ::processKarmaMessage
-            else -> ::processMessage
+            isChrome || isNode -> { message -> message }
+            else -> { message -> message.toAnsi().cleanString() }
         }
-
-        private fun processMessage(message: String): String = when {
-            isChrome || isNode -> message // Chrome and NodeJS support ANSI escape codes properly
-            else -> message.toAnsi().cleanString()
-        }
-
-        // Karma runner messes up newlines..
-        private fun processKarmaMessage(message: String): String = "${processMessage(message)}\n"
     }
 
     override fun append(

@@ -2,11 +2,11 @@ import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroidLibrary
-import de.connect2x.conventions.withJs
+import de.connect2x.conventions.withBrowser
 import de.connect2x.conventions.withJvm
 import de.connect2x.conventions.withNative
-import de.connect2x.conventions.withWasm
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import de.connect2x.conventions.withNodeJs
+import de.connect2x.conventions.withWeb
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
@@ -17,20 +17,15 @@ plugins {
 
 configureJava(libs.versions.java)
 
-@OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
     withAndroidLibrary()
     withJvm()
     withNative()
-    withJs {
-        browser()
-        nodejs()
-    }
-    withWasm {
-        browser()
-        nodejs()
+    withWeb {
+        withBrowser()
+        withNodeJs()
     }
     applyDefaultHierarchyTemplate()
     sourceSets {
@@ -38,6 +33,7 @@ kotlin {
             dependencies {
                 api(sharedLibs.kotlinx.io.core)
                 api(sharedLibs.kotlinx.io.bytestring)
+                api(sharedLibs.jetbrains.annotations)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
                 implementation(sharedLibs.kotlinx.serialization.core)

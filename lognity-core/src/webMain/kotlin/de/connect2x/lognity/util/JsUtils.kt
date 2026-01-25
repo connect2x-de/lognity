@@ -11,14 +11,10 @@ internal external interface Process {
 private fun checkIsNode(): Boolean = js("""typeof process !== 'undefined' && process.release.name === 'node'""")
 
 @OptIn(ExperimentalWasmJsInterop::class)
-private fun checkIsKarma(): Boolean = js("""typeof window !== 'undefined' && typeof window.__karma__ !== 'undefined'""")
-
-@OptIn(ExperimentalWasmJsInterop::class)
 internal fun getProcess(): Process = js("""process""")
 
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun getUserAgent(): String = js("""window.navigator.userAgent""")
 
 internal val isNode: Boolean = checkIsNode()
-internal val isKarma: Boolean = checkIsKarma()
 internal val isChrome: Boolean = !isNode && "chrome" in getUserAgent().lowercase()

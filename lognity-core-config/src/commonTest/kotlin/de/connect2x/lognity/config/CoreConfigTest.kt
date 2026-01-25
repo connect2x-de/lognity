@@ -16,7 +16,7 @@ import kotlin.test.assertTrue
 class CoreConfigTest {
     @BeforeTest
     fun setup() {
-        Backend.set(DefaultBackend)
+        Backend.setOnce(DefaultBackend)
         SerializableConfig uses CoreConfigExtension
     }
 

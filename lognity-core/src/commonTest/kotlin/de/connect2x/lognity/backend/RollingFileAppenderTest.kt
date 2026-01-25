@@ -10,7 +10,7 @@ import kotlin.test.Test
 class RollingFileAppenderTest {
     @BeforeTest
     fun setup() {
-        Backend.set(DefaultBackend)
+        Backend.setOnce(DefaultBackend)
     }
 
     @Test

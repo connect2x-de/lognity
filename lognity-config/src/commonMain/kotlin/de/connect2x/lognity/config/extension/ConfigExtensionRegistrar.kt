@@ -33,7 +33,7 @@ class ConfigExtensionRegistrar internal constructor() {
     internal var conditionTypes: AtomicReference<PolymorphicModuleBuilder<SerializableCondition>.() -> Unit> =
         AtomicReference {}
 
-    internal val formatterTypes: SharedHashMap<String, Formatter> = SharedHashMap()
+    internal val formatterFactories: SharedHashMap<String, () -> Formatter> = SharedHashMap()
     internal val providers: SharedHashMap<String, () -> Any?> = SharedHashMap()
 
     @Suppress("UNCHECKED_CAST")
@@ -55,10 +55,10 @@ class ConfigExtensionRegistrar internal constructor() {
      * Registers a formatter type.
      *
      * @param name the name of the formatter type.
-     * @param formatter the formatter instance.
+     * @param factory
      */
-    fun registerFormatterType(name: String, formatter: Formatter) {
-        formatterTypes[name] = formatter
+    fun registerFormatterType(name: String, factory: () -> Formatter) {
+        formatterFactories[name] = factory
     }
 
     /**

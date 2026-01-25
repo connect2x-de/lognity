@@ -7,11 +7,9 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import kotlinx.coroutines.CoroutineScope
+import org.jetbrains.annotations.TestOnly
+import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
-
-// This could be private, but capturing a private top level field in a public companion object triggers a compiler bug
-@PublishedApi
-internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
 
 /**
  * Interface representing a logging backend implementation.
@@ -20,10 +18,33 @@ internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBack
  */
 interface Backend {
     companion object : Backend {
+        @PublishedApi
+        internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
+
+        @PublishedApi
+        internal val _isFinal: AtomicBoolean = AtomicBoolean(false)
+        inline val isFinal: Boolean get() = _isFinal.load()
+
+        private fun ensureFinal() {
+            _isFinal.store(true)
+        }
+
         /**
          * Set the backend implementation used for logging.
          */
-        fun set(backend: Backend) = currentBackend.store(backend)
+        fun set(backend: Backend) {
+            check(!_isFinal.compareAndExchange(expectedValue = false, newValue = true)) {
+                "Lognity backend is already final and cannot be changed again"
+            }
+            currentBackend.store(backend)
+        }
+
+        @TestOnly
+        inline fun setOnce(backend: Backend, block: () -> Unit = {}) {
+            if (!_isFinal.compareAndExchange(expectedValue = false, newValue = true)) return
+            currentBackend.store(backend)
+            block()
+        }
 
         override val name: String get() = currentBackend.load().name
         override val defaultLevel: Level get() = currentBackend.load().defaultLevel
@@ -33,26 +54,38 @@ interface Backend {
         override var configSpec: ConfigSpec
             get() = currentBackend.load().configSpec
             set(value) {
+                ensureFinal()
                 currentBackend.load().configSpec = value
             }
 
         override var contextSpec: ContextSpec
             get() = currentBackend.load().contextSpec
             set(value) {
+                ensureFinal()
                 currentBackend.load().contextSpec = value
             }
 
-        override fun addShutdownHook(hook: () -> Unit) = currentBackend.load().addShutdownHook(hook)
+        override fun addShutdownHook(hook: () -> Unit) {
+            ensureFinal()
+            currentBackend.load().addShutdownHook(hook)
+        }
 
         override fun createMarker(
             key: String, name: String, isEnabled: Boolean
-        ): Marker = currentBackend.load().createMarker(key, name, isEnabled)
+        ): Marker {
+            ensureFinal()
+            return currentBackend.load().createMarker(key, name, isEnabled)
+        }
 
         override fun createLogger(
             name: String?, contextSpec: ContextSpec
-        ): Logger = currentBackend.load().createLogger(name, contextSpec)
+        ): Logger {
+            ensureFinal()
+            return currentBackend.load().createLogger(name, contextSpec)
+        }
 
         override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
+            ensureFinal()
             currentBackend.load().setCoroutineScopeProvider(provider)
         }
     }
