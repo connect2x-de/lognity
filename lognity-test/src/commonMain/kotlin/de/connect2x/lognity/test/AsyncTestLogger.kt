@@ -13,6 +13,6 @@ internal expect class AsyncTestLogger(config: Config, context: Context) : Logger
     override var level: Level
     override var isEnabled: Boolean
 
-    override fun log(level: Level, message: AnsiScope.() -> Any)
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any)
+    override fun log(level: Level, message: AnsiScope.() -> Any?)
+    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?)
 }

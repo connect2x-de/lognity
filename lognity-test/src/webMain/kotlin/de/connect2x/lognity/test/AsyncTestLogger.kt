@@ -11,7 +11,7 @@ internal actual class AsyncTestLogger actual constructor( // @formatter:off
     config: Config,
     context: Context
 ) : DefaultLogger(config, context) { // @formatter:on
-    actual override fun log(level: Level, message: AnsiScope.() -> Any) {
+    actual override fun log(level: Level, message: AnsiScope.() -> Any?) {
         if (!isKarma) {
             super.log(level, message)
             return
@@ -19,7 +19,7 @@ internal actual class AsyncTestLogger actual constructor( // @formatter:off
         super.log(level) { "${message()}\n" }
     }
 
-    actual override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
+    actual override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
         if (!isKarma) {
             super.log(marker, level, message)
             return

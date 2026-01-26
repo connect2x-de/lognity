@@ -80,7 +80,7 @@ interface Logger {
      * @param level The level at which to report the message.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun log(level: Level, message: AnsiScope.() -> Any)
+    fun log(level: Level, message: AnsiScope.() -> Any?)
 
     /**
      * Log a message at the given level to all appenders.
@@ -91,7 +91,7 @@ interface Logger {
      * @param level The level at which to report the message.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any)
+    fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?)
 
     /**
      * Log a message at the [Level.TRACE] level if enabled.
@@ -102,7 +102,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun trace(message: AnsiScope.() -> Any) = log(Level.TRACE, message)
+    fun trace(message: AnsiScope.() -> Any?) = log(Level.TRACE, message)
 
     /**
      * Log a message at the [Level.DEBUG] level if enabled.
@@ -113,7 +113,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun debug(message: AnsiScope.() -> Any) = log(Level.DEBUG, message)
+    fun debug(message: AnsiScope.() -> Any?) = log(Level.DEBUG, message)
 
     /**
      * Log a message at the [Level.INFO] level if enabled.
@@ -124,7 +124,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun info(message: AnsiScope.() -> Any) = log(Level.INFO, message)
+    fun info(message: AnsiScope.() -> Any?) = log(Level.INFO, message)
 
     /**
      * Log a message at the [Level.WARN] level if enabled.
@@ -135,7 +135,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun warn(message: AnsiScope.() -> Any) = log(Level.WARN, message)
+    fun warn(message: AnsiScope.() -> Any?) = log(Level.WARN, message)
 
     /**
      * Log a message at the [Level.ERROR] level if enabled.
@@ -146,7 +146,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun error(message: AnsiScope.() -> Any) = log(Level.ERROR, message)
+    fun error(message: AnsiScope.() -> Any?) = log(Level.ERROR, message)
 
     /**
      * Log a message at the [Level.FATAL] level if enabled.
@@ -157,7 +157,7 @@ interface Logger {
      *
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun fatal(message: AnsiScope.() -> Any) = log(Level.FATAL, message)
+    fun fatal(message: AnsiScope.() -> Any?) = log(Level.FATAL, message)
 
     /**
      * Log a message at the [Level.TRACE] level with the given marker if enabled.
@@ -169,7 +169,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun trace(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.TRACE, message)
+    fun trace(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.TRACE, message)
 
     /**
      * Log a message at the [Level.DEBUG] level with the given marker if enabled.
@@ -181,7 +181,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun debug(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.DEBUG, message)
+    fun debug(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.DEBUG, message)
 
     /**
      * Log a message at the [Level.INFO] level with the given marker if enabled.
@@ -193,7 +193,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun info(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.INFO, message)
+    fun info(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.INFO, message)
 
     /**
      * Log a message at the [Level.WARN] level with the given marker if enabled.
@@ -205,7 +205,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun warn(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.WARN, message)
+    fun warn(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.WARN, message)
 
     /**
      * Log a message at the [Level.ERROR] level with the given marker if enabled.
@@ -217,7 +217,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun error(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.ERROR, message)
+    fun error(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.ERROR, message)
 
     /**
      * Log a message at the [Level.FATAL] level with the given marker if enabled.
@@ -229,7 +229,7 @@ interface Logger {
      * @param marker The marker with which to tag the logged message if not null.
      * @param message An ANSI-string closure which returns any object whose [toString] function will be invoked.
      */
-    fun fatal(marker: Marker?, message: AnsiScope.() -> Any) = log(marker, Level.FATAL, message)
+    fun fatal(marker: Marker?, message: AnsiScope.() -> Any?) = log(marker, Level.FATAL, message)
 
     /**
      * Flushes all underlying appenders of this logger instance.
