@@ -1,6 +1,7 @@
 package de.connect2x.lognity.config.condition
 
 import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.Polymorphic
@@ -20,10 +21,10 @@ interface SerializableCondition {
     /**
      * Evaluates the condition.
      *
-     * @param level the log level.
+     * @param logger The current [Logger] instance.
      * @param message the log message.
      * @param marker the log marker.
      * @return true if the condition is met, false otherwise.
      */
-    operator fun invoke(level: Level, message: String, marker: Marker?): Boolean
+    operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean
 }

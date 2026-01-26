@@ -7,27 +7,29 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Filters by the content of the log message string.
+ * Filters by the name in the logger context.
  *
- * @property condition how to evaluate the [value] against the message
- * @property value string to compare with the message
+ * @property condition how to evaluate the [value] against the name
+ * @property value string to compare with the name
+ * @property name optional name of the condition
  */
-@SerialName("message")
 @Serializable
-data class MessageCondition( // @formatter:off
+@SerialName("logger_name")
+data class LoggerNameCondition( // @formatter:off
     val condition: RefOrValue<Type>,
     val value: RefOrValue<String>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
 ) : SerializableCondition { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS }
 
-    override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
+    override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
+        val name = logger.context[Logger.Name]?.name ?: return false
         val value = this.value.resolve()
         return when (condition.resolve()) {
-            Type.EQUALS -> message == value
-            Type.NOT_EQUALS -> message != value
-            Type.CONTAINS -> value in message
-            Type.NOT_CONTAINS -> value !in message
+            Type.EQUALS -> name == value
+            Type.NOT_EQUALS -> name != value
+            Type.CONTAINS -> value in name
+            Type.NOT_CONTAINS -> value !in name
         }
     }
 }

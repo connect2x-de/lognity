@@ -13,7 +13,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 private val marker1: Marker = Marker("marker1")
-private val marker2: Marker = Marker("marker2")
 
 private fun Logger.printTestMessages(marker: Marker? = null) {
     trace(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
@@ -47,9 +46,10 @@ suspend fun appMain() {
         // Implicitly named logger (default defined in example_config.json)
         Logger().printTestMessages(marker1)
 
+        val anotherLogger = Logger("My Filtered Logger")
         (0..<4).map {
             DefaultBackend.coroutineScope.launch {
-                for (i in 0..<50) namedLogger.printTestMessages(marker2)
+                for (i in 0..<50) anotherLogger.printTestMessages()
             }
         }.joinAll()
     }

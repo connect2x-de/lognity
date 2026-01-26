@@ -125,7 +125,9 @@
                                                 "always",
                                                 "marker",
                                                 "message",
-                                                "level"
+                                                "level",
+                                                "logger_name",
+                                                "coroutine_name"
                                             ],
                                             "default": "always",
                                             "description": "The type of condition."
@@ -302,6 +304,98 @@
                                                     "condition",
                                                     "value"
                                                 ]
+                                            },
+                                            "else": {
+                                                "if": {
+                                                    "properties": {
+                                                        "type": {
+                                                            "const": "logger_name"
+                                                        }
+                                                    }
+                                                },
+                                                "then": {
+                                                    "properties": {
+                                                        "condition": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "EQUALS",
+                                                                        "NOT_EQUALS",
+                                                                        "CONTAINS",
+                                                                        "NOT_CONTAINS"
+                                                                    ],
+                                                                    "default": "EQUALS",
+                                                                    "description": "The conditional rule to apply to every log message."
+                                                                },
+                                                                {
+                                                                    "type": "string",
+                                                                    "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                    "default": "{MY_PROVIDER}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "value": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "type": "string",
+                                                                    "description": "The literal string value to check all logger names against."
+                                                                },
+                                                                {
+                                                                    "type": "string",
+                                                                    "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                    "default": "{MY_PROVIDER}"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "else": {
+                                                    "if": {
+                                                        "properties": {
+                                                            "type": {
+                                                                "const": "coroutine_name"
+                                                            }
+                                                        }
+                                                    },
+                                                    "then": {
+                                                        "properties": {
+                                                            "condition": {
+                                                                "oneOf": [
+                                                                    {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "EQUALS",
+                                                                            "NOT_EQUALS",
+                                                                            "CONTAINS",
+                                                                            "NOT_CONTAINS"
+                                                                        ],
+                                                                        "default": "EQUALS",
+                                                                        "description": "The conditional rule to apply to every log message."
+                                                                    },
+                                                                    {
+                                                                        "type": "string",
+                                                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                        "default": "{MY_PROVIDER}"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "value": {
+                                                                "oneOf": [
+                                                                    {
+                                                                        "type": "string",
+                                                                        "description": "The literal string value to check all coroutine names against."
+                                                                    },
+                                                                    {
+                                                                        "type": "string",
+                                                                        "pattern": "^\\{([\\w\\-._]+)}$",
+                                                                        "default": "{MY_PROVIDER}"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     },
