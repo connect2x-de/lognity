@@ -36,11 +36,11 @@ open class DefaultLogger( // @formatter:off
             _isEnabled.store(value)
         }
 
-    override fun log(level: Level, message: AnsiScope.() -> Any) {
+    override fun log(level: Level, message: AnsiScope.() -> Any?) {
         if (level < this.level) return
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
-        val messageContent = message(AnsiScope)
+        val messageContent = message(AnsiScope) ?: "null"
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
@@ -49,11 +49,11 @@ open class DefaultLogger( // @formatter:off
         }
     }
 
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
+    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
         if (level < this.level) return
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
-        val messageContent = message(AnsiScope)
+        val messageContent = message(AnsiScope) ?: "null"
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(

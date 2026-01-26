@@ -19,7 +19,7 @@ object NoopLogger : Logger {
     override var level: Level = Level.INFO
     override var isEnabled: Boolean = false
 
-    override fun log(level: Level, message: AnsiScope.() -> Any) = Unit
+    override fun log(level: Level, message: AnsiScope.() -> Any?) = Unit
 
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) = Unit
+    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) = Unit
 }

@@ -22,11 +22,11 @@ internal class Slf4jLognityLogger(
 
     private val formatPattern = config.appenders.first().pattern // Yank the first available log pattern for interop
 
-    override fun log(level: Level, message: AnsiScope.() -> Any) = log(null, level, message)
+    override fun log(level: Level, message: AnsiScope.() -> Any?) = log(null, level, message)
 
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any) {
+    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
         if (level < this.level || marker?.isEnabled == false) return
-        val messageContent = message(AnsiScope)
+        val messageContent = message(AnsiScope) ?: "null"
         val timestamp = Clock.System.now()
         val formattedMessage = Formatter.default(this, level, messageContent, marker, timestamp, formatPattern)
         when (level) {
