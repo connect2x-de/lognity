@@ -3,6 +3,7 @@ package de.connect2x.lognity.example
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
@@ -11,13 +12,16 @@ import de.connect2x.lognity.config.withDefaultConfig
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-private fun Logger.printTestMessages() {
-    trace { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    debug { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    info { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    warn { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    error { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    fatal { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+private val marker1: Marker = Marker("marker1")
+private val marker2: Marker = Marker("marker2")
+
+private fun Logger.printTestMessages(marker: Marker? = null) {
+    trace(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    debug(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    info(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    warn(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    error(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    fatal(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
 }
 
 suspend fun appMain() {
@@ -41,11 +45,11 @@ suspend fun appMain() {
         val namedLogger = Logger("My Logger")
         namedLogger.printTestMessages()
         // Implicitly named logger (default defined in example_config.json)
-        Logger().printTestMessages()
+        Logger().printTestMessages(marker1)
 
         (0..<4).map {
             DefaultBackend.coroutineScope.launch {
-                for (i in 0..<50) namedLogger.printTestMessages()
+                for (i in 0..<50) namedLogger.printTestMessages(marker2)
             }
         }.joinAll()
     }

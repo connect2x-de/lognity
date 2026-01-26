@@ -8,14 +8,37 @@
             "type": "system_console",
             "name": "my_appender",
             "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
-            "formatter": "default"
+            "formatter": "default",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "marker",
+                        "condition": "KEY_NOT_EQUALS",
+                        "value": "marker1"
+                    }
+                ]
+            }
         },
         {
             "type": "rolling_file",
             "name": "my_file_appender",
             "base_path": "{LOG_DIRECTORY}/example.log",
             "pattern": "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
-            "formatter": "default"
+            "formatter": "default",
+            "filter": {
+                "conditions": [
+                    {
+                        "type": "marker",
+                        "condition": "KEY_NOT_EQUALS",
+                        "value": "marker1"
+                    },
+                    {
+                        "type": "marker",
+                        "condition": "KEY_NOT_EQUALS",
+                        "value": "marker2"
+                    }
+                ]
+            }
         }
     ]
 }
