@@ -1,8 +1,6 @@
 [versions]
 
-java = "17"
-
-lognity = "1.2.3"
+lognity = "1.2.4"
 stately = "2.1.0" # https://github.com/touchlab/Stately/releases
 
 [libraries]

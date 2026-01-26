@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroidLibrary
@@ -15,6 +16,8 @@ plugins {
     alias(sharedLibs.plugins.android.library)
     alias(sharedLibs.plugins.mavenPublish)
 }
+
+configureJava(sharedLibs.versions.targetJvm)
 
 kotlin {
     defaultCompilerOptions()
