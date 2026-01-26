@@ -19,7 +19,7 @@ plugins {
     alias(sharedLibs.plugins.mavenPublish)
 }
 
-configureJava(libs.versions.java)
+configureJava(sharedLibs.versions.targetJvm)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {

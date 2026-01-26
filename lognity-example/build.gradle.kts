@@ -15,7 +15,7 @@ plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform)
 }
 
-configureJava(libs.versions.java)
+configureJava(sharedLibs.versions.targetJvm)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class) //
 kotlin {
