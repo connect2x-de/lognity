@@ -39,6 +39,11 @@ kotlin {
                 implementation(sharedLibs.kotlinx.serialization.core)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(sharedLibs.kotlin.test)
+            }
+        }
     }
 }
 
