@@ -33,17 +33,23 @@ interface Backend {
          * Set the backend implementation used for logging.
          */
         fun set(backend: Backend) {
-            check(_isFinal.compareAndExchange(expectedValue = false, newValue = true)) {
+            check(_isFinal.compareAndSet(expectedValue = false, newValue = true)) {
                 "Lognity backend is already final and cannot be changed again"
             }
             currentBackend.store(backend)
         }
 
         @TestOnly
-        inline fun setOnce(backend: Backend, block: () -> Unit = {}) {
-            if (_isFinal.compareAndExchange(expectedValue = false, newValue = true)) return
+        fun reset() {
+            _isFinal.store(false)
+            currentBackend.store(NoopBackend)
+        }
+
+        @TestOnly
+        inline fun <B : Backend> setOnce(backend: B, block: B.() -> Unit = {}) {
+            if (!_isFinal.compareAndSet(expectedValue = false, newValue = true)) return
             currentBackend.store(backend)
-            block()
+            backend.block()
         }
 
         override val name: String get() = currentBackend.load().name
@@ -70,16 +76,12 @@ interface Backend {
             currentBackend.load().addShutdownHook(hook)
         }
 
-        override fun createMarker(
-            key: String, name: String, isEnabled: Boolean
-        ): Marker {
+        override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker {
             ensureFinal()
             return currentBackend.load().createMarker(key, name, isEnabled)
         }
 
-        override fun createLogger(
-            name: String?, contextSpec: ContextSpec
-        ): Logger {
+        override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
             ensureFinal()
             return currentBackend.load().createLogger(name, contextSpec)
         }
