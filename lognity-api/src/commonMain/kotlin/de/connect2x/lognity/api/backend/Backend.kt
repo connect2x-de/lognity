@@ -33,7 +33,7 @@ interface Backend {
          * Set the backend implementation used for logging.
          */
         fun set(backend: Backend) {
-            check(!_isFinal.compareAndExchange(expectedValue = false, newValue = true)) {
+            check(_isFinal.compareAndExchange(expectedValue = false, newValue = true)) {
                 "Lognity backend is already final and cannot be changed again"
             }
             currentBackend.store(backend)

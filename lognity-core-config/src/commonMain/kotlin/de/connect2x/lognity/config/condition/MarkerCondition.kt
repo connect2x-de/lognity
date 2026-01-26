@@ -1,6 +1,6 @@
 package de.connect2x.lognity.config.condition
 
-import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.SerialName
@@ -23,7 +23,7 @@ data class MarkerCondition( // @formatter:off
         KEY_EQUALS, KEY_NOT_EQUALS, KEY_CONTAINS, KEY_NOT_CONTAINS, NAME_EQUALS, NAME_NOT_EQUALS, NAME_CONTAINS, NAME_NOT_CONTAINS
     }
 
-    override operator fun invoke(level: Level, message: String, marker: Marker?): Boolean {
+    override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
         val value = this.value.resolve()
         return when (condition.resolve()) {
             Type.KEY_EQUALS -> marker?.key == value

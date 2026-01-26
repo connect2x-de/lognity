@@ -20,6 +20,6 @@ data class SerializableFilter(
     val conditions: List<SerializableCondition> = listOf(AlwaysCondition)
 ) : Filter {
     override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
-        return conditions.all { cond -> cond(logger.level, message, marker) }
+        return conditions.all { cond -> cond(logger, message, marker) }
     }
 }
