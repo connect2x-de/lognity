@@ -20,7 +20,7 @@ configureJava(sharedLibs.versions.targetJvm)
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
-    withAndroidLibrary()
+    withAndroidLibrary("$group.slf4j")
     withJvm()
     applyDefaultHierarchyTemplate {
         common {

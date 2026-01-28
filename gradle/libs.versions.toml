@@ -1,6 +1,8 @@
 [versions]
 
-lognity = "1.2.4"
+androidMinimalSDK = "24" # Override default minSDK from shared catalog
+
+lognity = "1.2.5"
 stately = "2.1.0" # https://github.com/touchlab/Stately/releases
 
 [libraries]

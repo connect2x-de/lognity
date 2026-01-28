@@ -19,7 +19,7 @@ kotlin {
     defaultCompilerOptions()
     withSourcesJar()
     withJvm()
-    withAndroidLibrary()
+    withAndroidLibrary("$group.java.logging")
     applyDefaultHierarchyTemplate {
         common {
             group("jvmAndAndroid") {

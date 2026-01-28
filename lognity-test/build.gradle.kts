@@ -22,7 +22,7 @@ configureJava(sharedLibs.versions.targetJvm)
 kotlin {
     defaultCompilerOptions()
     withSourcesJar()
-    withAndroidLibrary()
+    withAndroidLibrary("$group.test")
     withJvm()
     withNative()
     withWeb {
