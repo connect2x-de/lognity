@@ -23,7 +23,7 @@ configureJava(sharedLibs.versions.targetJvm)
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
     withSourcesJar()
-    withAndroidLibrary()
+    withAndroidLibrary("$group.ktor.server")
     withJvm()
     withNative()
     withWeb {
