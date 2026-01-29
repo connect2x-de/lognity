@@ -56,7 +56,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Ktor Client",
                 description = "Lognity API bridge for Ktor Client",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

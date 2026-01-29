@@ -57,7 +57,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Core Config",
                 description = "Lognity Config extension for Lognity Core",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

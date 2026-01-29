@@ -41,9 +41,9 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.lognityApi)
+                api(projects.lognityCore)
                 api(sharedLibs.jetbrains.annotations)
                 api(sharedLibs.kotlinx.coroutines.test)
-                api(projects.lognityCore)
             }
         }
         commonTest {
@@ -60,7 +60,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Test",
                 description = "Test harness for kotlinx.test and the Lognity logging API",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

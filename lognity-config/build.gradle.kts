@@ -54,8 +54,8 @@ kotlin {
                 implementation(sharedLibs.kotlinx.serialization.core)
                 implementation(sharedLibs.kotlinx.serialization.json)
                 implementation(sharedLibs.kotlinx.coroutines.core)
-                implementation(libs.stately.common)
-                implementation(libs.stately.collections)
+                implementation(sharedLibs.stately.common)
+                implementation(sharedLibs.stately.collections)
             }
         }
         commonTest {
@@ -77,7 +77,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Config",
                 description = "Extensible logging configuration subsystem for Kotlin/Multiplatform",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }
