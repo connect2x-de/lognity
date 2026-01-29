@@ -53,7 +53,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity API",
                 description = "Lightweight logging API for Kotlin/Multiplatform",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

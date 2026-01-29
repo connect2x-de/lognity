@@ -43,7 +43,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Java Logging",
                 description = "Lognity API bridge for the Java logging facade",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

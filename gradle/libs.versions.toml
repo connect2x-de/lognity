@@ -1,11 +1,3 @@
 [versions]
 
-androidMinimalSDK = "24" # Override default minSDK from shared catalog
-
-lognity = "1.2.5"
-stately = "2.1.0" # https://github.com/touchlab/Stately/releases
-
-[libraries]
-
-stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
-stately-collections = { module = "co.touchlab:stately-collections", version.ref = "stately" }
+lognity = "1.2.6"

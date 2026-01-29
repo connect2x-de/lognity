@@ -48,8 +48,8 @@ kotlin {
                 api(projects.lognityApi)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.kotlinx.datetime)
-                implementation(libs.stately.common)
-                implementation(libs.stately.collections)
+                implementation(sharedLibs.stately.common)
+                implementation(sharedLibs.stately.collections)
             }
         }
         commonTest {
@@ -83,7 +83,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity Core",
                 description = "Lightweight Lognity API implementation for Kotlin/Multiplatform",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }

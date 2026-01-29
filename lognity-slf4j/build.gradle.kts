@@ -58,7 +58,7 @@ publishing {
             setProjectInfo(
                 name = "Lognity SLF4J",
                 description = "Lognity API bridge for SLF4J",
-                repository = "https://gitlab.com/connect2x/lognity"
+                repository = "connect2x/lognity"
             )
         }
     }
