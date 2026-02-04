@@ -35,7 +35,7 @@ interface Backend {
         @Deprecated("Use set() directly as it has the same behaviour", replaceWith = ReplaceWith("set()"))
         @TestOnly
         inline fun <B : Backend> setOnce(backend: B, block: B.() -> Unit = {}) {
-            if(!isSetOnce.compareAndSet(expectedValue = false, newValue = true)) return
+            if (!isSetOnce.compareAndSet(expectedValue = false, newValue = true)) return
             set(backend)
             backend.block()
         }
