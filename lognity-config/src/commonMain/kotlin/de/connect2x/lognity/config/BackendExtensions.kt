@@ -33,7 +33,7 @@ fun Backend.setDefaultConfig(path: Path) {
  * @param path the path to the JSON configuration file.
  * @param block the block to execute.
  */
-expect suspend inline fun Backend.withDefaultConfig( // @formatter:off
+expect suspend fun Backend.withDefaultConfig( // @formatter:off
     path: String,
-    crossinline block: suspend () -> Unit
+    block: suspend () -> Unit
 ) // @formatter:on

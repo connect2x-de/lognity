@@ -5,34 +5,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class BackendTest {
-    private fun assertThrows(block: () -> Unit) {
-        var hasThrown = false
-        try {
-            block()
-        } catch (_: Throwable) {
-            hasThrown = true
-        }
-        assertTrue(hasThrown)
-    }
-
-    @Test
-    fun `set throws after first call`() {
-        Backend.reset()
-        Backend.set(NoopBackend)
-        assertThrows {
-            Backend.set(NoopBackend)
-        }
-    }
-
-    @Test
-    fun `set throws after first mutating access`() {
-        Backend.reset()
-        Backend.configSpec = {}
-        assertThrows {
-            Backend.set(NoopBackend)
-        }
-    }
-
+    @Suppress("DEPRECATION")
     @Test
     fun `setOnce returns after first call`() {
         Backend.reset()
