@@ -1,6 +1,7 @@
 package de.connect2x.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
+import de.connect2x.lognity.api.ansi.toAnsi
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
@@ -9,6 +10,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.osLogType
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ptr
+import platform.darwin.__dso_handle
 import platform.darwin._os_log_internal
 import platform.darwin.os_log_create
 import platform.darwin.os_log_t
@@ -31,15 +34,16 @@ class OsAppender( // @formatter:off
     override val name: String? = null
 ) : Appender { // @formatter:on
     companion object {
+        private const val CATEGORY: String = "general"
         private val delegates: SharedHashMap<Logger, os_log_t> = SharedHashMap()
     }
 
     @OptIn(ExperimentalForeignApi::class)
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (level < logger.level || !filter(logger, message, marker)) return
-        _os_log_internal(null, delegates.getOrPut(logger) {
+        _os_log_internal(__dso_handle.ptr, delegates.getOrPut(logger) {
             val name = logger.context[Logger.Name]?.name ?: logger.toString()
-            os_log_create(name, null)
-        }, level.osLogType, message)
+            os_log_create(name, CATEGORY)
+        }, level.osLogType, "%{public}s", message.toAnsi().cleanString())
     }
 }

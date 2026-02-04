@@ -11,6 +11,12 @@ import org.jetbrains.annotations.TestOnly
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 
+@PublishedApi
+internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
+
+@PublishedApi
+internal val isSetOnce: AtomicBoolean = AtomicBoolean(false)
+
 /**
  * Interface representing a logging backend implementation.
  * The backend is responsible for creating loggers, markers,
@@ -18,38 +24,26 @@ import kotlin.concurrent.atomics.AtomicReference
  */
 interface Backend {
     companion object : Backend {
-        @PublishedApi
-        internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
-
-        @PublishedApi
-        internal val _isFinal: AtomicBoolean = AtomicBoolean(false)
-        inline val isFinal: Boolean get() = _isFinal.load()
-
-        private fun ensureFinal() {
-            _isFinal.store(true)
-        }
-
         /**
          * Set the backend implementation used for logging.
          */
         fun set(backend: Backend) {
-            check(_isFinal.compareAndSet(expectedValue = false, newValue = true)) {
-                "Lognity backend is already final and cannot be changed again"
-            }
+            // TODO: This should enforce being final, but this doesn't work on iOS right now due to a CAS bug..
             currentBackend.store(backend)
+        }
+
+        @Deprecated("Use set() directly as it has the same behaviour", replaceWith = ReplaceWith("set()"))
+        @TestOnly
+        inline fun <B : Backend> setOnce(backend: B, block: B.() -> Unit = {}) {
+            if(!isSetOnce.compareAndSet(expectedValue = false, newValue = true)) return
+            set(backend)
+            backend.block()
         }
 
         @TestOnly
         fun reset() {
-            _isFinal.store(false)
+            isSetOnce.store(false)
             currentBackend.store(NoopBackend)
-        }
-
-        @TestOnly
-        inline fun <B : Backend> setOnce(backend: B, block: B.() -> Unit = {}) {
-            if (!_isFinal.compareAndSet(expectedValue = false, newValue = true)) return
-            currentBackend.store(backend)
-            backend.block()
         }
 
         override val name: String get() = currentBackend.load().name
@@ -60,34 +54,28 @@ interface Backend {
         override var configSpec: ConfigSpec
             get() = currentBackend.load().configSpec
             set(value) {
-                ensureFinal()
                 currentBackend.load().configSpec = value
             }
 
         override var contextSpec: ContextSpec
             get() = currentBackend.load().contextSpec
             set(value) {
-                ensureFinal()
                 currentBackend.load().contextSpec = value
             }
 
         override fun addShutdownHook(hook: () -> Unit) {
-            ensureFinal()
             currentBackend.load().addShutdownHook(hook)
         }
 
         override fun createMarker(key: String, name: String, isEnabled: Boolean): Marker {
-            ensureFinal()
             return currentBackend.load().createMarker(key, name, isEnabled)
         }
 
         override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
-            ensureFinal()
             return currentBackend.load().createLogger(name, contextSpec)
         }
 
         override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {
-            ensureFinal()
             currentBackend.load().setCoroutineScopeProvider(provider)
         }
     }
