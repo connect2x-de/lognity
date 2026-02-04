@@ -41,7 +41,9 @@ kotlin {
             group("nonWeb") {
                 withJvm()
                 withAndroidTarget()
-                withNative()
+                withAndroidNative()
+                withMingwX64()
+                withLinux()
             }
         }
     }

@@ -1,6 +1,7 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
 import de.connect2x.conventions.withBrowser
+import de.connect2x.conventions.withIos
 import de.connect2x.conventions.withJvm
 import de.connect2x.conventions.withLinux
 import de.connect2x.conventions.withMacos
@@ -30,6 +31,12 @@ kotlin {
     withLinux()
     withMacos()
     withMingw()
+    withIos {
+        binaries.framework {
+            baseName = "LognityExample"
+            isStatic = true
+        }
+    }
     withWeb {
         useCommonJs()
         withNodeJs {
