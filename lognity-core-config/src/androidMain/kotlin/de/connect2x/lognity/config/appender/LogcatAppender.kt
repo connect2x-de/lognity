@@ -12,4 +12,4 @@ data class LogcatAppender(
     override val formatter: RefOrValue<String>,
     override val filter: RefOrValue<SerializableFilter> = RefOrValue.Value(SerializableFilter()),
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
-) : SerializableAppender
+) : AbstractSerializableAppender()

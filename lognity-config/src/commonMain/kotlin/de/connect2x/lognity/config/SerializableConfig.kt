@@ -8,6 +8,10 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
+import de.connect2x.lognity.config.condition.AndCondition
+import de.connect2x.lognity.config.condition.OrCondition
+import de.connect2x.lognity.config.condition.SerializableCondition
+import de.connect2x.lognity.config.condition.ExactlyOneCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 import de.connect2x.lognity.config.serialization.RefOrValue
@@ -34,7 +38,8 @@ data class SerializableConfig( // @formatter:off
     val version: Int = VERSION,
     val level: RefOrValue<Level> = RefOrValue.Value(Level.default),
     val enabled: RefOrValue<Boolean> = RefOrValue.Value(true),
-    val appenders: List<SerializableAppender> = emptyList()
+    val appenders: List<SerializableAppender> = emptyList(),
+    val conditions: List<SerializableCondition> = emptyList() // Globally accessible conditions/templates
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].
@@ -65,8 +70,20 @@ data class SerializableConfig( // @formatter:off
 
         init { // Default implementations extension
             this uses ConfigExtension {
+                registerBuiltinEnum("Level", Level.entries)
                 registerConditionType<AlwaysCondition>()
+                registerConditionType<OrCondition>()
+                registerConditionType<AndCondition>()
+                registerConditionType<ExactlyOneCondition>()
                 registerFormatterType("default", Formatter::default)
+                // Register template provider for pre-defined conditions
+                registerTemplateProvider("conditions") { name ->
+                    for (condition in conditions) {
+                        if (condition.name.resolve() != name) continue
+                        return@registerTemplateProvider condition
+                    }
+                    error("Could not find pre-defined condition named '$name'")
+                }
             }
         }
 
@@ -112,6 +129,12 @@ data class SerializableConfig( // @formatter:off
         }
     }
 
+    init { // Propagate a reference down the hierarchy
+        for (appender in appenders) {
+            appender.config = this
+        }
+    }
+
     /**
      * Calculates the combined log level.
      *
@@ -128,7 +151,8 @@ data class SerializableConfig( // @formatter:off
      * Applies this configuration to the given [ConfigBuilder].
      */
     @ConfigDsl
-    context(builder: ConfigBuilder) fun applyConfig() = builder.setFrom(cachedConfig)
+    context(builder: ConfigBuilder)
+    fun applyConfig() = builder.setFrom(cachedConfig)
 
     /**
      * Returns this configuration as a [Config] instance.

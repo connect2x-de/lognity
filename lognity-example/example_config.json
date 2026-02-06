@@ -3,6 +3,14 @@
     "version": 1,
     "level": "{DEFAULT_LOG_LEVEL}",
     "enabled": true,
+    "conditions": [
+        {
+            "name": "default_condition",
+            "type": "level",
+            "condition": "ABOVE",
+            "value": "TRACE"
+        }
+    ],
     "appenders": [
         {
             "type": "system_console",
@@ -17,9 +25,15 @@
                         "value": "marker1"
                     },
                     {
-                        "type": "logger_name",
-                        "condition": "NOT_CONTAINS",
-                        "value": "My Filtered Logger"
+                        "type": "or",
+                        "conditions": [
+                            {
+                                "type": "logger_name",
+                                "condition": "CONTAINS",
+                                "value": "My Filtered Logger"
+                            },
+                            "{conditions:default_condition}"
+                        ]
                     }
                 ]
             }

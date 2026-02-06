@@ -18,7 +18,7 @@ data class MarkerCondition( // @formatter:off
     val condition: RefOrValue<Type>,
     val value: RefOrValue<String>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
-) : SerializableCondition { // @formatter:on
+) : AbstractSerializableCondition() { // @formatter:on
     enum class Type {
         KEY_EQUALS, KEY_NOT_EQUALS, KEY_CONTAINS, KEY_NOT_CONTAINS, NAME_EQUALS, NAME_NOT_EQUALS, NAME_CONTAINS, NAME_NOT_CONTAINS
     }

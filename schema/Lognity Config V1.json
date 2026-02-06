@@ -123,6 +123,9 @@
                                             "type": "string",
                                             "enum": [
                                                 "always",
+                                                "or",
+                                                "and",
+                                                "exactly_one",
                                                 "marker",
                                                 "message",
                                                 "level",
@@ -148,9 +151,7 @@
                                     },
                                     "if": {
                                         "properties": {
-                                            "type": {
-                                                "const": "marker"
-                                            }
+                                            "type": {"const": "marker"}
                                         }
                                     },
                                     "then": {
@@ -201,9 +202,7 @@
                                     "else": {
                                         "if": {
                                             "properties": {
-                                                "type": {
-                                                    "const": "message"
-                                                }
+                                                "type": {"const": "message"}
                                             }
                                         },
                                         "then": {
@@ -250,9 +249,7 @@
                                         "else": {
                                             "if": {
                                                 "properties": {
-                                                    "type": {
-                                                        "const": "level"
-                                                    }
+                                                    "type": {"const": "level"}
                                                 }
                                             },
                                             "then": {
@@ -308,9 +305,7 @@
                                             "else": {
                                                 "if": {
                                                     "properties": {
-                                                        "type": {
-                                                            "const": "logger_name"
-                                                        }
+                                                        "type": {"const": "logger_name"}
                                                     }
                                                 },
                                                 "then": {
@@ -353,9 +348,7 @@
                                                 "else": {
                                                     "if": {
                                                         "properties": {
-                                                            "type": {
-                                                                "const": "coroutine_name"
-                                                            }
+                                                            "type": {"const": "coroutine_name"}
                                                         }
                                                     },
                                                     "then": {
@@ -399,9 +392,7 @@
                                             }
                                         }
                                     },
-                                    "required": [
-                                        "type"
-                                    ]
+                                    "required": ["type"]
                                 }
                             }
                         }
@@ -409,9 +400,7 @@
                 },
                 "if": {
                     "properties": {
-                        "type": {
-                            "const": "file"
-                        }
+                        "type": {"const": "file"}
                     }
                 },
                 "then": {
@@ -432,16 +421,12 @@
                             ]
                         }
                     },
-                    "required": [
-                        "path"
-                    ]
+                    "required": ["path"]
                 },
                 "else": {
                     "if": {
                         "properties": {
-                            "type": {
-                                "const": "rolling_file"
-                            }
+                            "type": {"const": "rolling_file"}
                         }
                     },
                     "then": {
@@ -533,9 +518,7 @@
                                 ]
                             }
                         },
-                        "required": [
-                            "base_path"
-                        ]
+                        "required": ["base_path"]
                     }
                 },
                 "required": [
@@ -546,7 +529,5 @@
             }
         }
     },
-    "required": [
-        "version"
-    ]
+    "required": ["version"]
 }

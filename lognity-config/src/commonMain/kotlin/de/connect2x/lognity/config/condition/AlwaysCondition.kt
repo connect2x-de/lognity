@@ -12,7 +12,7 @@ import kotlinx.serialization.Transient
  */
 @SerialName("always")
 @Serializable
-data object AlwaysCondition : SerializableCondition {
+data object AlwaysCondition : AbstractSerializableCondition() {
     @Transient // We don't need to save this for our singleton
     override val name: RefOrValue<String?> = RefOrValue.Value("always")
 

@@ -18,7 +18,7 @@ data class MessageCondition( // @formatter:off
     val condition: RefOrValue<Type>,
     val value: RefOrValue<String>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
-) : SerializableCondition { // @formatter:on
+) : AbstractSerializableCondition() { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS }
 
     override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {

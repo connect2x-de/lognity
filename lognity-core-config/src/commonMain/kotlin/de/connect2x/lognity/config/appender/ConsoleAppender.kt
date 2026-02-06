@@ -19,4 +19,4 @@ data class ConsoleAppender( // @formatter:off
     override val formatter: RefOrValue<String>,
     override val filter: RefOrValue<SerializableFilter> = RefOrValue.Value(SerializableFilter()),
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
-) : SerializableAppender // @formatter:on
+) : AbstractSerializableAppender() // @formatter:on

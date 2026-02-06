@@ -24,6 +24,25 @@ sealed interface RefOrValue<out T> {
     }
 
     /**
+     * A special reference which starts with a prefix identifiers and which
+     * may access the individual [SerializableConfig] instance.
+     *
+     * @property prefix The prefix with which every template reference of this type begins.
+     * @property name The name of the reference.
+     */
+    data class TemplateRef<out T>(
+        val prefix: String, val name: String, val parameters: List<RefOrValue<*>> = emptyList()
+    ) : RefOrValue<T> {
+        override fun resolve(): T = error("TemplateRef cannot be resolved directly or as part of a string")
+
+        override fun resolveTemplate(config: SerializableConfig): T {
+            return checkNotNull(SerializableConfig.extensionRegistrar.findTemplateProvider<T>(prefix)) {
+                "Could not resolve template provider for config reference '$prefix:$name'"
+            }(config, name)
+        }
+    }
+
+    /**
      * A direct value.
      *
      * @property value the value.
@@ -47,4 +66,12 @@ sealed interface RefOrValue<out T> {
      * @return the resolved value.
      */
     fun resolve(): T
+
+    /**
+     * Resolves the value associated with this RefOrValue object
+     * based on the context of the [SerializableConfig] instance.
+     * Note that this function should always be preferred over [resolve] whenever possible.
+     */
+    fun resolveTemplate(config: SerializableConfig): T = resolve()
+
 }
