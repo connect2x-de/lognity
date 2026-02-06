@@ -7,9 +7,9 @@ import de.connect2x.lognity.config.appender.SystemConsoleAppender
 import de.connect2x.lognity.config.appender.SystemLogAppender
 import de.connect2x.lognity.config.condition.CoroutineNameCondition
 import de.connect2x.lognity.config.condition.LevelCondition
+import de.connect2x.lognity.config.condition.LoggerNameCondition
 import de.connect2x.lognity.config.condition.MarkerCondition
 import de.connect2x.lognity.config.condition.MessageCondition
-import de.connect2x.lognity.config.condition.LoggerNameCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 

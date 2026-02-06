@@ -33,6 +33,7 @@ suspend fun appMain() {
     SerializableConfig uses ConfigExtension {
         registerProvider("DEFAULT_LOG_LEVEL") { Level.TRACE }
         registerProvider("LOG_DIRECTORY") { "logs" }
+        registerTemplateProvider("foo") { name -> "$name->bar" } // ${foo:baz} -> "baz->bar"
     }
     // Load the JSON based config using the lognity-config module
     Backend.withDefaultConfig("example_config.json") {

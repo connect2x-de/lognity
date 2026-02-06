@@ -157,6 +157,66 @@ Which can then be used in the JSON config:
 > **Tip**: in order to get a hint which properties may use config providers,  
 > it is strongly recommended to use the Lognity config JSON schema.
 
+#### Template providers
+
+If contextual resolution is required for a given provider, **template providers** may be used
+instead of regular static ones.  
+Template providers allow access to the current `SerializableConfig` instance and dynamic arguments.
+A template provider may be invoked using the `{prefix:name}` notation in the JSON config:
+
+```json
+{
+    "conditions": [
+        {
+            "name": "my_condition",
+            // ...
+        }
+    ],
+    "appenders": [
+        {
+            // ...
+            "filter": {
+                "conditions": [
+                    "{conditions:my_condition}"
+                ]
+            }
+        }
+    ]
+}
+```
+
+Custom template providers can be registered using `ConfigExtensionRegistrar.registerTemplateProvider`.
+
+#### Parametrized template providers
+
+Template providers may also accept a variable number of arguments in the form of a limited set of  
+constant expressions using the parametrized template notation `{prefix:name(params...)}`:
+
+```json
+{
+    "conditions": [
+        {
+            "name": "my_condition",
+            // ...
+        }
+    ],
+    "appenders": [
+        {
+            // ...
+            "filter": {
+                "conditions": [
+                    "{conditions:my_condition(<Level.TRACE>)}"
+                ]
+            }
+        }
+    ]
+}
+```
+
+However as of right now, while the config system supports passing arguments and handling them programmatically,
+this is unused in the core config system.  
+A further extension allowing scoped references is planned, but doesn't have a fixed ETA.
+
 ---
 
 ### Creating a Logger

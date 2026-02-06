@@ -19,4 +19,4 @@ data class RollingFileAppender(
     @SerialName("use_timestamps") val useTimestamps: RefOrValue<Boolean> = RefOrValue.Value(true),
     @SerialName("delete_existing") val deleteExisting: RefOrValue<Boolean> = RefOrValue.Value(false),
     @SerialName("latest_suffix") val latestSuffix: RefOrValue<String> = RefOrValue.Value(RollingFileAppenderImpl.DEFAULT_LATEST_SUFFIX)
-) : SerializableAppender
+) : AbstractSerializableAppender()

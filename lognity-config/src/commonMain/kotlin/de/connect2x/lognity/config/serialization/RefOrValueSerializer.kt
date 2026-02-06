@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.serialization
 
+import de.connect2x.lognity.config.SerializableConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -9,6 +10,7 @@ import kotlinx.serialization.descriptors.buildSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
@@ -28,24 +30,55 @@ class RefOrValueSerializer<T>(
     companion object {
         const val REFERENCE_BEGIN: Char = '{'
         const val REFERENCE_END: Char = '}'
+        const val TEMPLATE_DELIMITER: Char = ':'
+        const val TEMPLATE_PARAM_BEGIN: Char = '('
+        const val TEMPLATE_PARAM_END: Char = ')'
+        const val TEMPLATE_PARAM_DELIMITER: Char = ','
+        const val TEMPLATE_PARAM_STR_DELIMITER: Char = '\''
+        const val TEMPLATE_PARAM_BUILTIN_BEGIN: Char = '<'
+        const val TEMPLATE_PARAM_BUILTIN_END: Char = '>'
+        const val TEMPLATE_PARAM_BUILTIN_DELIMITER: Char = '.'
     }
 
     override val descriptor: SerialDescriptor = buildSerialDescriptor("RefOrValue", PolymorphicKind.OPEN)
 
+    private fun serializeTemplateRef(encoder: Encoder, value: RefOrValue.TemplateRef<T>) {
+        val parameters = value.parameters
+        if (parameters.isNotEmpty()) {
+            // Handle parametrized template reference
+            val builder = StringBuilder()
+            builder.append("$REFERENCE_BEGIN${value.prefix}$TEMPLATE_DELIMITER${value.name}$TEMPLATE_PARAM_BEGIN")
+            for (parameterIndex in parameters.indices) {
+                val parameter = parameters[parameterIndex]
+                builder.append(parameter.resolve().toString())
+                if (parameterIndex < parameters.lastIndex) {
+                    builder.append(TEMPLATE_PARAM_DELIMITER)
+                }
+            }
+            builder.append("$TEMPLATE_PARAM_END$REFERENCE_END")
+            encoder.encodeString(builder.toString())
+            return
+        }
+        encoder.encodeString("$REFERENCE_BEGIN${value.prefix}$TEMPLATE_DELIMITER${value.name}${REFERENCE_END}")
+    }
+
+    private fun serializeLerpedString(encoder: Encoder, value: RefOrValue.LerpedString) {
+        val buffer = StringBuilder()
+        for (segment in value.segments) buffer.append(
+            when (segment) {
+                is RefOrValue.Ref -> "$REFERENCE_BEGIN${segment.name}$REFERENCE_END"
+                else -> segment.resolve().toString()
+            }
+        )
+        encoder.encodeString(buffer.toString())
+    }
+
     override fun serialize(encoder: Encoder, value: RefOrValue<T>) {
         when (value) {
             is RefOrValue.Ref -> encoder.encodeString("$REFERENCE_BEGIN${value.name}$REFERENCE_END")
+            is RefOrValue.TemplateRef -> serializeTemplateRef(encoder, value)
             is RefOrValue.Value -> encoder.encodeSerializableValue(valueSerializer, value.value)
-            is RefOrValue.LerpedString -> { // This may encode mixed segments of values and refs
-                val buffer = StringBuilder()
-                for (segment in value.segments) buffer.append(
-                    when (segment) {
-                        is RefOrValue.Ref -> "$REFERENCE_BEGIN${segment.name}$REFERENCE_END"
-                        else -> segment.resolve().toString()
-                    }
-                )
-                encoder.encodeString(buffer.toString())
-            }
+            is RefOrValue.LerpedString -> serializeLerpedString(encoder, value)
         }
     }
 
@@ -78,7 +111,7 @@ class RefOrValueSerializer<T>(
         return count > 0
     }
 
-    private fun parseLerpedString(s: String): RefOrValue.LerpedString {
+    private fun deserializeLerpedString(s: String): RefOrValue.LerpedString {
         // At this point, we can assume this is a lerped string
         val segments = ArrayList<RefOrValue<*>>()
         val buffer = StringBuilder()
@@ -110,19 +143,73 @@ class RefOrValueSerializer<T>(
     }
 
     @Suppress("UNCHECKED_CAST")
+    private fun <T> deserializeTemplateParameter(s: String): RefOrValue<T> {
+        return when {
+            s.count { c -> c == TEMPLATE_PARAM_STR_DELIMITER } == 2 -> {
+                val literalValue =
+                    s.substringAfter(TEMPLATE_PARAM_STR_DELIMITER).substringBeforeLast(TEMPLATE_PARAM_STR_DELIMITER)
+                RefOrValue.Value(literalValue) as RefOrValue<T>
+            }
+
+            TEMPLATE_PARAM_BUILTIN_BEGIN in s && TEMPLATE_PARAM_BUILTIN_END in s -> {
+                check(s.count { c -> c == TEMPLATE_PARAM_BUILTIN_BEGIN } == 1) { "Malformed template parameter builtin: $s" }
+                check(s.count { c -> c == TEMPLATE_PARAM_BUILTIN_END } == 1) { "Malformed template parameter builtin: $s" }
+                check(s.indexOf(TEMPLATE_PARAM_BEGIN) < s.indexOf(TEMPLATE_PARAM_END)) { "Malformed template parameter builtin: $s" }
+                val refString =
+                    s.substringAfter(TEMPLATE_PARAM_BUILTIN_BEGIN).substringBeforeLast(TEMPLATE_PARAM_BUILTIN_END)
+                val (prefix, name) = refString.split(TEMPLATE_PARAM_BUILTIN_DELIMITER)
+                // Builtins for template arguments must be constant expressions, so we can resolve them while deserializing
+                val value = requireNotNull(SerializableConfig.extensionRegistrar.findBuiltinProvider<Any>(prefix)) {
+                    "Could not find builtin provider for value '$refString'"
+                }(name)
+                RefOrValue.Value(value) as RefOrValue<T>
+            }
+
+            else -> error("Malformed template parameter argument: $s")
+        }
+    }
+
+    private fun deserializeTemplateRef(s: String): RefOrValue.TemplateRef<T> {
+        if (TEMPLATE_PARAM_BEGIN in s && TEMPLATE_PARAM_END in s) {
+            // Handle parametrized template provider
+            check(s.count { c -> c == TEMPLATE_PARAM_BEGIN } == 1) { "Malformed template reference: $s" }
+            check(s.count { c -> c == TEMPLATE_PARAM_END } == 1) { "Malformed template reference: $s" }
+            check(s.indexOf(TEMPLATE_PARAM_BEGIN) < s.indexOf(TEMPLATE_PARAM_END)) { "Malformed template reference: $s" }
+            val delimiterIndex = s.indexOf(TEMPLATE_DELIMITER)
+            val prefix = s.substring(1..<delimiterIndex)
+            val paramBeginIndex = s.indexOf(TEMPLATE_PARAM_BEGIN)
+            val paramEndIndex = s.indexOf(TEMPLATE_PARAM_END)
+            val name = s.substring(delimiterIndex + 1..<paramBeginIndex)
+            val paramString = s.substring(paramBeginIndex + 1..<paramEndIndex).trim()
+            // @formatter:off
+            val parameters = paramString.split(TEMPLATE_PARAM_DELIMITER)
+                .map { param -> deserializeTemplateParameter<Any>(param.trim()) }
+            // @formatter:on
+            return RefOrValue.TemplateRef(prefix, name, parameters)
+        }
+        val (prefix, name) = stripReferenceDelimiters(s).split(TEMPLATE_DELIMITER)
+        return RefOrValue.TemplateRef(prefix, name)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun deserializeString(s: String, element: JsonElement, decoder: JsonDecoder): RefOrValue<T> {
+        return when {
+            isBareReference(s) -> when {
+                TEMPLATE_DELIMITER in s -> deserializeTemplateRef(s)
+                else -> RefOrValue.Ref(stripReferenceDelimiters(s))
+            }
+
+            containsReferences(s) -> deserializeLerpedString(s) as RefOrValue<T>
+            else -> RefOrValue.Value(decoder.json.decodeFromJsonElement(valueSerializer, element))
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
     override fun deserialize(decoder: Decoder): RefOrValue<T> {
         require(decoder is JsonDecoder) { "RefOrValueSerializer only supports JSON" }
         val element = decoder.decodeJsonElement()
         return when {
-            element is JsonPrimitive && element.isString -> {
-                val content = element.content
-                when {
-                    isBareReference(content) -> RefOrValue.Ref(stripReferenceDelimiters(content))
-                    containsReferences(content) -> parseLerpedString(content) as RefOrValue<T>
-                    else -> RefOrValue.Value(decoder.json.decodeFromJsonElement(valueSerializer, element))
-                }
-            }
-
+            element is JsonPrimitive && element.isString -> deserializeString(element.content, element, decoder)
             else -> RefOrValue.Value(decoder.json.decodeFromJsonElement(valueSerializer, element))
         }
     }

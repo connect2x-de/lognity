@@ -1,7 +1,6 @@
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.backend.Backend
-import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned

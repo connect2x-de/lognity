@@ -19,7 +19,7 @@ data class LevelCondition( // @formatter:off
     val condition: RefOrValue<Type>,
     val value: RefOrValue<Level>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
-) : SerializableCondition { // @formatter:on
+) : AbstractSerializableCondition() { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, BELOW, ABOVE }
 
     override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
