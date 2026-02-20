@@ -1,10 +1,13 @@
 import com.vanniktech.maven.publish.MavenPublishBasePlugin
+import de.connect2x.conventions.CI
 import de.connect2x.conventions.apache2
 import de.connect2x.conventions.c2xOrganization
 import de.connect2x.conventions.defaultDependencyLocking
 import de.connect2x.conventions.defaultPublishing
 import de.connect2x.conventions.withVersionSuffix
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 import java.time.ZonedDateTime
 
 plugins {
@@ -13,7 +16,7 @@ plugins {
     alias(sharedLibs.plugins.kotlin.kapt) apply false
     alias(sharedLibs.plugins.mavenPublish) apply false
     alias(sharedLibs.plugins.c2xConventions)
-    alias(sharedLibs.plugins.dokka)
+    alias(sharedLibs.plugins.dokka) apply false
     `maven-publish`
     signing
 }
@@ -28,21 +31,24 @@ subprojects {
 
     if ("example" in project.name) return@subprojects
 
-    apply<MavenPublishPlugin>()
-    apply<MavenPublishBasePlugin>()
-    apply<SigningPlugin>()
-    apply<DokkaPlugin>()
-    defaultPublishing()
+    if(CI.isCI) {
+        apply<MavenPublishBasePlugin>()
+        apply<SigningPlugin>()
+        apply<DokkaPlugin>()
 
-    dokka {
-        moduleName = project.name
-        pluginsConfiguration {
-            html {
-                homepageLink = "https://gitlab.com/connect2x/lognity"
-                footerMessage = "&copy; ${ZonedDateTime.now().year} connect2x GmbH"
+        extensions.configure<DokkaExtension> {
+            moduleName = project.name
+            pluginsConfiguration {
+                named<DokkaHtmlPluginParameters>("html") {
+                    homepageLink = "https://gitlab.com/connect2x/lognity"
+                    footerMessage = "&copy; ${ZonedDateTime.now().year} connect2x GmbH"
+                }
             }
         }
     }
+
+    apply<MavenPublishPlugin>()
+    defaultPublishing()
 
     publishing {
         publications.withType<MavenPublication> {
