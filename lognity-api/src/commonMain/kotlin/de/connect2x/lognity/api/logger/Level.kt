@@ -27,5 +27,7 @@ enum class Level( // @formatter:off
          * Retrieves the default log level as determined by the application.
          */
         inline val default: Level get() = Backend.defaultLevel
+
+        fun byName(name: String): Level? = entries.find { level -> level.name.equals(name, true) }
     }
 }
