@@ -10,7 +10,7 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.Logger.Name
 import de.connect2x.lognity.backend.DefaultBackend
-import de.connect2x.lognity.config.systemConsoleAppender
+import de.connect2x.lognity.config.consoleAppender
 import de.connect2x.lognity.test.TestBackend.testScope
 import kotlinx.coroutines.test.TestScope
 import org.jetbrains.annotations.TestOnly
@@ -38,9 +38,13 @@ object TestBackend : Backend by DefaultBackend {
 
     init { // Increase to debug level for tests by default
         configSpec = {
-            systemConsoleAppender(
+            // --- DO NOT CHANGE THIS! ---
+            // We explicitly don't want systemConsoleAppender here because it may print to stderr,
+            // which can mess with test report generation in Gradle.
+            consoleAppender(
                 "{{levelColor}}>> {{levelSymbol}} {{hh}}:{{mm}}:{{ss}}.{{SSS}} [{{threadId}}/{{coroutineName}}][{{name}}] {{message}}{{r}}"
             )
+            // ---------------------------
             level = Level.DEBUG
         }
     }
@@ -104,7 +108,8 @@ object TestBackend : Backend by DefaultBackend {
      * This adds a default logger name "CUT" and the current [testScope] (if present)
      * to the context.
      */
-    context(builder: ContextBuilder) fun setupTestContext() = with(builder) {
+    context(builder: ContextBuilder)
+    fun setupTestContext() = with(builder) {
         value(Name("CUT"))
         testScope?.let(::TestScopeElement)?.let(::value)
     }

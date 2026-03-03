@@ -7,12 +7,18 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.appender.FileAppender
 import de.connect2x.lognity.appender.RollingFileAppender
 import de.connect2x.lognity.appender.SynchronizedConsoleAppender
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.toKStringFromUtf8
 import kotlinx.io.files.Path
+import platform.posix.getenv
 import kotlin.experimental.ExperimentalNativeApi
 
-@OptIn(ExperimentalNativeApi::class)
+@OptIn(ExperimentalNativeApi::class, ExperimentalForeignApi::class)
 @PublishedApi
-internal actual fun getDefaultLogLevel(): Level = if (Platform.isDebugBinary) Level.DEBUG else Level.INFO
+internal actual fun getDefaultLogLevel(): Level { // @formatter:off
+    return getenv("LOGNITY_DEFAULT_LEVEL")?.toKStringFromUtf8()?.let(Level::byName)
+        ?: if (Platform.isDebugBinary) Level.DEBUG else Level.INFO
+} // @formatter:on
 
 internal actual fun createSystemFileAppender( // @formatter:off
     path: String,
