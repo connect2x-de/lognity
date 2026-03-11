@@ -3,12 +3,14 @@
     "version": 1,
     "level": "{DEFAULT_LOG_LEVEL}",
     "enabled": true,
-    "conditions": [
+    "overrides": [
         {
-            "name": "default_condition",
-            "type": "level",
-            "condition": "ABOVE",
-            "value": "TRACE"
+            "condition": {
+                "type": "logger_name",
+                "condition": "CONTAINS",
+                "value": "com.example.logger"
+            },
+            "level": "TRACE"
         }
     ],
     "appenders": [
@@ -16,27 +18,7 @@
             "type": "system_console",
             "name": "my_appender",
             "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
-            "formatter": "default",
-            "filter": {
-                "conditions": [
-                    {
-                        "type": "marker",
-                        "condition": "KEY_NOT_EQUALS",
-                        "value": "marker1"
-                    },
-                    {
-                        "type": "or",
-                        "conditions": [
-                            {
-                                "type": "logger_name",
-                                "condition": "CONTAINS",
-                                "value": "My Filtered Logger"
-                            },
-                            "{conditions:default_condition}"
-                        ]
-                    }
-                ]
-            }
+            "formatter": "default"
         },
         {
             "type": "rolling_file",

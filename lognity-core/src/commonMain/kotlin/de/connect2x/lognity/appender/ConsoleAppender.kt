@@ -22,7 +22,7 @@ open class ConsoleAppender( // @formatter:off
     override val name: String? = null
 ) : Appender { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (level < logger.level || !filter(logger, message, marker)) return
+        if (!filter(logger, level, message, marker)) return
         println(message)
     }
 }

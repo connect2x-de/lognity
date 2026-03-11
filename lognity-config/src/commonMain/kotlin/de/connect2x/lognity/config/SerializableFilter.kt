@@ -1,6 +1,7 @@
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.appender.Filter
+import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.condition.AlwaysCondition
@@ -32,7 +33,7 @@ data class SerializableFilter(
             _config = value
         }
 
-    override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
-        return conditions.all { cond -> cond.resolveTemplate(config)(logger, message, marker) }
+    override operator fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean {
+        return conditions.all { cond -> cond.resolveTemplate(config)(logger, level, message, marker) }
     }
 }

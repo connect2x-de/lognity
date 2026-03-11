@@ -196,9 +196,10 @@ class RollingAsyncSink( // @formatter:off
     private fun resolveLatestFilePath(index: Int): Path {
         val parentPath = basePath.parent ?: Path("")
         val fileName = basePath.name
-        val timestamp =
-            if (useTimestamps) "-${Clock.System.now().format(DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET).replace(":", "")}"
-            else ""
+        val timestamp = if (useTimestamps) "-${
+            Clock.System.now().format(DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET).replace(":", "")
+        }"
+        else ""
         if ('.' !in fileName) return Path(parentPath, "$fileName-$index$timestamp$latestSuffix")
         val fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'))
         val fileExt = fileName.substring(fileName.lastIndexOf('.') + 1)

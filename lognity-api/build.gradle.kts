@@ -1,5 +1,6 @@
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
+import de.connect2x.conventions.enableAbiChecker
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroidLibrary
 import de.connect2x.conventions.withBrowser
@@ -18,6 +19,7 @@ plugins {
 configureJava(sharedLibs.versions.targetJvm)
 
 kotlin {
+    enableAbiChecker("InternalLoggingApi", "${rootProject.group}.api")
     defaultCompilerOptions()
     withSourcesJar()
     withAndroidLibrary("$group.api")

@@ -31,7 +31,7 @@ suspend fun appMain() {
     SerializableConfig uses CoreConfigExtension
     // Register custom providers to use in the config with {NAME} notation
     SerializableConfig uses ConfigExtension {
-        registerProvider("DEFAULT_LOG_LEVEL") { Level.TRACE }
+        registerProvider("DEFAULT_LOG_LEVEL") { Level.INFO }
         registerProvider("LOG_DIRECTORY") { "logs" }
         registerTemplateProvider("foo") { name -> "$name->bar" } // ${foo:baz} -> "baz->bar"
     }
@@ -53,5 +53,9 @@ suspend fun appMain() {
                 for (i in 0..<50) anotherLogger.printTestMessages()
             }
         }.joinAll()
+
+        val packageLogger = Logger("com.example.logger")
+        packageLogger.level = Level.ERROR // We only set error here to demonstrate overrides
+        packageLogger.printTestMessages()
     }
 }

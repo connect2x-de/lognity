@@ -12,6 +12,7 @@ import java.time.ZonedDateTime
 
 plugins {
     alias(sharedLibs.plugins.kotlin.multiplatform) apply false
+    alias(sharedLibs.plugins.kotlin.jvm) apply false
     alias(sharedLibs.plugins.android.library) apply false
     alias(sharedLibs.plugins.kotlin.kapt) apply false
     alias(sharedLibs.plugins.mavenPublish) apply false
@@ -29,7 +30,7 @@ subprojects {
     version = rootProject.version
     if (System.getenv("WITH_LOCK")?.toBoolean() == true) defaultDependencyLocking()
 
-    if ("example" in project.name) return@subprojects
+    if ("example" in project.name || "schema" in project.name) return@subprojects
 
     if(CI.isCI) {
         apply<MavenPublishBasePlugin>()

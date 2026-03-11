@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.condition
 
+import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.serialization.RefOrValue
@@ -16,20 +17,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("logger_name")
 data class LoggerNameCondition( // @formatter:off
-    val condition: RefOrValue<Type>,
+    val condition: RefOrValue<StringConditionType>,
     val value: RefOrValue<String>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
 ) : AbstractSerializableCondition() { // @formatter:on
-    enum class Type { EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS }
-
-    override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
+    override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean {
         val name = logger.context[Logger.Name]?.name ?: return false
         val value = this.value.resolve()
-        return when (condition.resolve()) {
-            Type.EQUALS -> name == value
-            Type.NOT_EQUALS -> name != value
-            Type.CONTAINS -> value in name
-            Type.NOT_CONTAINS -> value !in name
-        }
+        return condition.resolve()(name, value)
     }
 }

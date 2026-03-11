@@ -22,13 +22,13 @@ data class LevelCondition( // @formatter:off
 ) : AbstractSerializableCondition() { // @formatter:on
     enum class Type { EQUALS, NOT_EQUALS, BELOW, ABOVE }
 
-    override operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
+    override operator fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean {
         val value = this.value.resolve()
         return when (condition.resolve()) {
-            Type.EQUALS -> value == logger.level
-            Type.NOT_EQUALS -> value != logger.level
-            Type.BELOW -> logger.level < value
-            Type.ABOVE -> logger.level > value
+            Type.EQUALS -> value == level
+            Type.NOT_EQUALS -> value != level
+            Type.BELOW -> level < value
+            Type.ABOVE -> level > value
         }
     }
 }

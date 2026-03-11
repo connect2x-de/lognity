@@ -16,5 +16,6 @@ import de.connect2x.lognity.api.logger.Logger
 data class Config internal constructor( // @formatter:off
     val initialLevel: Level = Level.default,
     val initialEnableState: Boolean = true,
-    val appenders: List<Appender> = emptyList()
+    val appenders: List<Appender> = emptyList(),
+    val overrides: List<Override> = emptyList()
 )

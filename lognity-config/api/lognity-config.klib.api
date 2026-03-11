@@ -1,0 +1,447 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <de.connect2x.lognity:lognity-config>
+open annotation class de.connect2x.lognity.config/InternalConfigApi : kotlin/Annotation { // de.connect2x.lognity.config/InternalConfigApi|null[0]
+    constructor <init>() // de.connect2x.lognity.config/InternalConfigApi.<init>|<init>(){}[0]
+}
+
+open annotation class de.connect2x.lognity.config/SerializableConfigDsl : kotlin/Annotation { // de.connect2x.lognity.config/SerializableConfigDsl|null[0]
+    constructor <init>() // de.connect2x.lognity.config/SerializableConfigDsl.<init>|<init>(){}[0]
+}
+
+abstract fun interface de.connect2x.lognity.config.extension/ConfigExtension { // de.connect2x.lognity.config.extension/ConfigExtension|null[0]
+    abstract fun (de.connect2x.lognity.config.extension/ConfigExtensionRegistrar).register() // de.connect2x.lognity.config.extension/ConfigExtension.register|register@de.connect2x.lognity.config.extension.ConfigExtensionRegistrar(){}[0]
+}
+
+abstract interface de.connect2x.lognity.config.appender/SerializableAppender { // de.connect2x.lognity.config.appender/SerializableAppender|null[0]
+    abstract val filter // de.connect2x.lognity.config.appender/SerializableAppender.filter|{}filter[0]
+        abstract fun <get-filter>(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config/SerializableFilter> // de.connect2x.lognity.config.appender/SerializableAppender.filter.<get-filter>|<get-filter>(){}[0]
+    abstract val formatter // de.connect2x.lognity.config.appender/SerializableAppender.formatter|{}formatter[0]
+        abstract fun <get-formatter>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String> // de.connect2x.lognity.config.appender/SerializableAppender.formatter.<get-formatter>|<get-formatter>(){}[0]
+    abstract val name // de.connect2x.lognity.config.appender/SerializableAppender.name|{}name[0]
+        abstract fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.appender/SerializableAppender.name.<get-name>|<get-name>(){}[0]
+    abstract val pattern // de.connect2x.lognity.config.appender/SerializableAppender.pattern|{}pattern[0]
+        abstract fun <get-pattern>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String> // de.connect2x.lognity.config.appender/SerializableAppender.pattern.<get-pattern>|<get-pattern>(){}[0]
+
+    abstract var config // de.connect2x.lognity.config.appender/SerializableAppender.config|{}config[0]
+        abstract fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.appender/SerializableAppender.config.<get-config>|<get-config>(){}[0]
+        abstract fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.appender/SerializableAppender.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+}
+
+abstract interface de.connect2x.lognity.config.condition/SerializableCondition { // de.connect2x.lognity.config.condition/SerializableCondition|null[0]
+    abstract val name // de.connect2x.lognity.config.condition/SerializableCondition.name|{}name[0]
+        abstract fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/SerializableCondition.name.<get-name>|<get-name>(){}[0]
+
+    abstract var config // de.connect2x.lognity.config.condition/SerializableCondition.config|{}config[0]
+        abstract fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/SerializableCondition.config.<get-config>|<get-config>(){}[0]
+        abstract fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/SerializableCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+
+    abstract fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config.condition/SerializableCondition.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+}
+
+abstract interface de.connect2x.lognity.config.override/SerializableOverrideCondition : de.connect2x.lognity.api.config/OverrideCondition { // de.connect2x.lognity.config.override/SerializableOverrideCondition|null[0]
+    abstract var config // de.connect2x.lognity.config.override/SerializableOverrideCondition.config|{}config[0]
+        abstract fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.override/SerializableOverrideCondition.config.<get-config>|<get-config>(){}[0]
+        abstract fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.override/SerializableOverrideCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+}
+
+sealed interface <#A: out kotlin/Any?> de.connect2x.lognity.config.serialization/RefOrValue { // de.connect2x.lognity.config.serialization/RefOrValue|null[0]
+    abstract fun resolve(): #A // de.connect2x.lognity.config.serialization/RefOrValue.resolve|resolve(){}[0]
+    open fun resolveTemplate(de.connect2x.lognity.config/SerializableConfig): #A // de.connect2x.lognity.config.serialization/RefOrValue.resolveTemplate|resolveTemplate(de.connect2x.lognity.config.SerializableConfig){}[0]
+
+    final class <#A1: out kotlin/Any?> Ref : de.connect2x.lognity.config.serialization/RefOrValue<#A1> { // de.connect2x.lognity.config.serialization/RefOrValue.Ref|null[0]
+        constructor <init>(kotlin/String) // de.connect2x.lognity.config.serialization/RefOrValue.Ref.<init>|<init>(kotlin.String){}[0]
+
+        final val name // de.connect2x.lognity.config.serialization/RefOrValue.Ref.name|{}name[0]
+            final fun <get-name>(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.Ref.name.<get-name>|<get-name>(){}[0]
+
+        final fun component1(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.Ref.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): de.connect2x.lognity.config.serialization/RefOrValue.Ref<#A1> // de.connect2x.lognity.config.serialization/RefOrValue.Ref.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.serialization/RefOrValue.Ref.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.serialization/RefOrValue.Ref.hashCode|hashCode(){}[0]
+        final fun resolve(): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.Ref.resolve|resolve(){}[0]
+        final fun toString(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.Ref.toString|toString(){}[0]
+    }
+
+    final class <#A1: out kotlin/Any?> TemplateRef : de.connect2x.lognity.config.serialization/RefOrValue<#A1> { // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef|null[0]
+        constructor <init>(kotlin/String, kotlin/String, kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> = ...) // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.<init>|<init>(kotlin.String;kotlin.String;kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<*>>){}[0]
+
+        final val name // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.name|{}name[0]
+            final fun <get-name>(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.name.<get-name>|<get-name>(){}[0]
+        final val parameters // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.parameters|{}parameters[0]
+            final fun <get-parameters>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.parameters.<get-parameters>|<get-parameters>(){}[0]
+        final val prefix // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.prefix|{}prefix[0]
+            final fun <get-prefix>(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.prefix.<get-prefix>|<get-prefix>(){}[0]
+
+        final fun component1(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.component1|component1(){}[0]
+        final fun component2(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.component2|component2(){}[0]
+        final fun component3(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> = ...): de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef<#A1> // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.copy|copy(kotlin.String;kotlin.String;kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<*>>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.hashCode|hashCode(){}[0]
+        final fun resolve(): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.resolve|resolve(){}[0]
+        final fun resolveTemplate(de.connect2x.lognity.config/SerializableConfig): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.resolveTemplate|resolveTemplate(de.connect2x.lognity.config.SerializableConfig){}[0]
+        final fun toString(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.TemplateRef.toString|toString(){}[0]
+    }
+
+    final class <#A1: out kotlin/Any?> Value : de.connect2x.lognity.config.serialization/RefOrValue<#A1> { // de.connect2x.lognity.config.serialization/RefOrValue.Value|null[0]
+        constructor <init>(#A1) // de.connect2x.lognity.config.serialization/RefOrValue.Value.<init>|<init>(1:0){}[0]
+
+        final val value // de.connect2x.lognity.config.serialization/RefOrValue.Value.value|{}value[0]
+            final fun <get-value>(): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.Value.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.Value.component1|component1(){}[0]
+        final fun copy(#A1 = ...): de.connect2x.lognity.config.serialization/RefOrValue.Value<#A1> // de.connect2x.lognity.config.serialization/RefOrValue.Value.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.serialization/RefOrValue.Value.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.serialization/RefOrValue.Value.hashCode|hashCode(){}[0]
+        final fun resolve(): #A1 // de.connect2x.lognity.config.serialization/RefOrValue.Value.resolve|resolve(){}[0]
+        final fun toString(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.Value.toString|toString(){}[0]
+    }
+
+    final class LerpedString : de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String> { // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString|null[0]
+        constructor <init>(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>>) // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.<init>|<init>(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<*>>){}[0]
+
+        final val segments // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.segments|{}segments[0]
+            final fun <get-segments>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.segments.<get-segments>|<get-segments>(){}[0]
+
+        final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.component1|component1(){}[0]
+        final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<*>> = ...): de.connect2x.lognity.config.serialization/RefOrValue.LerpedString // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<*>>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.hashCode|hashCode(){}[0]
+        final fun resolve(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.resolve|resolve(){}[0]
+        final fun toString(): kotlin/String // de.connect2x.lognity.config.serialization/RefOrValue.LerpedString.toString|toString(){}[0]
+    }
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // de.connect2x.lognity.config.serialization/RefOrValue.Companion|null[0]
+        final fun <#A2: kotlin/Any?> serializer(kotlinx.serialization/KSerializer<#A2>): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.serialization/RefOrValue<#A2>> // de.connect2x.lognity.config.serialization/RefOrValue.Companion.serializer|serializer(kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // de.connect2x.lognity.config.serialization/RefOrValue.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+abstract class de.connect2x.lognity.config.appender/AbstractSerializableAppender : de.connect2x.lognity.config.appender/SerializableAppender { // de.connect2x.lognity.config.appender/AbstractSerializableAppender|null[0]
+    constructor <init>() // de.connect2x.lognity.config.appender/AbstractSerializableAppender.<init>|<init>(){}[0]
+
+    open var config // de.connect2x.lognity.config.appender/AbstractSerializableAppender.config|{}config[0]
+        open fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.appender/AbstractSerializableAppender.config.<get-config>|<get-config>(){}[0]
+        open fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.appender/AbstractSerializableAppender.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+}
+
+abstract class de.connect2x.lognity.config.condition/AbstractSerializableCondition : de.connect2x.lognity.config.condition/SerializableCondition { // de.connect2x.lognity.config.condition/AbstractSerializableCondition|null[0]
+    constructor <init>() // de.connect2x.lognity.config.condition/AbstractSerializableCondition.<init>|<init>(){}[0]
+
+    open var config // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config|{}config[0]
+        open fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config.<get-config>|<get-config>(){}[0]
+        open fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+}
+
+abstract class de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition : de.connect2x.lognity.config.override/SerializableOverrideCondition { // de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition|null[0]
+    constructor <init>() // de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition.<init>|<init>(){}[0]
+
+    open var config // de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition.config|{}config[0]
+        open fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition.config.<get-config>|<get-config>(){}[0]
+        open fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.override/AbstractSerializableOverrideCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+}
+
+final class <#A: kotlin/Any?> de.connect2x.lognity.config.serialization/RefOrValueSerializer : kotlinx.serialization/KSerializer<de.connect2x.lognity.config.serialization/RefOrValue<#A>> { // de.connect2x.lognity.config.serialization/RefOrValueSerializer|null[0]
+    constructor <init>(kotlinx.serialization/KSerializer<#A>) // de.connect2x.lognity.config.serialization/RefOrValueSerializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
+
+    final val descriptor // de.connect2x.lognity.config.serialization/RefOrValueSerializer.descriptor|{}descriptor[0]
+        final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config.serialization/RefOrValueSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+    final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config.serialization/RefOrValue<#A> // de.connect2x.lognity.config.serialization/RefOrValueSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+    final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config.serialization/RefOrValue<#A>) // de.connect2x.lognity.config.serialization/RefOrValueSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.serialization.RefOrValue<1:0>){}[0]
+
+    final object Companion { // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion|null[0]
+        final const val REFERENCE_BEGIN // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.REFERENCE_BEGIN|{}REFERENCE_BEGIN[0]
+            final fun <get-REFERENCE_BEGIN>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.REFERENCE_BEGIN.<get-REFERENCE_BEGIN>|<get-REFERENCE_BEGIN>(){}[0]
+        final const val REFERENCE_END // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.REFERENCE_END|{}REFERENCE_END[0]
+            final fun <get-REFERENCE_END>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.REFERENCE_END.<get-REFERENCE_END>|<get-REFERENCE_END>(){}[0]
+        final const val TEMPLATE_DELIMITER // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_DELIMITER|{}TEMPLATE_DELIMITER[0]
+            final fun <get-TEMPLATE_DELIMITER>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_DELIMITER.<get-TEMPLATE_DELIMITER>|<get-TEMPLATE_DELIMITER>(){}[0]
+        final const val TEMPLATE_PARAM_BEGIN // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BEGIN|{}TEMPLATE_PARAM_BEGIN[0]
+            final fun <get-TEMPLATE_PARAM_BEGIN>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BEGIN.<get-TEMPLATE_PARAM_BEGIN>|<get-TEMPLATE_PARAM_BEGIN>(){}[0]
+        final const val TEMPLATE_PARAM_BUILTIN_BEGIN // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_BEGIN|{}TEMPLATE_PARAM_BUILTIN_BEGIN[0]
+            final fun <get-TEMPLATE_PARAM_BUILTIN_BEGIN>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_BEGIN.<get-TEMPLATE_PARAM_BUILTIN_BEGIN>|<get-TEMPLATE_PARAM_BUILTIN_BEGIN>(){}[0]
+        final const val TEMPLATE_PARAM_BUILTIN_DELIMITER // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_DELIMITER|{}TEMPLATE_PARAM_BUILTIN_DELIMITER[0]
+            final fun <get-TEMPLATE_PARAM_BUILTIN_DELIMITER>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_DELIMITER.<get-TEMPLATE_PARAM_BUILTIN_DELIMITER>|<get-TEMPLATE_PARAM_BUILTIN_DELIMITER>(){}[0]
+        final const val TEMPLATE_PARAM_BUILTIN_END // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_END|{}TEMPLATE_PARAM_BUILTIN_END[0]
+            final fun <get-TEMPLATE_PARAM_BUILTIN_END>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_BUILTIN_END.<get-TEMPLATE_PARAM_BUILTIN_END>|<get-TEMPLATE_PARAM_BUILTIN_END>(){}[0]
+        final const val TEMPLATE_PARAM_DELIMITER // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_DELIMITER|{}TEMPLATE_PARAM_DELIMITER[0]
+            final fun <get-TEMPLATE_PARAM_DELIMITER>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_DELIMITER.<get-TEMPLATE_PARAM_DELIMITER>|<get-TEMPLATE_PARAM_DELIMITER>(){}[0]
+        final const val TEMPLATE_PARAM_END // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_END|{}TEMPLATE_PARAM_END[0]
+            final fun <get-TEMPLATE_PARAM_END>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_END.<get-TEMPLATE_PARAM_END>|<get-TEMPLATE_PARAM_END>(){}[0]
+        final const val TEMPLATE_PARAM_STR_DELIMITER // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_STR_DELIMITER|{}TEMPLATE_PARAM_STR_DELIMITER[0]
+            final fun <get-TEMPLATE_PARAM_STR_DELIMITER>(): kotlin/Char // de.connect2x.lognity.config.serialization/RefOrValueSerializer.Companion.TEMPLATE_PARAM_STR_DELIMITER.<get-TEMPLATE_PARAM_STR_DELIMITER>|<get-TEMPLATE_PARAM_STR_DELIMITER>(){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config.condition/AndCondition : de.connect2x.lognity.config.condition/AbstractSerializableCondition { // de.connect2x.lognity.config.condition/AndCondition|null[0]
+    constructor <init>(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>>, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...) // de.connect2x.lognity.config.condition/AndCondition.<init>|<init>(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+
+    final val conditions // de.connect2x.lognity.config.condition/AndCondition.conditions|{}conditions[0]
+        final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/AndCondition.conditions.<get-conditions>|<get-conditions>(){}[0]
+    final val name // de.connect2x.lognity.config.condition/AndCondition.name|{}name[0]
+        final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/AndCondition.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/AndCondition.component1|component1(){}[0]
+    final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/AndCondition.component2|component2(){}[0]
+    final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...): de.connect2x.lognity.config.condition/AndCondition // de.connect2x.lognity.config.condition/AndCondition.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.condition/AndCondition.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.condition/AndCondition.hashCode|hashCode(){}[0]
+    final fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config.condition/AndCondition.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config.condition/AndCondition.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config.condition/AndCondition> { // de.connect2x.lognity.config.condition/AndCondition.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config.condition/AndCondition.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config.condition/AndCondition.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config.condition/AndCondition.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config.condition/AndCondition // de.connect2x.lognity.config.condition/AndCondition.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config.condition/AndCondition) // de.connect2x.lognity.config.condition/AndCondition.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.condition.AndCondition){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config.condition/AndCondition.Companion|null[0]
+        final val $childSerializers // de.connect2x.lognity.config.condition/AndCondition.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.condition/AndCondition> // de.connect2x.lognity.config.condition/AndCondition.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config.condition/ExactlyOneCondition : de.connect2x.lognity.config.condition/AbstractSerializableCondition { // de.connect2x.lognity.config.condition/ExactlyOneCondition|null[0]
+    constructor <init>(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>>, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...) // de.connect2x.lognity.config.condition/ExactlyOneCondition.<init>|<init>(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+
+    final val conditions // de.connect2x.lognity.config.condition/ExactlyOneCondition.conditions|{}conditions[0]
+        final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/ExactlyOneCondition.conditions.<get-conditions>|<get-conditions>(){}[0]
+    final val name // de.connect2x.lognity.config.condition/ExactlyOneCondition.name|{}name[0]
+        final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/ExactlyOneCondition.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/ExactlyOneCondition.component1|component1(){}[0]
+    final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/ExactlyOneCondition.component2|component2(){}[0]
+    final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...): de.connect2x.lognity.config.condition/ExactlyOneCondition // de.connect2x.lognity.config.condition/ExactlyOneCondition.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.condition/ExactlyOneCondition.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.condition/ExactlyOneCondition.hashCode|hashCode(){}[0]
+    final fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config.condition/ExactlyOneCondition.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config.condition/ExactlyOneCondition.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config.condition/ExactlyOneCondition> { // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config.condition/ExactlyOneCondition // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config.condition/ExactlyOneCondition) // de.connect2x.lognity.config.condition/ExactlyOneCondition.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.condition.ExactlyOneCondition){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config.condition/ExactlyOneCondition.Companion|null[0]
+        final val $childSerializers // de.connect2x.lognity.config.condition/ExactlyOneCondition.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.condition/ExactlyOneCondition> // de.connect2x.lognity.config.condition/ExactlyOneCondition.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config.condition/OrCondition : de.connect2x.lognity.config.condition/AbstractSerializableCondition { // de.connect2x.lognity.config.condition/OrCondition|null[0]
+    constructor <init>(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>>, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...) // de.connect2x.lognity.config.condition/OrCondition.<init>|<init>(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+
+    final val conditions // de.connect2x.lognity.config.condition/OrCondition.conditions|{}conditions[0]
+        final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/OrCondition.conditions.<get-conditions>|<get-conditions>(){}[0]
+    final val name // de.connect2x.lognity.config.condition/OrCondition.name|{}name[0]
+        final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/OrCondition.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/OrCondition.component1|component1(){}[0]
+    final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/OrCondition.component2|component2(){}[0]
+    final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...): de.connect2x.lognity.config.condition/OrCondition // de.connect2x.lognity.config.condition/OrCondition.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.condition/OrCondition.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.condition/OrCondition.hashCode|hashCode(){}[0]
+    final fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config.condition/OrCondition.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config.condition/OrCondition.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config.condition/OrCondition> { // de.connect2x.lognity.config.condition/OrCondition.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config.condition/OrCondition.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config.condition/OrCondition.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config.condition/OrCondition.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config.condition/OrCondition // de.connect2x.lognity.config.condition/OrCondition.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config.condition/OrCondition) // de.connect2x.lognity.config.condition/OrCondition.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.condition.OrCondition){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config.condition/OrCondition.Companion|null[0]
+        final val $childSerializers // de.connect2x.lognity.config.condition/OrCondition.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.condition/OrCondition> // de.connect2x.lognity.config.condition/OrCondition.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config.extension/ConfigExtensionRegistrar { // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar|null[0]
+    final val appenderFactories // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.appenderFactories|{}appenderFactories[0]
+        final fun <get-appenderFactories>(): co.touchlab.stately.collections/SharedHashMap<kotlin.reflect/KClass<out de.connect2x.lognity.config.appender/SerializableAppender>, kotlin/Function3<de.connect2x.lognity.api.config/ConfigBuilder, de.connect2x.lognity.config.appender/SerializableAppender, de.connect2x.lognity.api.format/Formatter, kotlin/Unit>> // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.appenderFactories.<get-appenderFactories>|<get-appenderFactories>(){}[0]
+    final val appenderTypes // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.appenderTypes|{}appenderTypes[0]
+        final fun <get-appenderTypes>(): kotlin.concurrent.atomics/AtomicReference<kotlin/Function1<kotlinx.serialization.modules/PolymorphicModuleBuilder<de.connect2x.lognity.config.appender/SerializableAppender>, kotlin/Unit>> // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.appenderTypes.<get-appenderTypes>|<get-appenderTypes>(){}[0]
+    final val conditionTypes // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.conditionTypes|{}conditionTypes[0]
+        final fun <get-conditionTypes>(): kotlin.concurrent.atomics/AtomicReference<kotlin/Function1<kotlinx.serialization.modules/PolymorphicModuleBuilder<de.connect2x.lognity.config.condition/SerializableCondition>, kotlin/Unit>> // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.conditionTypes.<get-conditionTypes>|<get-conditionTypes>(){}[0]
+    final val overrideConditionTypes // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.overrideConditionTypes|{}overrideConditionTypes[0]
+        final fun <get-overrideConditionTypes>(): kotlin.concurrent.atomics/AtomicReference<kotlin/Function1<kotlinx.serialization.modules/PolymorphicModuleBuilder<de.connect2x.lognity.config.override/SerializableOverrideCondition>, kotlin/Unit>> // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.overrideConditionTypes.<get-overrideConditionTypes>|<get-overrideConditionTypes>(){}[0]
+
+    final fun <#A1: kotlin/Any?> findBuiltinProvider(kotlin/String): kotlin/Function1<kotlin/String, #A1>? // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.findBuiltinProvider|findBuiltinProvider(kotlin.String){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> findProvider(kotlin/String): kotlin/Function0<#A1>? // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.findProvider|findProvider(kotlin.String){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> findTemplateProvider(kotlin/String): kotlin/Function2<de.connect2x.lognity.config/SerializableConfig, kotlin/String, #A1>? // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.findTemplateProvider|findTemplateProvider(kotlin.String){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Enum<#A1>> registerBuiltinEnum(kotlin/String, kotlin.collections/Iterable<#A1>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerBuiltinEnum|registerBuiltinEnum(kotlin.String;kotlin.collections.Iterable<0:0>){0§<kotlin.Enum<0:0>>}[0]
+    final fun registerBuiltinProvider(kotlin/String, kotlin/Function1<kotlin/String, kotlin/Any?>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerBuiltinProvider|registerBuiltinProvider(kotlin.String;kotlin.Function1<kotlin.String,kotlin.Any?>){}[0]
+    final fun registerFormatterType(kotlin/String, kotlin/Function0<de.connect2x.lognity.api.format/Formatter>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerFormatterType|registerFormatterType(kotlin.String;kotlin.Function0<de.connect2x.lognity.api.format.Formatter>){}[0]
+    final fun registerProvider(kotlin/String, kotlin/Function0<kotlin/Any?>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerProvider|registerProvider(kotlin.String;kotlin.Function0<kotlin.Any?>){}[0]
+    final fun registerTemplateProvider(kotlin/String, kotlin/Function2<de.connect2x.lognity.config/SerializableConfig, kotlin/String, kotlin/Any?>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerTemplateProvider|registerTemplateProvider(kotlin.String;kotlin.Function2<de.connect2x.lognity.config.SerializableConfig,kotlin.String,kotlin.Any?>){}[0]
+    final inline fun <#A1: reified de.connect2x.lognity.config.appender/SerializableAppender> registerAppenderType(noinline kotlin/Function3<de.connect2x.lognity.api.config/ConfigBuilder, #A1, de.connect2x.lognity.api.format/Formatter, kotlin/Unit>) // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerAppenderType|registerAppenderType(kotlin.Function3<de.connect2x.lognity.api.config.ConfigBuilder,0:0,de.connect2x.lognity.api.format.Formatter,kotlin.Unit>){0§<de.connect2x.lognity.config.appender.SerializableAppender>}[0]
+    final inline fun <#A1: reified de.connect2x.lognity.config.condition/SerializableCondition> registerConditionType() // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerConditionType|registerConditionType(){0§<de.connect2x.lognity.config.condition.SerializableCondition>}[0]
+    final inline fun <#A1: reified de.connect2x.lognity.config.override/SerializableOverrideCondition> registerOverrideConditionType() // de.connect2x.lognity.config.extension/ConfigExtensionRegistrar.registerOverrideConditionType|registerOverrideConditionType(){0§<de.connect2x.lognity.config.override.SerializableOverrideCondition>}[0]
+}
+
+final class de.connect2x.lognity.config.override/SerializableOverride { // de.connect2x.lognity.config.override/SerializableOverride|null[0]
+    constructor <init>(de.connect2x.lognity.config.override/SerializableOverrideCondition, de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level>? = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean>? = ...) // de.connect2x.lognity.config.override/SerializableOverride.<init>|<init>(de.connect2x.lognity.config.override.SerializableOverrideCondition;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>?;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>?){}[0]
+
+    final val condition // de.connect2x.lognity.config.override/SerializableOverride.condition|{}condition[0]
+        final fun <get-condition>(): de.connect2x.lognity.config.override/SerializableOverrideCondition // de.connect2x.lognity.config.override/SerializableOverride.condition.<get-condition>|<get-condition>(){}[0]
+    final val enableState // de.connect2x.lognity.config.override/SerializableOverride.enableState|{}enableState[0]
+        final fun <get-enableState>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean>? // de.connect2x.lognity.config.override/SerializableOverride.enableState.<get-enableState>|<get-enableState>(){}[0]
+    final val level // de.connect2x.lognity.config.override/SerializableOverride.level|{}level[0]
+        final fun <get-level>(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level>? // de.connect2x.lognity.config.override/SerializableOverride.level.<get-level>|<get-level>(){}[0]
+
+    final var config // de.connect2x.lognity.config.override/SerializableOverride.config|{}config[0]
+        final fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.override/SerializableOverride.config.<get-config>|<get-config>(){}[0]
+        final fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.override/SerializableOverride.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+
+    final fun component1(): de.connect2x.lognity.config.override/SerializableOverrideCondition // de.connect2x.lognity.config.override/SerializableOverride.component1|component1(){}[0]
+    final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level>? // de.connect2x.lognity.config.override/SerializableOverride.component2|component2(){}[0]
+    final fun component3(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean>? // de.connect2x.lognity.config.override/SerializableOverride.component3|component3(){}[0]
+    final fun copy(de.connect2x.lognity.config.override/SerializableOverrideCondition = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level>? = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean>? = ...): de.connect2x.lognity.config.override/SerializableOverride // de.connect2x.lognity.config.override/SerializableOverride.copy|copy(de.connect2x.lognity.config.override.SerializableOverrideCondition;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>?;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.override/SerializableOverride.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.override/SerializableOverride.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config.override/SerializableOverride.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config.override/SerializableOverride> { // de.connect2x.lognity.config.override/SerializableOverride.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config.override/SerializableOverride.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config.override/SerializableOverride.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config.override/SerializableOverride.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config.override/SerializableOverride // de.connect2x.lognity.config.override/SerializableOverride.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config.override/SerializableOverride) // de.connect2x.lognity.config.override/SerializableOverride.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.override.SerializableOverride){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config.override/SerializableOverride.Companion|null[0]
+        final val $childSerializers // de.connect2x.lognity.config.override/SerializableOverride.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.override/SerializableOverride> // de.connect2x.lognity.config.override/SerializableOverride.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config/SerializableConfig { // de.connect2x.lognity.config/SerializableConfig|null[0]
+    constructor <init>(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ...) // de.connect2x.lognity.config/SerializableConfig.<init>|<init>(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>){}[0]
+
+    final val appenders // de.connect2x.lognity.config/SerializableConfig.appenders|{}appenders[0]
+        final fun <get-appenders>(): kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> // de.connect2x.lognity.config/SerializableConfig.appenders.<get-appenders>|<get-appenders>(){}[0]
+    final val conditions // de.connect2x.lognity.config/SerializableConfig.conditions|{}conditions[0]
+        final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> // de.connect2x.lognity.config/SerializableConfig.conditions.<get-conditions>|<get-conditions>(){}[0]
+    final val enabled // de.connect2x.lognity.config/SerializableConfig.enabled|{}enabled[0]
+        final fun <get-enabled>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> // de.connect2x.lognity.config/SerializableConfig.enabled.<get-enabled>|<get-enabled>(){}[0]
+    final val level // de.connect2x.lognity.config/SerializableConfig.level|{}level[0]
+        final fun <get-level>(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> // de.connect2x.lognity.config/SerializableConfig.level.<get-level>|<get-level>(){}[0]
+    final val overrides // de.connect2x.lognity.config/SerializableConfig.overrides|{}overrides[0]
+        final fun <get-overrides>(): kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> // de.connect2x.lognity.config/SerializableConfig.overrides.<get-overrides>|<get-overrides>(){}[0]
+    final val version // de.connect2x.lognity.config/SerializableConfig.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // de.connect2x.lognity.config/SerializableConfig.version.<get-version>|<get-version>(){}[0]
+
+    final fun (context(de.connect2x.lognity.api.config/ConfigBuilder)).applyConfig(): de.connect2x.lognity.api.config/ConfigBuilder // de.connect2x.lognity.config/SerializableConfig.applyConfig|applyConfig(de.connect2x.lognity.api.config.ConfigBuilder)(){}[0]
+    final fun asConfig(): de.connect2x.lognity.api.config/Config // de.connect2x.lognity.config/SerializableConfig.asConfig|asConfig(){}[0]
+    final fun component1(): kotlin/Int // de.connect2x.lognity.config/SerializableConfig.component1|component1(){}[0]
+    final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> // de.connect2x.lognity.config/SerializableConfig.component2|component2(){}[0]
+    final fun component3(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> // de.connect2x.lognity.config/SerializableConfig.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> // de.connect2x.lognity.config/SerializableConfig.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> // de.connect2x.lognity.config/SerializableConfig.component5|component5(){}[0]
+    final fun component6(): kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> // de.connect2x.lognity.config/SerializableConfig.component6|component6(){}[0]
+    final fun copy(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ...): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.copy|copy(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config/SerializableConfig.equals|equals(kotlin.Any?){}[0]
+    final fun getCombinedLevel(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.config/SerializableConfig.getCombinedLevel|getCombinedLevel(){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config/SerializableConfig.hashCode|hashCode(){}[0]
+    final fun plus(de.connect2x.lognity.config/SerializableConfig): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.plus|plus(de.connect2x.lognity.config.SerializableConfig){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config/SerializableConfig.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config/SerializableConfig> { // de.connect2x.lognity.config/SerializableConfig.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config/SerializableConfig.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config/SerializableConfig.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config/SerializableConfig.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config/SerializableConfig.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.SerializableConfig){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config/SerializableConfig.Companion|null[0]
+        final const val VERSION // de.connect2x.lognity.config/SerializableConfig.Companion.VERSION|{}VERSION[0]
+            final fun <get-VERSION>(): kotlin/Int // de.connect2x.lognity.config/SerializableConfig.Companion.VERSION.<get-VERSION>|<get-VERSION>(){}[0]
+
+        final val $childSerializers // de.connect2x.lognity.config/SerializableConfig.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun load(kotlinx.io/Source): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.Companion.load|load(kotlinx.io.Source){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config/SerializableConfig> // de.connect2x.lognity.config/SerializableConfig.Companion.serializer|serializer(){}[0]
+        final fun uses(de.connect2x.lognity.config.extension/ConfigExtension) // de.connect2x.lognity.config/SerializableConfig.Companion.uses|uses(de.connect2x.lognity.config.extension.ConfigExtension){}[0]
+    }
+}
+
+final class de.connect2x.lognity.config/SerializableFilter : de.connect2x.lognity.api.appender/Filter { // de.connect2x.lognity.config/SerializableFilter|null[0]
+    constructor <init>(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ...) // de.connect2x.lognity.config/SerializableFilter.<init>|<init>(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>){}[0]
+
+    final val conditions // de.connect2x.lognity.config/SerializableFilter.conditions|{}conditions[0]
+        final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config/SerializableFilter.conditions.<get-conditions>|<get-conditions>(){}[0]
+
+    final var config // de.connect2x.lognity.config/SerializableFilter.config|{}config[0]
+        final fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableFilter.config.<get-config>|<get-config>(){}[0]
+        final fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config/SerializableFilter.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+
+    final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config/SerializableFilter.component1|component1(){}[0]
+    final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ...): de.connect2x.lognity.config/SerializableFilter // de.connect2x.lognity.config/SerializableFilter.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config/SerializableFilter.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config/SerializableFilter.hashCode|hashCode(){}[0]
+    final fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config/SerializableFilter.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config/SerializableFilter.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<de.connect2x.lognity.config/SerializableFilter> { // de.connect2x.lognity.config/SerializableFilter.$serializer|null[0]
+        final val descriptor // de.connect2x.lognity.config/SerializableFilter.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // de.connect2x.lognity.config/SerializableFilter.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // de.connect2x.lognity.config/SerializableFilter.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): de.connect2x.lognity.config/SerializableFilter // de.connect2x.lognity.config/SerializableFilter.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, de.connect2x.lognity.config/SerializableFilter) // de.connect2x.lognity.config/SerializableFilter.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;de.connect2x.lognity.config.SerializableFilter){}[0]
+    }
+
+    final object Companion { // de.connect2x.lognity.config/SerializableFilter.Companion|null[0]
+        final val $childSerializers // de.connect2x.lognity.config/SerializableFilter.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config/SerializableFilter> // de.connect2x.lognity.config/SerializableFilter.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final object de.connect2x.lognity.config.condition/AlwaysCondition : de.connect2x.lognity.config.condition/AbstractSerializableCondition, kotlinx.serialization.internal/SerializerFactory { // de.connect2x.lognity.config.condition/AlwaysCondition|null[0]
+    final val name // de.connect2x.lognity.config.condition/AlwaysCondition.name|{}name[0]
+        final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/AlwaysCondition.name.<get-name>|<get-name>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config.condition/AlwaysCondition.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.config.condition/AlwaysCondition.hashCode|hashCode(){}[0]
+    final fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?): kotlin/Boolean // de.connect2x.lognity.config.condition/AlwaysCondition.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.condition/AlwaysCondition> // de.connect2x.lognity.config.condition/AlwaysCondition.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // de.connect2x.lognity.config.condition/AlwaysCondition.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.config.condition/AlwaysCondition.toString|toString(){}[0]
+}
+
+final fun (de.connect2x.lognity.api.backend/Backend).de.connect2x.lognity.config/setDefaultConfig(kotlinx.io.files/Path) // de.connect2x.lognity.config/setDefaultConfig|setDefaultConfig@de.connect2x.lognity.api.backend.Backend(kotlinx.io.files.Path){}[0]
+final fun (de.connect2x.lognity.api.backend/Backend).de.connect2x.lognity.config/setDefaultConfig(kotlinx.io/Source) // de.connect2x.lognity.config/setDefaultConfig|setDefaultConfig@de.connect2x.lognity.api.backend.Backend(kotlinx.io.Source){}[0]
+final suspend fun (de.connect2x.lognity.api.backend/Backend).de.connect2x.lognity.config/withDefaultConfig(kotlin/String, kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // de.connect2x.lognity.config/withDefaultConfig|withDefaultConfig@de.connect2x.lognity.api.backend.Backend(kotlin.String;kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+
+// Targets: [apple]
+final fun (platform.Foundation/NSData).de.connect2x.lognity.config/toByteArray(): kotlin/ByteArray // de.connect2x.lognity.config/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
+
+// Targets: [js, wasmJs]
+final val de.connect2x.lognity.config.util/isNode // de.connect2x.lognity.config.util/isNode|{}isNode[0]
+    final fun <get-isNode>(): kotlin/Boolean // de.connect2x.lognity.config.util/isNode.<get-isNode>|<get-isNode>(){}[0]

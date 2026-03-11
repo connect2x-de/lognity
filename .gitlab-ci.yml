@@ -8,6 +8,7 @@ workflow:
 
 stages:
   - build
+  - test
   - security
   - publish
 
@@ -47,6 +48,19 @@ build:
     - *if-merge-request
   script:
     - ./gradlew clean build
+
+# Only required on macOS since it can build all targets
+checkAbi:
+  stage: test
+  interruptible: true
+  timeout: 1h
+  needs: [ "build" ]
+  tags: [ "connect2x-mac" ]
+  artifacts: *artifact-reports
+  rules:
+    - *if-merge-request
+  script:
+    - ./gradlew :lognity-api:checkLegacyAbi :lognity-config:checkLegacyAbi
 
 security:dependencies:
   stage: security

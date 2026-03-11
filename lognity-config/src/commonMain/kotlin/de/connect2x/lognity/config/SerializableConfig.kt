@@ -2,24 +2,25 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigBuilder
-import de.connect2x.lognity.api.config.ConfigDsl
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
 import de.connect2x.lognity.config.condition.AndCondition
+import de.connect2x.lognity.config.condition.ExactlyOneCondition
 import de.connect2x.lognity.config.condition.OrCondition
 import de.connect2x.lognity.config.condition.SerializableCondition
-import de.connect2x.lognity.config.condition.ExactlyOneCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
+import de.connect2x.lognity.config.override.SerializableOverride
 import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.io.Source
 import kotlinx.io.readString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.max
 
 /**
@@ -39,7 +40,8 @@ data class SerializableConfig( // @formatter:off
     val level: RefOrValue<Level> = RefOrValue.Value(Level.default),
     val enabled: RefOrValue<Boolean> = RefOrValue.Value(true),
     val appenders: List<SerializableAppender> = emptyList(),
-    val conditions: List<SerializableCondition> = emptyList() // Globally accessible conditions/templates
+    val conditions: List<SerializableCondition> = emptyList(), // Globally accessible conditions/templates
+    val overrides: List<SerializableOverride> = emptyList() // Global overrides
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].
@@ -61,7 +63,6 @@ data class SerializableConfig( // @formatter:off
          *
          * @param extension the extension to register.
          */
-        @SerializableConfigDsl
         infix fun uses(extension: ConfigExtension) = with(extension) {
             with(extensionRegistrar) {
                 register()
@@ -87,6 +88,9 @@ data class SerializableConfig( // @formatter:off
             }
         }
 
+        @InternalConfigApi
+        val serializersModule: SerializersModule by lazy(extensionRegistrar::createSerializersModule)
+
         @OptIn(ExperimentalSerializationApi::class)
         private val json: Json by lazy {
             Json {
@@ -95,7 +99,7 @@ data class SerializableConfig( // @formatter:off
                 prettyPrintIndent = "\t"
                 allowComments = true
                 allowTrailingComma = true
-                serializersModule = extensionRegistrar.createSerializersModule()
+                serializersModule = this@Companion.serializersModule
             }
         }
 
@@ -126,13 +130,19 @@ data class SerializableConfig( // @formatter:off
                 val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue
                 factory(appender, formatter())
             }
+            for (override in overrides) {
+                override {
+                    applyWhen(override.condition)
+                    level = override.level?.resolve()
+                    enableState = override.enableState?.resolve()
+                }
+            }
         }
     }
 
     init { // Propagate a reference down the hierarchy
-        for (appender in appenders) {
-            appender.config = this
-        }
+        for (appender in appenders) appender.config = this
+        for (override in overrides) override.config = this
     }
 
     /**
@@ -150,7 +160,6 @@ data class SerializableConfig( // @formatter:off
     /**
      * Applies this configuration to the given [ConfigBuilder].
      */
-    @ConfigDsl
     context(builder: ConfigBuilder)
     fun applyConfig() = builder.setFrom(cachedConfig)
 
@@ -169,6 +178,7 @@ data class SerializableConfig( // @formatter:off
      * - The higher log level of both.
      * - `enabled` set to true only if both are enabled.
      * - A combined list of appenders from both configurations.
+     * - A combined list of overrides from both configurations.
      *
      * @param other the configuration to merge with.
      * @return a new [SerializableConfig] representing the merged result.
@@ -180,6 +190,7 @@ data class SerializableConfig( // @formatter:off
             else -> level.resolve()
         }),
         enabled = RefOrValue.Value(enabled.resolve() && other.enabled.resolve()),
-        appenders = appenders + other.appenders
+        appenders = appenders + other.appenders,
+        overrides = overrides + other.overrides
     ) // @formatter:on
 }

@@ -1,7 +1,5 @@
 package de.connect2x.lognity.api.appender
 
-import de.connect2x.lognity.api.appender.Filter.Companion.levels
-import de.connect2x.lognity.api.appender.Filter.Companion.markers
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
@@ -16,7 +14,7 @@ fun interface Filter {
         /**
          * A filter which will always let all messages through.
          */
-        val always: Filter = Filter { _, _, _ -> true }
+        val always: Filter = Filter { _, _, _, _ -> true }
 
         /**
          * Creates a filter which lets through all messages at the specified level(s).
@@ -26,8 +24,8 @@ fun interface Filter {
          */
         inline fun levels(vararg levels: Level): Filter = object : Filter {
             private val filteredLevels: Set<Level> = levels.toSet()
-            override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean =
-                logger.level in filteredLevels
+            override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean =
+                level in filteredLevels
         }
 
         /**
@@ -38,8 +36,8 @@ fun interface Filter {
          */
         inline fun levelsExcept(vararg levels: Level): Filter = object : Filter {
             private val filteredLevels: Set<Level> = Level.entries.toSet() - levels.toSet()
-            override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean =
-                logger.level in filteredLevels
+            override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean =
+                level in filteredLevels
         }
 
         /**
@@ -50,7 +48,8 @@ fun interface Filter {
          */
         inline fun markers(vararg markers: Marker): Filter = object : Filter {
             private val filteredMarkers: Set<Marker> = markers.toSet()
-            override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean = marker in filteredMarkers
+            override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean =
+                marker in filteredMarkers
         }
 
         /**
@@ -59,18 +58,19 @@ fun interface Filter {
          * @param s The substring to look for in all messages-
          * @return A new filter instance allowing all messages with the given substring to pass.
          */
-        inline fun containsString(s: String): Filter = Filter { _, message, _ -> s in message }
+        inline fun containsString(s: String): Filter = Filter { _, _, message, _ -> s in message }
     }
 
     /**
      * Check if the given message should be passed to the appender this filter is associated with.
      *
      * @param logger The current logger instance.
+     * @param level The log level of the current message being logged.
      * @param message The formatted message.
      * @param marker The marker of the current message.
      * @return True if the current message should be forwarded to the appender.
      */
-    operator fun invoke(logger: Logger, message: String, marker: Marker?): Boolean
+    operator fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean
 
     /**
      * Combines this filter with another filter using a logical AND operation.
@@ -78,8 +78,8 @@ fun interface Filter {
      * @param other The other filter to combine with.
      * @return A new filter which only lets messages through if both filters allow it.
      */
-    infix fun and(other: Filter): Filter = Filter { logger, message, marker ->
-        this(logger, message, marker) && other(logger, message, marker)
+    infix fun and(other: Filter): Filter = Filter { logger, level, message, marker ->
+        this(logger, level, message, marker) && other(logger, level, message, marker)
     }
 
     /**
@@ -88,8 +88,8 @@ fun interface Filter {
      * @param other The other filter to combine with.
      * @return A new filter which lets messages through if at least one of the filters allows it.
      */
-    infix fun or(other: Filter): Filter = Filter { logger, message, marker ->
-        this(logger, message, marker) || other(logger, message, marker)
+    infix fun or(other: Filter): Filter = Filter { logger, level, message, marker ->
+        this(logger, level, message, marker) || other(logger, level, message, marker)
     }
 
     /**
@@ -97,5 +97,5 @@ fun interface Filter {
      *
      * @return A new filter which lets messages through if this filter does not.
      */
-    fun not(): Filter = Filter { logger, message, marker -> !this(logger, message, marker) }
+    fun not(): Filter = Filter { logger, level, message, marker -> !this(logger, level, message, marker) }
 }
