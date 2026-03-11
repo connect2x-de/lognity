@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.condition
 
+import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.serialization.RefOrValue
@@ -15,7 +16,7 @@ data class AndCondition(
     val conditions: List<RefOrValue<SerializableCondition>>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
 ) : AbstractSerializableCondition() {
-    override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean {
-        return conditions.all { refOrValue -> refOrValue.resolveTemplate(config)(logger, message, marker) }
+    override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean {
+        return conditions.all { refOrValue -> refOrValue.resolveTemplate(config)(logger, level, message, marker) }
     }
 }

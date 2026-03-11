@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.condition
 
+import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.config.serialization.RefOrValue
@@ -16,8 +17,8 @@ data class ExactlyOneCondition(
     val conditions: List<RefOrValue<SerializableCondition>>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
 ) : AbstractSerializableCondition() {
-    override fun invoke(logger: Logger, message: String, marker: Marker?): Boolean { // @formatter:off
+    override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean { // @formatter:off
         return conditions.map { refOrValue -> refOrValue.resolveTemplate(config) }
-            .count { condition -> condition(logger, message, marker) } == 1
+            .count { condition -> condition(logger, level, message, marker) } == 1
     } // @formatter:on
 }

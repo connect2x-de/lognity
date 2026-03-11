@@ -53,7 +53,7 @@ class EventAppender( // @formatter:off
     }
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = memScoped {
-        if (level < logger.level || message.isEmpty() || !filter(logger, message, marker)) return@memScoped
+        if (message.isEmpty() || !filter(logger, level, message, marker)) return@memScoped
         val eventSource = getOrCreateEventSource(logger)
         val eventId = Uuid.random().hashCode().toUInt()
         ReportEventW(eventSource, level.eventType, 0U, eventId, null, 1U, 0U, cValuesOf(message.wcstr.ptr), null)

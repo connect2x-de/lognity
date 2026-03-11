@@ -53,7 +53,7 @@ class ExtendedConsoleAppender( // @formatter:off
     override fun append(
         logger: Logger, level: Level, message: String, marker: Marker?
     ) {
-        if (level < logger.level || !filter(logger, message, marker)) return
+        if (!filter(logger, level, message, marker)) return
         // Only Chrome supports ANSI escape codes in the JS console right now
         val processedMessage = messageProcessor(message)
         when (level) {

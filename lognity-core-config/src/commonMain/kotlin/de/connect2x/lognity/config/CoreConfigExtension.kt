@@ -12,6 +12,9 @@ import de.connect2x.lognity.config.condition.MarkerCondition
 import de.connect2x.lognity.config.condition.MessageCondition
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
+import de.connect2x.lognity.config.override.CoroutineNameOverrideCondition
+import de.connect2x.lognity.config.override.LoggerNameOverrideCondition
+import de.connect2x.lognity.config.override.MarkerOverrideCondition
 
 internal expect fun ConfigExtensionRegistrar.registerPlatformAppenderTypes()
 
@@ -81,8 +84,15 @@ object CoreConfigExtension : ConfigExtension {
         registerConditionType<CoroutineNameCondition>()
     }
 
+    private fun ConfigExtensionRegistrar.registerOverrideConditionTypes() {
+        registerOverrideConditionType<LoggerNameOverrideCondition>()
+        registerOverrideConditionType<MarkerOverrideCondition>()
+        registerOverrideConditionType<CoroutineNameOverrideCondition>()
+    }
+
     override fun ConfigExtensionRegistrar.register() {
         registerAppenderTypes()
         registerConditionTypes()
+        registerOverrideConditionTypes()
     }
 }

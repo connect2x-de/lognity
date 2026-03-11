@@ -6,11 +6,14 @@ import de.connect2x.lognity.config.SerializableConfigDsl
 import de.connect2x.lognity.config.appender.AppenderFactory
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.SerializableCondition
+import de.connect2x.lognity.config.override.SerializableOverrideCondition
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlin.concurrent.atomics.AtomicReference
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 /**
@@ -22,7 +25,7 @@ import kotlin.reflect.KClass
 @SerializableConfigDsl
 class ConfigExtensionRegistrar internal constructor() {
     @PublishedApi
-    internal var appenderTypes: AtomicReference<PolymorphicModuleBuilder<SerializableAppender>.() -> Unit> =
+    internal val appenderTypes: AtomicReference<PolymorphicModuleBuilder<SerializableAppender>.() -> Unit> =
         AtomicReference {}
 
     @PublishedApi
@@ -30,7 +33,11 @@ class ConfigExtensionRegistrar internal constructor() {
         SharedHashMap()
 
     @PublishedApi
-    internal var conditionTypes: AtomicReference<PolymorphicModuleBuilder<SerializableCondition>.() -> Unit> =
+    internal val conditionTypes: AtomicReference<PolymorphicModuleBuilder<SerializableCondition>.() -> Unit> =
+        AtomicReference {}
+
+    @PublishedApi
+    internal val overrideConditionTypes: AtomicReference<PolymorphicModuleBuilder<SerializableOverrideCondition>.() -> Unit> =
         AtomicReference {}
 
     internal val formatterFactories: SharedHashMap<String, () -> Formatter> = SharedHashMap()
@@ -148,6 +155,9 @@ class ConfigExtensionRegistrar internal constructor() {
      */
     @Suppress("UNCHECKED_CAST")
     inline fun <reified A : SerializableAppender> registerAppenderType(noinline factory: AppenderFactory<A>) {
+        contract {
+            callsInPlace(factory, InvocationKind.AT_MOST_ONCE)
+        }
         val oldCallback = appenderTypes.load()
         appenderTypes.store {
             oldCallback()
@@ -169,8 +179,22 @@ class ConfigExtensionRegistrar internal constructor() {
         }
     }
 
+    /**
+     * Registers a custom override condition type.
+     *
+     * @param C the type of the override condition to register.
+     */
+    inline fun <reified C : SerializableOverrideCondition> registerOverrideConditionType() {
+        val oldCallback = overrideConditionTypes.load()
+        overrideConditionTypes.store {
+            oldCallback()
+            subclass(C::class)
+        }
+    }
+
     internal fun createSerializersModule(): SerializersModule = SerializersModule {
         polymorphic(SerializableAppender::class) { appenderTypes.load()() }
         polymorphic(SerializableCondition::class) { conditionTypes.load()() }
+        polymorphic(SerializableOverrideCondition::class) { overrideConditionTypes.load()() }
     }
 }

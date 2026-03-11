@@ -1,0 +1,387 @@
+public final class de/connect2x/lognity/config/BackendExtensionsJvm {
+	public static final fun withDefaultConfig (Lde/connect2x/lognity/api/backend/Backend;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class de/connect2x/lognity/config/BackendExtensionsKt {
+	public static final fun setDefaultConfig (Lde/connect2x/lognity/api/backend/Backend;Lkotlinx/io/Source;)V
+	public static final fun setDefaultConfig (Lde/connect2x/lognity/api/backend/Backend;Lkotlinx/io/files/Path;)V
+}
+
+public abstract interface annotation class de/connect2x/lognity/config/InternalConfigApi : java/lang/annotation/Annotation {
+}
+
+public final class de/connect2x/lognity/config/SerializableConfig {
+	public static final field Companion Lde/connect2x/lognity/config/SerializableConfig$Companion;
+	public static final field VERSION I
+	public fun <init> ()V
+	public fun <init> (ILde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public synthetic fun <init> (ILde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun applyConfig (Lde/connect2x/lognity/api/config/ConfigBuilder;)Lde/connect2x/lognity/api/config/ConfigBuilder;
+	public final fun asConfig ()Lde/connect2x/lognity/api/config/Config;
+	public final fun component1 ()I
+	public final fun component2 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun component3 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Ljava/util/List;
+	public final fun copy (ILde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lde/connect2x/lognity/config/SerializableConfig;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/SerializableConfig;ILde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lde/connect2x/lognity/config/SerializableConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAppenders ()Ljava/util/List;
+	public final fun getCombinedLevel ()Lde/connect2x/lognity/api/logger/Level;
+	public final fun getConditions ()Ljava/util/List;
+	public final fun getEnabled ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun getLevel ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun getOverrides ()Ljava/util/List;
+	public final fun getVersion ()I
+	public fun hashCode ()I
+	public final fun plus (Lde/connect2x/lognity/config/SerializableConfig;)Lde/connect2x/lognity/config/SerializableConfig;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/SerializableConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/SerializableConfig$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/SerializableConfig;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/SerializableConfig;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/SerializableConfig$Companion {
+	public final fun load (Lkotlinx/io/Source;)Lde/connect2x/lognity/config/SerializableConfig;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public final fun uses (Lde/connect2x/lognity/config/extension/ConfigExtension;)V
+}
+
+public abstract interface annotation class de/connect2x/lognity/config/SerializableConfigDsl : java/lang/annotation/Annotation {
+}
+
+public final class de/connect2x/lognity/config/SerializableFilter : de/connect2x/lognity/api/appender/Filter {
+	public static final field Companion Lde/connect2x/lognity/config/SerializableFilter$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun and (Lde/connect2x/lognity/api/appender/Filter;)Lde/connect2x/lognity/api/appender/Filter;
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lde/connect2x/lognity/config/SerializableFilter;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/SerializableFilter;Ljava/util/List;ILjava/lang/Object;)Lde/connect2x/lognity/config/SerializableFilter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConditions ()Ljava/util/List;
+	public final fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public fun hashCode ()I
+	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun not ()Lde/connect2x/lognity/api/appender/Filter;
+	public fun or (Lde/connect2x/lognity/api/appender/Filter;)Lde/connect2x/lognity/api/appender/Filter;
+	public final fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/SerializableFilter$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/SerializableFilter$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/SerializableFilter;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/SerializableFilter;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/SerializableFilter$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class de/connect2x/lognity/config/appender/AbstractSerializableAppender : de/connect2x/lognity/config/appender/SerializableAppender {
+	public fun <init> ()V
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public abstract interface class de/connect2x/lognity/config/appender/SerializableAppender {
+	public abstract fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public abstract fun getFilter ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public abstract fun getFormatter ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public abstract fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public abstract fun getPattern ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public abstract fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public abstract class de/connect2x/lognity/config/condition/AbstractSerializableCondition : de/connect2x/lognity/config/condition/SerializableCondition {
+	public fun <init> ()V
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public final class de/connect2x/lognity/config/condition/AlwaysCondition : de/connect2x/lognity/config/condition/AbstractSerializableCondition {
+	public static final field INSTANCE Lde/connect2x/lognity/config/condition/AlwaysCondition;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public fun hashCode ()I
+	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/config/condition/AndCondition : de/connect2x/lognity/config/condition/AbstractSerializableCondition {
+	public static final field Companion Lde/connect2x/lognity/config/condition/AndCondition$Companion;
+	public fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)V
+	public synthetic fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun copy (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)Lde/connect2x/lognity/config/condition/AndCondition;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/AndCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/AndCondition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConditions ()Ljava/util/List;
+	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public fun hashCode ()I
+	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/condition/AndCondition$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/condition/AndCondition$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/condition/AndCondition;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/condition/AndCondition;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/condition/AndCondition$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/condition/ExactlyOneCondition : de/connect2x/lognity/config/condition/AbstractSerializableCondition {
+	public static final field Companion Lde/connect2x/lognity/config/condition/ExactlyOneCondition$Companion;
+	public fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)V
+	public synthetic fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun copy (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)Lde/connect2x/lognity/config/condition/ExactlyOneCondition;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/ExactlyOneCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/ExactlyOneCondition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConditions ()Ljava/util/List;
+	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public fun hashCode ()I
+	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/condition/ExactlyOneCondition$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/condition/ExactlyOneCondition$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/condition/ExactlyOneCondition;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/condition/ExactlyOneCondition;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/condition/ExactlyOneCondition$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/condition/OrCondition : de/connect2x/lognity/config/condition/AbstractSerializableCondition {
+	public static final field Companion Lde/connect2x/lognity/config/condition/OrCondition$Companion;
+	public fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)V
+	public synthetic fun <init> (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun copy (Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;)Lde/connect2x/lognity/config/condition/OrCondition;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/OrCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/OrCondition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConditions ()Ljava/util/List;
+	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public fun hashCode ()I
+	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/condition/OrCondition$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/condition/OrCondition$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/condition/OrCondition;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/condition/OrCondition;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/condition/OrCondition$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class de/connect2x/lognity/config/condition/SerializableCondition {
+	public abstract fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public abstract fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public abstract fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public abstract fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public abstract interface class de/connect2x/lognity/config/extension/ConfigExtension {
+	public abstract fun register (Lde/connect2x/lognity/config/extension/ConfigExtensionRegistrar;)V
+}
+
+public final class de/connect2x/lognity/config/extension/ConfigExtensionRegistrar {
+	public final fun findBuiltinProvider (Ljava/lang/String;)Lkotlin/jvm/functions/Function1;
+	public final fun findProvider (Ljava/lang/String;)Lkotlin/jvm/functions/Function0;
+	public final fun findTemplateProvider (Ljava/lang/String;)Lkotlin/jvm/functions/Function2;
+	public final fun getAppenderFactories ()Lco/touchlab/stately/collections/SharedHashMap;
+	public final fun getAppenderTypes ()Ljava/util/concurrent/atomic/AtomicReference;
+	public final fun getConditionTypes ()Ljava/util/concurrent/atomic/AtomicReference;
+	public final fun getOverrideConditionTypes ()Ljava/util/concurrent/atomic/AtomicReference;
+	public final fun registerBuiltinEnum (Ljava/lang/String;Ljava/lang/Iterable;)V
+	public final fun registerBuiltinProvider (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public final fun registerFormatterType (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public final fun registerProvider (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public final fun registerTemplateProvider (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+}
+
+public abstract class de/connect2x/lognity/config/override/AbstractSerializableOverrideCondition : de/connect2x/lognity/config/override/SerializableOverrideCondition {
+	public fun <init> ()V
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public final class de/connect2x/lognity/config/override/SerializableOverride {
+	public static final field Companion Lde/connect2x/lognity/config/override/SerializableOverride$Companion;
+	public fun <init> (Lde/connect2x/lognity/config/override/SerializableOverrideCondition;Lde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;)V
+	public synthetic fun <init> (Lde/connect2x/lognity/config/override/SerializableOverrideCondition;Lde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lde/connect2x/lognity/config/override/SerializableOverrideCondition;
+	public final fun component2 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun component3 ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun copy (Lde/connect2x/lognity/config/override/SerializableOverrideCondition;Lde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;)Lde/connect2x/lognity/config/override/SerializableOverride;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/override/SerializableOverride;Lde/connect2x/lognity/config/override/SerializableOverrideCondition;Lde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/override/SerializableOverride;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCondition ()Lde/connect2x/lognity/config/override/SerializableOverrideCondition;
+	public final fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public final fun getEnableState ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public final fun getLevel ()Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public fun hashCode ()I
+	public final fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class de/connect2x/lognity/config/override/SerializableOverride$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lde/connect2x/lognity/config/override/SerializableOverride$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/override/SerializableOverride;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/override/SerializableOverride;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/override/SerializableOverride$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class de/connect2x/lognity/config/override/SerializableOverrideCondition : de/connect2x/lognity/api/config/OverrideCondition {
+	public abstract fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	public abstract fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+}
+
+public abstract interface class de/connect2x/lognity/config/serialization/RefOrValue {
+	public static final field Companion Lde/connect2x/lognity/config/serialization/RefOrValue$Companion;
+	public abstract fun resolve ()Ljava/lang/Object;
+	public fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$DefaultImpls {
+	public static fun resolveTemplate (Lde/connect2x/lognity/config/serialization/RefOrValue;Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$LerpedString : de/connect2x/lognity/config/serialization/RefOrValue {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lde/connect2x/lognity/config/serialization/RefOrValue$LerpedString;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/serialization/RefOrValue$LerpedString;Ljava/util/List;ILjava/lang/Object;)Lde/connect2x/lognity/config/serialization/RefOrValue$LerpedString;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSegments ()Ljava/util/List;
+	public fun hashCode ()I
+	public synthetic fun resolve ()Ljava/lang/Object;
+	public fun resolve ()Ljava/lang/String;
+	public synthetic fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+	public fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$Ref : de/connect2x/lognity/config/serialization/RefOrValue {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lde/connect2x/lognity/config/serialization/RefOrValue$Ref;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/serialization/RefOrValue$Ref;Ljava/lang/String;ILjava/lang/Object;)Lde/connect2x/lognity/config/serialization/RefOrValue$Ref;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun resolve ()Ljava/lang/Object;
+	public fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$TemplateRef : de/connect2x/lognity/config/serialization/RefOrValue {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lde/connect2x/lognity/config/serialization/RefOrValue$TemplateRef;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/serialization/RefOrValue$TemplateRef;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lde/connect2x/lognity/config/serialization/RefOrValue$TemplateRef;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getParameters ()Ljava/util/List;
+	public final fun getPrefix ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun resolve ()Ljava/lang/Object;
+	public fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValue$Value : de/connect2x/lognity/config/serialization/RefOrValue {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lde/connect2x/lognity/config/serialization/RefOrValue$Value;
+	public static synthetic fun copy$default (Lde/connect2x/lognity/config/serialization/RefOrValue$Value;Ljava/lang/Object;ILjava/lang/Object;)Lde/connect2x/lognity/config/serialization/RefOrValue$Value;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun resolve ()Ljava/lang/Object;
+	public fun resolveTemplate (Lde/connect2x/lognity/config/SerializableConfig;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValueSerializer : kotlinx/serialization/KSerializer {
+	public static final field Companion Lde/connect2x/lognity/config/serialization/RefOrValueSerializer$Companion;
+	public static final field REFERENCE_BEGIN C
+	public static final field REFERENCE_END C
+	public static final field TEMPLATE_DELIMITER C
+	public static final field TEMPLATE_PARAM_BEGIN C
+	public static final field TEMPLATE_PARAM_BUILTIN_BEGIN C
+	public static final field TEMPLATE_PARAM_BUILTIN_DELIMITER C
+	public static final field TEMPLATE_PARAM_BUILTIN_END C
+	public static final field TEMPLATE_PARAM_DELIMITER C
+	public static final field TEMPLATE_PARAM_END C
+	public static final field TEMPLATE_PARAM_STR_DELIMITER C
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lde/connect2x/lognity/config/serialization/RefOrValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lde/connect2x/lognity/config/serialization/RefOrValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class de/connect2x/lognity/config/serialization/RefOrValueSerializer$Companion {
+}
+

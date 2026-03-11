@@ -24,7 +24,7 @@ class ExtendedConsoleAppender( // @formatter:off
     name: String? = null
 ) : ConsoleAppender(pattern, formatter, filter, name) { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
-        if (level < logger.level || !filter(logger, message, marker)) return
+        if (!filter(logger, level, message, marker)) return
         if (level >= Level.ERROR) System.err.println(message)
         else println(message)
     }

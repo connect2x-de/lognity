@@ -23,8 +23,8 @@ class ConfigBuilder @PublishedApi internal constructor() {
      */
     var isEnabled: Boolean = true
 
-    @PublishedApi
-    internal val appenders: ArrayList<Appender> = ArrayList()
+    private val appenders: ArrayList<Appender> = ArrayList()
+    private val overrides: ArrayList<Override> = ArrayList()
 
     /**
      * Copies all config properties from the given [Config] instance
@@ -37,6 +37,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
         level = config.initialLevel
         isEnabled = config.initialEnableState
         appenders += config.appenders
+        overrides += config.overrides
         return this
     }
 
@@ -54,8 +55,22 @@ class ConfigBuilder @PublishedApi internal constructor() {
         appenders += appender
     }
 
+    // TODO: document this
+    fun override(override: Override) {
+        require(override !in overrides) { "Override is already present" }
+        overrides += override
+    }
+
+    // TODO: document this
+    inline fun override(spec: OverrideSpec) {
+        contract {
+            callsInPlace(spec, InvocationKind.EXACTLY_ONCE)
+        }
+        override(OverrideBuilder().apply(spec).build())
+    }
+
     @PublishedApi
-    internal fun build(): Config = Config(level, isEnabled, appenders)
+    internal fun build(): Config = Config(level, isEnabled, appenders, overrides)
 }
 
 /**

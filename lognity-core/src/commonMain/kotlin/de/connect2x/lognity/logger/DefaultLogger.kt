@@ -36,10 +36,25 @@ open class DefaultLogger( // @formatter:off
             _isEnabled.store(value)
         }
 
+    private fun computeMessageState(level: Level, marker: Marker?): Pair<Level, Boolean> {
+        var level = level
+        var isEnabled = isEnabled
+        for (override in config.overrides) {
+            if (!override.condition(this, level, marker)) continue
+            override.level?.let { level = it }
+            override.enableState?.let { isEnabled = it }
+            break // The first override that matches wins
+        }
+        return level to isEnabled
+    }
+
     override fun log(level: Level, message: AnsiScope.() -> Any?) {
-        if (level < this.level) return
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
+
+        val (targetLevel, isEnabled) = computeMessageState(level, marker)
+        if (!isEnabled || level < targetLevel) return
+
         val messageContent = message(AnsiScope) ?: "null"
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
@@ -50,9 +65,12 @@ open class DefaultLogger( // @formatter:off
     }
 
     override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
-        if (level < this.level) return
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
+
+        val (targetLevel, isEnabled) = computeMessageState(level, actualMarker)
+        if (!isEnabled || level < targetLevel) return
+
         val messageContent = message(AnsiScope) ?: "null"
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {

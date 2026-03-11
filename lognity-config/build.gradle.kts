@@ -2,6 +2,7 @@
 
 import de.connect2x.conventions.configureJava
 import de.connect2x.conventions.defaultCompilerOptions
+import de.connect2x.conventions.enableAbiChecker
 import de.connect2x.conventions.setProjectInfo
 import de.connect2x.conventions.withAndroidLibrary
 import de.connect2x.conventions.withBrowser
@@ -23,6 +24,7 @@ configureJava(sharedLibs.versions.targetJvm)
 
 @OptIn(ExperimentalWasmDsl::class) //
 kotlin {
+    enableAbiChecker("InternalConfigApi", "${rootProject.group}.config")
     defaultCompilerOptions()
     withSourcesJar()
     withAndroidLibrary("$group.config")
@@ -53,8 +55,8 @@ kotlin {
                 api(projects.lognityApi)
                 api(sharedLibs.kotlinx.io.bytestring)
                 api(sharedLibs.kotlinx.io.core)
-                implementation(sharedLibs.kotlinx.serialization.core)
-                implementation(sharedLibs.kotlinx.serialization.json)
+                api(sharedLibs.kotlinx.serialization.core)
+                api(sharedLibs.kotlinx.serialization.json)
                 implementation(sharedLibs.kotlinx.coroutines.core)
                 implementation(sharedLibs.stately.common)
                 implementation(sharedLibs.stately.collections)
