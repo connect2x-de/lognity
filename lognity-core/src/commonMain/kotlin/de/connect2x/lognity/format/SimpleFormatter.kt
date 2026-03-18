@@ -110,9 +110,14 @@ class SimpleFormatter(
      * @param s The format string containing placeholders to resolve.
      * @return The formatted log line.
      */
-    override operator fun invoke(
-        logger: Logger, level: Level, content: Any, marker: Marker?, timestamp: Instant, s: String
-    ): String {
+    override operator fun invoke( // @formatter:off
+        logger: Logger,
+        level: Level,
+        content: Any,
+        marker: Marker?,
+        timestamp: Instant,
+        s: String
+    ): String { // @formatter:on
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
         return format(context.get().apply {
             this.logger = logger

@@ -2,7 +2,6 @@ package de.connect2x.lognity.config
 
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.config.ConfigBuilder
-import de.connect2x.lognity.api.config.ConfigDsl
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ConsoleAppender
 import de.connect2x.lognity.appender.RollingFileAppender
@@ -19,7 +18,6 @@ import de.connect2x.lognity.backend.createSystemRollingFileAppender
  * @param filter The filter to apply for every message to determine whether it should be logged.
  * @param name The name of the appender.
  */
-@ConfigDsl
 fun ConfigBuilder.consoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
@@ -38,7 +36,6 @@ fun ConfigBuilder.consoleAppender( // @formatter:off
  * @param filter The filter to apply for every message to determine whether it should be logged.
  * @param name The name of the appender.
  */
-@ConfigDsl
 fun ConfigBuilder.systemLogAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
@@ -57,7 +54,6 @@ fun ConfigBuilder.systemLogAppender( // @formatter:off
  * @param filter The filter to apply for every message to determine whether it should be logged.
  * @param name The name of the appender.
  */
-@ConfigDsl
 fun ConfigBuilder.systemConsoleAppender( // @formatter:off
     pattern: String,
     formatter: Formatter = Formatter.default,
@@ -77,7 +73,6 @@ fun ConfigBuilder.systemConsoleAppender( // @formatter:off
  * @param name The name of the appender.
  * @param deleteExisting Whether to delete the existing log file at [path] on startup.
  */
-@ConfigDsl
 fun ConfigBuilder.fileAppender( // @formatter:off
     path: String,
     pattern: String,
@@ -103,7 +98,6 @@ fun ConfigBuilder.fileAppender( // @formatter:off
  * @param deleteExisting Whether to delete existing log files matching the pattern on startup.
  * @param latestSuffix The suffix used for the current active log file.
  */
-@ConfigDsl
 fun ConfigBuilder.rollingFileAppender( // @formatter:off
     basePath: String,
     pattern: String,
