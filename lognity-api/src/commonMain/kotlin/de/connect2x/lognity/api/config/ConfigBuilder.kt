@@ -47,7 +47,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
      * @param appender The appender instance to add to this config.
      */
     fun appender(appender: Appender) {
-        require(appender !in appenders) { "Appender is already present" }
+        if (appender in appenders) return
         val name = appender.name
         if (name != null) require(appenders.none { appender -> appender.name == name }) {
             "Appender with name '$name' is already present"
@@ -55,13 +55,22 @@ class ConfigBuilder @PublishedApi internal constructor() {
         appenders += appender
     }
 
-    // TODO: document this
+    /**
+     * Adds a new override instance to this logger config if not already present.
+     *
+     * @param override The override instance to add to this config.
+     */
     fun override(override: Override) {
-        require(override !in overrides) { "Override is already present" }
+        if (override in overrides) return
         overrides += override
     }
 
-    // TODO: document this
+    /**
+     * Adds a new override instance built from the given spec to
+     * this logger config if not already present.
+     *
+     * @param spec The override spec to build an override from to add to this config.
+     */
     inline fun override(spec: OverrideSpec) {
         contract {
             callsInPlace(spec, InvocationKind.EXACTLY_ONCE)

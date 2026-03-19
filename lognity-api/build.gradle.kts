@@ -44,6 +44,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(sharedLibs.kotlin.test)
+                implementation(sharedLibs.kotlinx.coroutines.test)
             }
         }
     }
