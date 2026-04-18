@@ -1,7 +1,6 @@
 package de.connect2x.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.format.Formatter
@@ -36,7 +35,7 @@ class EventAppender( // @formatter:off
     override val formatter: Formatter,
     override val filter: Filter,
     override val name: String? = null
-) : Appender { // @formatter:on
+) : AbstractAppender() { // @formatter:on
     private val eventSources: SharedHashMap<Logger, HANDLE> = SharedHashMap()
 
     init {

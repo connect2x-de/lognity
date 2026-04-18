@@ -38,6 +38,11 @@ kotlin {
                 withJvm()
                 withAndroidTarget()
             }
+            group("nonWeb") {
+                withJvm()
+                withAndroidTarget()
+                withNative()
+            }
         }
     }
     sourceSets {

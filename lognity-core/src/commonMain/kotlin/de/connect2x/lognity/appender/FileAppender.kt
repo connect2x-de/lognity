@@ -1,7 +1,7 @@
 package de.connect2x.lognity.appender
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.ansi.toAnsi
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
@@ -10,7 +10,6 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.AsyncSink
 import kotlinx.io.files.Path
-import kotlinx.io.writeString
 
 /**
  * An appender that writes log messages to a file.
@@ -29,11 +28,8 @@ class FileAppender( // @formatter:off
     val path: Path,
     override val name: String? = null,
     deleteExisting: Boolean = false
-) : Appender { // @formatter:on
-    /**
-     * The asynchronous sink used for writing to the file.
-     */
-    val sink: AsyncSink = AsyncSink(path, deleteExisting)
+) : AbstractAppender() { // @formatter:on
+    private val sink: AsyncSink = AsyncSink(path, deleteExisting)
 
     init {
         ShutdownHandler.register(sink::close, priority = 99)
@@ -41,8 +37,17 @@ class FileAppender( // @formatter:off
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(logger, level, message, marker)) return
-        sink.write {
-            writeString("${message.toAnsi().cleanString()}\n")
-        }
+        sink.write("${message.toAnsi().cleanString()}\n")
     }
+
+    @ExperimentalLoggingApi
+    override suspend fun appendSuspend(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if (!filter(logger, level, message, marker)) return
+        sink.writeSuspend("${message.toAnsi().cleanString()}\n")
+    }
+
+    override fun flush() = sink.flush()
+
+    @ExperimentalLoggingApi
+    override suspend fun flushSuspend() = sink.flushSuspend()
 }

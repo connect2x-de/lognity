@@ -1,6 +1,5 @@
-package de.connect2x.lognity.backend
+package de.connect2x.lognity.format
 
-import de.connect2x.lognity.format.DFA
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

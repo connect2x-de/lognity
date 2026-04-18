@@ -14,6 +14,10 @@ open annotation class de.connect2x.lognity.api.context/ContextDsl : kotlin/Annot
     constructor <init>() // de.connect2x.lognity.api.context/ContextDsl.<init>|<init>(){}[0]
 }
 
+open annotation class de.connect2x.lognity.api/ExperimentalLoggingApi : kotlin/Annotation { // de.connect2x.lognity.api/ExperimentalLoggingApi|null[0]
+    constructor <init>() // de.connect2x.lognity.api/ExperimentalLoggingApi.<init>|<init>(){}[0]
+}
+
 open annotation class de.connect2x.lognity.api/InternalLoggingApi : kotlin/Annotation { // de.connect2x.lognity.api/InternalLoggingApi|null[0]
     constructor <init>() // de.connect2x.lognity.api/InternalLoggingApi.<init>|<init>(){}[0]
 }
@@ -93,7 +97,9 @@ abstract interface de.connect2x.lognity.api.appender/Appender { // de.connect2x.
         open fun <get-filter>(): de.connect2x.lognity.api.appender/Filter // de.connect2x.lognity.api.appender/Appender.filter.<get-filter>|<get-filter>(){}[0]
 
     abstract fun append(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/Appender.append|append(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    abstract suspend fun appendSuspend(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/Appender.appendSuspend|appendSuspend(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
     open fun flush() // de.connect2x.lognity.api.appender/Appender.flush|flush(){}[0]
+    open suspend fun flushSuspend() // de.connect2x.lognity.api.appender/Appender.flushSuspend|flushSuspend(){}[0]
 }
 
 abstract interface de.connect2x.lognity.api.backend/Backend { // de.connect2x.lognity.api.backend/Backend|null[0]
@@ -526,6 +532,7 @@ final object de.connect2x.lognity.api.appender/NoopAppender : de.connect2x.logni
         final fun <get-pattern>(): kotlin/String // de.connect2x.lognity.api.appender/NoopAppender.pattern.<get-pattern>|<get-pattern>(){}[0]
 
     final fun append(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/NoopAppender.append|append(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final suspend fun appendSuspend(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/NoopAppender.appendSuspend|appendSuspend(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
 }
 
 final object de.connect2x.lognity.api.backend/NoopBackend : de.connect2x.lognity.api.backend/Backend { // de.connect2x.lognity.api.backend/NoopBackend|null[0]

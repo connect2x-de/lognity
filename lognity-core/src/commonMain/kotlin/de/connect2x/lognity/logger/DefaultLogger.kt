@@ -36,23 +36,19 @@ open class DefaultLogger( // @formatter:off
             _isEnabled.store(value)
         }
 
-    private fun computeMessageState(level: Level, marker: Marker?): Pair<Level, Boolean> {
-        var level = level
-        var isEnabled = isEnabled
-        for (override in config.overrides) {
-            if (!override.condition(this, level, marker)) continue
-            override.level?.let { level = it }
-            override.enableState?.let { isEnabled = it }
-            break // The first override that matches wins
-        }
-        return level to isEnabled
-    }
-
     override fun log(level: Level, message: AnsiScope.() -> Any?) {
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
 
-        val (targetLevel, isEnabled) = computeMessageState(level, marker)
+        var targetLevel = this.level
+        var isEnabled = isEnabled
+        for (override in config.overrides) {
+            if (!override.condition(this, level, marker)) continue
+            override.level?.let { targetLevel = it }
+            override.enableState?.let { isEnabled = it }
+            break // The first override that matches wins
+        }
+
         if (!isEnabled || level < targetLevel) return
 
         val messageContent = message(AnsiScope) ?: "null"
@@ -68,7 +64,15 @@ open class DefaultLogger( // @formatter:off
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
 
-        val (targetLevel, isEnabled) = computeMessageState(level, actualMarker)
+        var targetLevel = this.level
+        var isEnabled = isEnabled
+        for (override in config.overrides) {
+            if (!override.condition(this, level, marker)) continue
+            override.level?.let { targetLevel = it }
+            override.enableState?.let { isEnabled = it }
+            break // The first override that matches wins
+        }
+
         if (!isEnabled || level < targetLevel) return
 
         val messageContent = message(AnsiScope) ?: "null"

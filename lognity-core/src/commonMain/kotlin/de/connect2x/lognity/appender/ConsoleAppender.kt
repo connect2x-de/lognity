@@ -1,6 +1,5 @@
 package de.connect2x.lognity.appender
 
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
@@ -20,7 +19,7 @@ open class ConsoleAppender( // @formatter:off
     override val formatter: Formatter,
     override val filter: Filter,
     override val name: String? = null
-) : Appender { // @formatter:on
+) : AbstractAppender() { // @formatter:on
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(logger, level, message, marker)) return
         println(message)

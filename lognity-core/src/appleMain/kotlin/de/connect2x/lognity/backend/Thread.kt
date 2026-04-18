@@ -21,7 +21,9 @@ private const val MAX_NAME_LENGTH: Int = 256
 internal actual fun getThreadName(): String = memScoped {
     val name = allocArray<ByteVar>(MAX_NAME_LENGTH)
     pthread_getname_np(pthread_self(), name, MAX_NAME_LENGTH.convert())
-    name.toKStringFromUtf8()
+    // On Apple platforms, pthread_getname_np may return an empty string if the program
+    // has set no thread name explicitly. In that case, we default to the thread ID.
+    name.toKStringFromUtf8().ifEmpty { getNativeThreadId().toString() }
 }
 
 internal actual fun getNativeThreadId(): ULong = memScoped {
