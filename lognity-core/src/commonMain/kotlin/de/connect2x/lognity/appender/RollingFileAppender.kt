@@ -1,7 +1,7 @@
 package de.connect2x.lognity.appender
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.ansi.toAnsi
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
@@ -10,7 +10,6 @@ import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.backend.ShutdownHandler
 import de.connect2x.lognity.io.RollingAsyncSink
 import kotlinx.io.files.Path
-import kotlinx.io.writeString
 
 /**
  * An appender that writes log messages to files with rolling capabilities.
@@ -37,7 +36,7 @@ class RollingFileAppender(
     useTimestamps: Boolean = true,
     deleteExisting: Boolean = false,
     latestSuffix: String = DEFAULT_LATEST_SUFFIX
-) : Appender {
+) : AbstractAppender() {
     companion object {
         /**
          * Default maximum number of log files to keep.
@@ -58,7 +57,7 @@ class RollingFileAppender(
     /**
      * The asynchronous sink used for writing to files with rolling capabilities.
      */
-    val sink: RollingAsyncSink =
+    private val sink: RollingAsyncSink =
         RollingAsyncSink(basePath, fileCount, maxFileSize, useTimestamps, deleteExisting, latestSuffix)
 
     init {
@@ -67,8 +66,17 @@ class RollingFileAppender(
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(logger, level, message, marker)) return
-        sink.write {
-            writeString("${message.toAnsi().cleanString()}\n")
-        }
+        sink.write("${message.toAnsi().cleanString()}\n")
     }
+
+    @ExperimentalLoggingApi
+    override suspend fun appendSuspend(logger: Logger, level: Level, message: String, marker: Marker?) {
+        if (!filter(logger, level, message, marker)) return
+        sink.writeSuspend("${message.toAnsi().cleanString()}\n")
+    }
+
+    override fun flush() = sink.flush()
+
+    @ExperimentalLoggingApi
+    override suspend fun flushSuspend() = sink.flushSuspend()
 }

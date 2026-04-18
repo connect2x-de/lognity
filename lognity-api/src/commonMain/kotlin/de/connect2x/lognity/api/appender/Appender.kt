@@ -1,5 +1,6 @@
 package de.connect2x.lognity.api.appender
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
@@ -50,8 +51,22 @@ interface Appender {
     fun append(logger: Logger, level: Level, message: String, marker: Marker?)
 
     /**
+     * Same as [append], but allows suspending the calling coroutine when the underlying
+     * IO would usually block.
+     */
+    @ExperimentalLoggingApi
+    suspend fun appendSuspend(logger: Logger, level: Level, message: String, marker: Marker?)
+
+    /**
      * Allows flushing the underlying IO of this appender implementation if present.
      * Will be invoked when calling [Logger.flush].
      */
-    fun flush() {}
+    fun flush() = Unit
+
+    /**
+     * Same as [flush], but allows suspending the calling coroutines when the underlying
+     * IO would usually block.
+     */
+    @ExperimentalLoggingApi
+    suspend fun flushSuspend() = Unit
 }

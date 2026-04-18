@@ -1,5 +1,6 @@
 package de.connect2x.lognity.api.appender
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.appender.NoopAppender.append
 import de.connect2x.lognity.api.appender.NoopAppender.formatter
 import de.connect2x.lognity.api.appender.NoopAppender.pattern
@@ -25,4 +26,7 @@ object NoopAppender : Appender {
     override val pattern: String = ""
 
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) = Unit
+
+    @ExperimentalLoggingApi
+    override suspend fun appendSuspend(logger: Logger, level: Level, message: String, marker: Marker?) = Unit
 }

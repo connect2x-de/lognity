@@ -1,3 +1,6 @@
+public abstract interface annotation class de/connect2x/lognity/api/ExperimentalLoggingApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class de/connect2x/lognity/api/InternalLoggingApi : java/lang/annotation/Annotation {
 }
 
@@ -160,7 +163,9 @@ public final class de/connect2x/lognity/api/ansi/AnsiStringKt {
 
 public abstract interface class de/connect2x/lognity/api/appender/Appender {
 	public abstract fun append (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)V
+	public abstract fun appendSuspend (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun flush ()V
+	public fun flushSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getFilter ()Lde/connect2x/lognity/api/appender/Filter;
 	public abstract fun getFormatter ()Lde/connect2x/lognity/api/format/Formatter;
 	public abstract fun getName ()Ljava/lang/String;
@@ -169,6 +174,7 @@ public abstract interface class de/connect2x/lognity/api/appender/Appender {
 
 public final class de/connect2x/lognity/api/appender/Appender$DefaultImpls {
 	public static fun flush (Lde/connect2x/lognity/api/appender/Appender;)V
+	public static fun flushSuspend (Lde/connect2x/lognity/api/appender/Appender;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun getFilter (Lde/connect2x/lognity/api/appender/Appender;)Lde/connect2x/lognity/api/appender/Filter;
 }
 
@@ -197,7 +203,9 @@ public final class de/connect2x/lognity/api/appender/Filter$DefaultImpls {
 public final class de/connect2x/lognity/api/appender/NoopAppender : de/connect2x/lognity/api/appender/Appender {
 	public static final field INSTANCE Lde/connect2x/lognity/api/appender/NoopAppender;
 	public fun append (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)V
+	public fun appendSuspend (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun flush ()V
+	public fun flushSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getFilter ()Lde/connect2x/lognity/api/appender/Filter;
 	public fun getFormatter ()Lde/connect2x/lognity/api/format/Formatter;
 	public fun getName ()Ljava/lang/String;

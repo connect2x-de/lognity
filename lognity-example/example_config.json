@@ -15,7 +15,7 @@
     ],
     "appenders": [
         {
-            "type": "system_console",
+            "type": "console",
             "name": "my_appender",
             "pattern": "{{levelColor}}>>  {{levelSymbol}}\t{{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
             "formatter": "default"

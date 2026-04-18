@@ -2,8 +2,9 @@ package de.connect2x.lognity.api.logger
 
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.context.ContextSpec
-import kotlinx.coroutines.CoroutineName
+import de.connect2x.lognity.api.logger.Logger.CoroutineName
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.CoroutineName as KxCoroutineName
 
 /**
  * Creates a new [Logger] that derives from this instance within a coroutine.
@@ -22,7 +23,7 @@ import kotlinx.coroutines.currentCoroutineContext
 suspend inline fun Logger.deriveSuspend(crossinline contextSpec: ContextSpec = {}): Logger {
     val coroutineContext = currentCoroutineContext()
     val name = context[Logger.Name]?.name
-    val coroutineName = coroutineContext[CoroutineName]?.name
+    val coroutineName = coroutineContext[KxCoroutineName]?.name
     return Backend.createLogger(name) {
         valuesFrom(context)
         // Propagate coroutine name from coroutine context to log context if present

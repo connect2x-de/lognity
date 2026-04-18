@@ -2,7 +2,6 @@ package de.connect2x.lognity.appender
 
 import co.touchlab.stately.collections.SharedHashMap
 import de.connect2x.lognity.api.ansi.toAnsi
-import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
@@ -32,7 +31,7 @@ class OsAppender( // @formatter:off
     override val formatter: Formatter,
     override val filter: Filter,
     override val name: String? = null
-) : Appender { // @formatter:on
+) : AbstractAppender() { // @formatter:on
     companion object {
         private const val CATEGORY: String = "general"
         private val delegates: SharedHashMap<Logger, os_log_t> = SharedHashMap()
