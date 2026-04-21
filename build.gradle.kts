@@ -18,6 +18,7 @@ plugins {
     alias(sharedLibs.plugins.mavenPublish) apply false
     alias(sharedLibs.plugins.c2xConventions)
     alias(sharedLibs.plugins.dokka) apply false
+    alias(sharedLibs.plugins.kotlinx.benchmark) apply false
     `maven-publish`
     signing
 }
