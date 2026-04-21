@@ -8,7 +8,7 @@ import kotlinx.benchmark.State
 
 @State(Scope.Benchmark)
 open class ConsoleAppenderBenchmark : AbstractAppenderBenchmark<ConsoleAppender>() {
-    override fun create(): ConsoleAppender = ConsoleAppender(
+    override val appender: ConsoleAppender = ConsoleAppender(
         pattern = "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
         filter = Filter.always,
         formatter = SimpleFormatter.default

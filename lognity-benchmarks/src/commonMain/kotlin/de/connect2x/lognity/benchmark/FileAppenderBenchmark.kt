@@ -13,7 +13,7 @@ import kotlinx.io.files.SystemFileSystem
 open class FileAppenderBenchmark : AbstractAppenderBenchmark<FileAppender>() {
     private val path: Path = Path("benchmark.txt")
 
-    override fun create(): FileAppender = FileAppender(
+    override val appender: FileAppender = FileAppender(
         pattern = "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
         filter = Filter.always,
         formatter = SimpleFormatter.default,
