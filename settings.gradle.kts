@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("de.connect2x.conventions.c2x-settings-plugin") version "20260303.084249"
+    id("de.connect2x.conventions.c2x-settings-plugin") version "20260420.225540"
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -30,5 +30,7 @@ include("lognity-java-logging")
 include("lognity-ktor-server")
 include("lognity-ktor-client")
 include("lognity-config")
-include("lognity-example")
 include("lognity-test")
+
+include("lognity-example")
+include("lognity-benchmarks")
