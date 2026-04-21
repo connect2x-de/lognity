@@ -7,9 +7,7 @@ import de.connect2x.lognity.api.logger.NoopLogger
 import kotlinx.benchmark.Benchmark
 
 abstract class AbstractAppenderBenchmark<A : Appender> {
-    abstract fun create(): A
-
-    protected val appender: A = create()
+    protected abstract val appender: A
 
     protected val dummyLogger: Logger = object : Logger by NoopLogger {
         override var isEnabled: Boolean = true

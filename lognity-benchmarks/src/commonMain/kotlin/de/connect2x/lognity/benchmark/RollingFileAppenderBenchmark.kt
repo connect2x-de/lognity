@@ -17,7 +17,7 @@ open class RollingFileAppenderBenchmark : AbstractAppenderBenchmark<RollingFileA
         SystemFileSystem.createDirectories(directory)
     }
 
-    override fun create(): RollingFileAppender = RollingFileAppender(
+    override val appender: RollingFileAppender = RollingFileAppender(
         pattern = "[{{level}}] {{hh}}:{{mm}}:{{ss}}.{{SSS}} ({{name}} @ {{threadId}}) {{message}}{{r}}",
         filter = Filter.always,
         formatter = SimpleFormatter.default,
