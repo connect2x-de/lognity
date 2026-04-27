@@ -16,6 +16,7 @@ import de.connect2x.lognity.config.systemLogAppender
 import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
+import de.connect2x.lognity.util.ShutdownHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,28 +37,6 @@ internal expect fun createSystemLogAppender( // @formatter:off
     formatter: Formatter,
     filter: Filter,
     name: String?
-): Appender // @formatter:on
-
-internal expect fun createSystemFileAppender( // @formatter:off
-    path: String,
-    pattern: String,
-    formatter: Formatter,
-    filter: Filter,
-    name: String?,
-    deleteExisting: Boolean
-): Appender // @formatter:on
-
-internal expect fun createSystemRollingFileAppender( // @formatter:off
-    basePath: String,
-    pattern: String,
-    formatter: Formatter,
-    filter: Filter,
-    name: String?,
-    fileCount: Int,
-    maxFileSize: Long,
-    useTimestamps: Boolean,
-    deleteExisting: Boolean,
-    latestSuffix: String
 ): Appender // @formatter:on
 
 /**

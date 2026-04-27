@@ -2,13 +2,8 @@ package de.connect2x.lognity.backend
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
-import de.connect2x.lognity.api.appender.NoopAppender
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.ExtendedConsoleAppender
-import de.connect2x.lognity.appender.FileAppender
-import de.connect2x.lognity.appender.RollingFileAppender
-import de.connect2x.lognity.util.isNode
-import kotlinx.io.files.Path
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,
@@ -23,49 +18,3 @@ internal actual fun createSystemConsoleAppender( // @formatter:off
     filter: Filter,
     name: String?
 ): Appender = ExtendedConsoleAppender(pattern, formatter, filter, name) // @formatter:on
-
-internal actual fun createSystemFileAppender( // @formatter:off
-    path: String,
-    pattern: String,
-    formatter: Formatter,
-    filter: Filter,
-    name: String?,
-    deleteExisting: Boolean
-): Appender { // @formatter:on
-    return if (isNode) FileAppender( // @formatter:off
-        pattern,
-        formatter,
-        filter,
-        Path(path),
-        name,
-        deleteExisting
-    ) // @formatter:on
-    else NoopAppender
-}
-
-internal actual fun createSystemRollingFileAppender( // @formatter:off
-    basePath: String,
-    pattern: String,
-    formatter: Formatter,
-    filter: Filter,
-    name: String?,
-    fileCount: Int,
-    maxFileSize: Long,
-    useTimestamps: Boolean,
-    deleteExisting: Boolean,
-    latestSuffix: String
-): Appender { // @formatter:on
-    return if (isNode) RollingFileAppender(
-        pattern,
-        formatter,
-        filter,
-        Path(basePath),
-        name,
-        fileCount,
-        maxFileSize,
-        useTimestamps,
-        deleteExisting,
-        latestSuffix
-    )
-    else NoopAppender
-}
