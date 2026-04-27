@@ -1,8 +1,6 @@
 package de.connect2x.lognity.config
 
 import de.connect2x.lognity.config.appender.ConsoleAppender
-import de.connect2x.lognity.config.appender.FileAppender
-import de.connect2x.lognity.config.appender.RollingFileAppender
 import de.connect2x.lognity.config.appender.SystemConsoleAppender
 import de.connect2x.lognity.config.appender.SystemLogAppender
 import de.connect2x.lognity.config.condition.CoroutineNameCondition
@@ -18,6 +16,8 @@ import de.connect2x.lognity.config.override.MarkerOverrideCondition
 
 internal expect fun ConfigExtensionRegistrar.registerPlatformAppenderTypes()
 
+internal expect fun ConfigExtensionRegistrar.registerNonWebAppenderTypes()
+
 /**
  * Core configuration extension for Lognity.
  *
@@ -27,7 +27,7 @@ internal expect fun ConfigExtensionRegistrar.registerPlatformAppenderTypes()
  * - [ConsoleAppender]: Writes log messages to the console (stdout).
  * - [SystemConsoleAppender]: Writes log messages to the system console (stdout & stderr) if available.
  * - [SystemLogAppender]: Writes log messages to the system's underlying log mechanism.
- * - [FileAppender]: Writes log messages to a file (supports rolling files).
+ * - [de.connect2x.lognity.config.appender.FileAppender]: Writes log messages to a file (supports rolling files).
  *
  * Registered conditions:
  * - [LevelCondition]: Filters log messages based on their log level.
@@ -48,32 +48,8 @@ object CoreConfigExtension : ConfigExtension {
         registerAppenderType<SystemLogAppender> { config, formatter ->
             systemLogAppender(config.pattern.resolve(), formatter, config.filter.resolve(), config.name.resolve())
         }
-        // Fixed path
-        registerAppenderType<FileAppender> { config, formatter ->
-            fileAppender(
-                config.path.resolve(),
-                config.pattern.resolve(),
-                formatter,
-                config.filter.resolve(),
-                config.name.resolve()
-            )
-        }
-        // Rolling file
-        registerAppenderType<RollingFileAppender> { config, formatter ->
-            rollingFileAppender(
-                config.basePath.resolve(),
-                config.pattern.resolve(),
-                formatter,
-                config.filter.resolve(),
-                config.name.resolve(),
-                config.fileCount.resolve(),
-                config.maxFileSize.resolve(),
-                config.useTimestamps.resolve(),
-                config.deleteExisting.resolve(),
-                config.latestSuffix.resolve()
-            )
-        }
         registerPlatformAppenderTypes()
+        registerNonWebAppenderTypes()
     }
 
     private fun ConfigExtensionRegistrar.registerConditionTypes() {

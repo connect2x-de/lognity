@@ -32,7 +32,15 @@ kotlin {
         withBrowser()
         withNodeJs()
     }
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("nonWeb") {
+                withJvm()
+                withAndroidTarget()
+                withNative()
+            }
+        }
+    }
     sourceSets {
         commonMain {
             dependencies {

@@ -1,5 +1,6 @@
 package de.connect2x.lognity.api.context
 
+import de.connect2x.lognity.api.context.Context.Element
 import de.connect2x.lognity.api.context.Context.Key
 
 /**
@@ -54,18 +55,21 @@ interface Context {
  * A [Context] with no elements.
  */
 object EmptyContext : Context {
-    override val elements: Map<Key<*>, Context.Element> = emptyMap()
-    override fun <T : Context.Element> get(key: Key<T>): T? = null
+    override val elements: Map<Key<*>, Element> = emptyMap()
+    override fun <T : Element> get(key: Key<T>): T? = null
     override fun plus(other: Context): Context = other
 }
 
 internal data class DefaultContext(
-    override val elements: Map<Key<*>, Context.Element>
+    override val elements: Map<Key<*>, Element>
 ) : Context {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Context.Element> get(key: Key<T>): T? {
+    override fun <T : Element> get(key: Key<T>): T? {
         return elements[key] as? T
     }
 
-    override fun plus(other: Context): Context = DefaultContext(elements + other.elements)
+    override fun plus(other: Context): Context = DefaultContext(HashMap<Key<*>, Element>().apply {
+        this += elements
+        this += other.elements
+    })
 }

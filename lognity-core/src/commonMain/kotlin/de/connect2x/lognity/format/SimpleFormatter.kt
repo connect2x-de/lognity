@@ -6,10 +6,10 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.backend.getNativeThreadId
-import de.connect2x.lognity.backend.getThreadName
 import de.connect2x.lognity.format.SimpleFormatter.Companion.default
 import de.connect2x.lognity.util.ThreadLocal
+import de.connect2x.lognity.util.getThreadId
+import de.connect2x.lognity.util.getThreadName
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
@@ -79,7 +79,7 @@ class SimpleFormatter(
             "marker" to CompiledFormat.Variable { ctx -> ctx.marker?.name ?: "<n/a>" },
             "message" to CompiledFormat.Variable { ctx -> ctx.content.toString() },
             "thread" to CompiledFormat.Variable { getThreadName() },
-            "threadId" to CompiledFormat.Variable { getNativeThreadId().toString() },
+            "threadId" to CompiledFormat.Variable { getThreadId().toString() },
             "level" to CompiledFormat.Variable { ctx -> paddedLevelNames[ctx.level.ordinal] },
             "levelSymbol" to CompiledFormat.Variable { ctx -> ctx.level.symbol },
             "name" to CompiledFormat.Variable { ctx -> ctx.logger.context[Logger.Name]?.name ?: "<n/a>" },
