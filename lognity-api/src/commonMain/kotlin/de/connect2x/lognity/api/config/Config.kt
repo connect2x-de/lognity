@@ -3,6 +3,7 @@ package de.connect2x.lognity.api.config
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.sanitization.SanitizationMode
 
 /**
  * The immutable configuration of a given [Logger] instance.
@@ -11,11 +12,14 @@ import de.connect2x.lognity.api.logger.Logger
  * @property initialLevel The initial log level.
  * @property initialEnableState The initial enabled state.
  * @property appenders The list of appenders.
+ * @property overrides A list of per-instance Logger overrides.
+ * @property sanitizationMode How any type of secret in log messages should be treated.
  */
 @ConsistentCopyVisibility
 data class Config internal constructor( // @formatter:off
     val initialLevel: Level = Level.default,
     val initialEnableState: Boolean = true,
     val appenders: List<Appender> = emptyList(),
-    val overrides: List<Override> = emptyList()
+    val overrides: List<Override> = emptyList(),
+    val sanitizationMode: SanitizationMode = SanitizationMode.OBFUSCATE,
 )

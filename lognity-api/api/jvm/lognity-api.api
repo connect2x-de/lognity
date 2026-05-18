@@ -101,12 +101,6 @@ public final class de/connect2x/lognity/api/ansi/AnsiMod$Companion {
 	public final fun getUnderline-bMk8ytI ()I
 }
 
-public final class de/connect2x/lognity/api/ansi/AnsiScope {
-	public static final field INSTANCE Lde/connect2x/lognity/api/ansi/AnsiScope;
-	public final fun reset-32TZVGg (Ljava/lang/String;)Ljava/lang/String;
-	public final fun with-fdgNWdk (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class de/connect2x/lognity/api/ansi/AnsiSequence {
 	public static final field Companion Lde/connect2x/lognity/api/ansi/AnsiSequence$Companion;
 	public static final field ESC C
@@ -159,6 +153,11 @@ public final class de/connect2x/lognity/api/ansi/AnsiString$Companion {
 
 public final class de/connect2x/lognity/api/ansi/AnsiStringKt {
 	public static final fun toAnsi (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class de/connect2x/lognity/api/ansi/StringExtensionsKt {
+	public static final fun reset (Lde/connect2x/lognity/api/logger/MessageScope;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun with-3Nig66A (Lde/connect2x/lognity/api/logger/MessageScope;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public abstract interface class de/connect2x/lognity/api/appender/Appender {
@@ -279,11 +278,13 @@ public final class de/connect2x/lognity/api/config/Config {
 	public final fun component2 ()Z
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAppenders ()Ljava/util/List;
 	public final fun getInitialEnableState ()Z
 	public final fun getInitialLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public final fun getOverrides ()Ljava/util/List;
+	public final fun getSanitizationMode ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -293,12 +294,14 @@ public final class de/connect2x/lognity/api/config/ConfigBuilder {
 	public final fun appender (Lde/connect2x/lognity/api/appender/Appender;)V
 	public final fun build ()Lde/connect2x/lognity/api/config/Config;
 	public final fun getLevel ()Lde/connect2x/lognity/api/logger/Level;
+	public final fun getSanitizationMode ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public final fun isEnabled ()Z
 	public final fun override (Lde/connect2x/lognity/api/config/Override;)V
 	public final fun override (Lkotlin/jvm/functions/Function1;)V
 	public final fun setEnabled (Z)V
 	public final fun setFrom (Lde/connect2x/lognity/api/config/Config;)Lde/connect2x/lognity/api/config/ConfigBuilder;
 	public final fun setLevel (Lde/connect2x/lognity/api/logger/Level;)V
+	public final fun setSanitizationMode (Lde/connect2x/lognity/api/sanitization/SanitizationMode;)V
 }
 
 public final class de/connect2x/lognity/api/config/ConfigBuilderKt {
@@ -397,18 +400,18 @@ public final class de/connect2x/lognity/api/format/Formatter$DefaultImpls {
 }
 
 public final class de/connect2x/lognity/api/logger/ExceptionLoggingKt {
-	public static final fun debug (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun debug$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun error (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun error$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun fatal (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun fatal$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun info (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun info$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun trace (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun trace$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun warn (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun warn$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun debug (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun debug$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun error (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun error$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun fatal (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun fatal$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun info (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun info$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun trace (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun trace$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun warn (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun warn$default (Lde/connect2x/lognity/api/logger/Logger;Ljava/lang/Throwable;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public final class de/connect2x/lognity/api/logger/Level : java/lang/Enum {
@@ -433,27 +436,27 @@ public final class de/connect2x/lognity/api/logger/Level$Companion {
 
 public abstract interface class de/connect2x/lognity/api/logger/Logger {
 	public static final field Companion Lde/connect2x/lognity/api/logger/Logger$Companion;
-	public fun debug (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun debug (Lkotlin/jvm/functions/Function1;)V
-	public fun error (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun error (Lkotlin/jvm/functions/Function1;)V
-	public fun fatal (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun fatal (Lkotlin/jvm/functions/Function1;)V
+	public fun debug (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun debug (Lkotlin/jvm/functions/Function2;)V
+	public fun error (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun error (Lkotlin/jvm/functions/Function2;)V
+	public fun fatal (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun fatal (Lkotlin/jvm/functions/Function2;)V
 	public fun flush ()V
 	public abstract fun getConfig ()Lde/connect2x/lognity/api/config/Config;
 	public abstract fun getContext ()Lde/connect2x/lognity/api/context/Context;
 	public abstract fun getLevel ()Lde/connect2x/lognity/api/logger/Level;
-	public fun info (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun info (Lkotlin/jvm/functions/Function1;)V
+	public fun info (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun info (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun isEnabled ()Z
-	public abstract fun log (Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun log (Lde/connect2x/lognity/api/marker/Marker;Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun log (Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function2;)V
+	public abstract fun log (Lde/connect2x/lognity/api/marker/Marker;Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function2;)V
 	public abstract fun setEnabled (Z)V
 	public abstract fun setLevel (Lde/connect2x/lognity/api/logger/Level;)V
-	public fun trace (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun trace (Lkotlin/jvm/functions/Function1;)V
-	public fun warn (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun warn (Lkotlin/jvm/functions/Function1;)V
+	public fun trace (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun trace (Lkotlin/jvm/functions/Function2;)V
+	public fun warn (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun warn (Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class de/connect2x/lognity/api/logger/Logger$Companion {
@@ -478,19 +481,19 @@ public final class de/connect2x/lognity/api/logger/Logger$CoroutineName$Key : de
 }
 
 public final class de/connect2x/lognity/api/logger/Logger$DefaultImpls {
-	public static fun debug (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun debug (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
-	public static fun error (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun error (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
-	public static fun fatal (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun fatal (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
+	public static fun debug (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun debug (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
+	public static fun error (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun error (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
+	public static fun fatal (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun fatal (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
 	public static fun flush (Lde/connect2x/lognity/api/logger/Logger;)V
-	public static fun info (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun info (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
-	public static fun trace (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun trace (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
-	public static fun warn (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public static fun warn (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)V
+	public static fun info (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun info (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
+	public static fun trace (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun trace (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
+	public static fun warn (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public static fun warn (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class de/connect2x/lognity/api/logger/Logger$DefaultMarker : de/connect2x/lognity/api/context/Context$Element {
@@ -531,29 +534,40 @@ public final class de/connect2x/lognity/api/logger/LoggerKt {
 	public static final fun derive (Lde/connect2x/lognity/api/logger/Logger;Lkotlin/jvm/functions/Function1;)Lde/connect2x/lognity/api/logger/Logger;
 }
 
+public final class de/connect2x/lognity/api/logger/MessageProviderKt {
+	public static final fun invoke (Lkotlin/jvm/functions/Function2;Lde/connect2x/lognity/api/logger/Logger;)Ljava/lang/Object;
+}
+
+public final class de/connect2x/lognity/api/logger/MessageScope {
+	public static final field INSTANCE Lde/connect2x/lognity/api/logger/MessageScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class de/connect2x/lognity/api/logger/NoopLogger : de/connect2x/lognity/api/logger/Logger {
 	public static final field INSTANCE Lde/connect2x/lognity/api/logger/NoopLogger;
-	public fun debug (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun debug (Lkotlin/jvm/functions/Function1;)V
-	public fun error (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun error (Lkotlin/jvm/functions/Function1;)V
-	public fun fatal (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun fatal (Lkotlin/jvm/functions/Function1;)V
+	public fun debug (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun debug (Lkotlin/jvm/functions/Function2;)V
+	public fun error (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun error (Lkotlin/jvm/functions/Function2;)V
+	public fun fatal (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun fatal (Lkotlin/jvm/functions/Function2;)V
 	public fun flush ()V
 	public fun getConfig ()Lde/connect2x/lognity/api/config/Config;
 	public fun getContext ()Lde/connect2x/lognity/api/context/Context;
 	public fun getLevel ()Lde/connect2x/lognity/api/logger/Level;
-	public fun info (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun info (Lkotlin/jvm/functions/Function1;)V
+	public fun info (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun info (Lkotlin/jvm/functions/Function2;)V
 	public fun isEnabled ()Z
-	public fun log (Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function1;)V
-	public fun log (Lde/connect2x/lognity/api/marker/Marker;Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function1;)V
+	public fun log (Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function2;)V
+	public fun log (Lde/connect2x/lognity/api/marker/Marker;Lde/connect2x/lognity/api/logger/Level;Lkotlin/jvm/functions/Function2;)V
 	public fun setEnabled (Z)V
 	public fun setLevel (Lde/connect2x/lognity/api/logger/Level;)V
-	public fun trace (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun trace (Lkotlin/jvm/functions/Function1;)V
-	public fun warn (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function1;)V
-	public fun warn (Lkotlin/jvm/functions/Function1;)V
+	public fun trace (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun trace (Lkotlin/jvm/functions/Function2;)V
+	public fun warn (Lde/connect2x/lognity/api/marker/Marker;Lkotlin/jvm/functions/Function2;)V
+	public fun warn (Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class de/connect2x/lognity/api/logger/SuspendLoggingKt {
@@ -579,5 +593,18 @@ public final class de/connect2x/lognity/api/marker/NoopMarker : de/connect2x/log
 	public fun getName ()Ljava/lang/String;
 	public fun isEnabled ()Z
 	public fun setEnabled (Z)V
+}
+
+public final class de/connect2x/lognity/api/sanitization/SanitizationMode : java/lang/Enum {
+	public static final field DISABLED Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public static final field HIDE Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public static final field OBFUSCATE Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public static fun values ()[Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+}
+
+public final class de/connect2x/lognity/api/sanitization/SecretKt {
+	public static final fun secret (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/MessageScope;Ljava/lang/Object;)Ljava/lang/String;
 }
 

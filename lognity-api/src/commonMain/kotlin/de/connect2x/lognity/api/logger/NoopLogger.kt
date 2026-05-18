@@ -1,6 +1,5 @@
 package de.connect2x.lognity.api.logger
 
-import de.connect2x.lognity.api.ansi.AnsiScope
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.context.EmptyContext
@@ -19,7 +18,6 @@ object NoopLogger : Logger {
     override var level: Level = Level.INFO
     override var isEnabled: Boolean = false
 
-    override fun log(level: Level, message: AnsiScope.() -> Any?) = Unit
-
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) = Unit
+    override fun log(level: Level, message: MessageProvider) = Unit
+    override fun log(marker: Marker?, level: Level, message: MessageProvider) = Unit
 }

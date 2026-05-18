@@ -4,6 +4,7 @@ import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.sanitization.SanitizationMode
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
@@ -18,6 +19,7 @@ import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.io.Source
 import kotlinx.io.readString
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -41,7 +43,8 @@ data class SerializableConfig( // @formatter:off
     val enabled: RefOrValue<Boolean> = RefOrValue.Value(true),
     val appenders: List<SerializableAppender> = emptyList(),
     val conditions: List<SerializableCondition> = emptyList(), // Globally accessible conditions/templates
-    val overrides: List<SerializableOverride> = emptyList() // Global overrides
+    val overrides: List<SerializableOverride> = emptyList(), // Global overrides
+    @SerialName("sanitization_mode") val sanitizationMode: RefOrValue<SanitizationMode> = RefOrValue.Value(SanitizationMode.OBFUSCATE)
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].
@@ -125,6 +128,7 @@ data class SerializableConfig( // @formatter:off
         Config {
             level = getCombinedLevel()
             isEnabled = enabled.resolve()
+            sanitizationMode = this@SerializableConfig.sanitizationMode.resolve()
             for (appender in appenders) {
                 val formatter = extensionRegistrar.formatterFactories[appender.formatter.resolve()] ?: continue
                 val factory = extensionRegistrar.appenderFactories[appender::class] ?: continue

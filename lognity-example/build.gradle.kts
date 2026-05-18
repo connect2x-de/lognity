@@ -41,7 +41,7 @@ kotlin {
         useCommonJs()
         withNodeJs {
             binaries.executable()
-            runTask { workingDir = layout.projectDirectory.asFile }
+            runTask { workingDir = layout.projectDirectory.dir("src/webMain/resources").asFile }
         }
         withBrowser {
             binaries.executable()

@@ -2,6 +2,7 @@ package de.connect2x.lognity.api.config
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.logger.Level
+import de.connect2x.lognity.api.sanitization.SanitizationMode
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -23,6 +24,11 @@ class ConfigBuilder @PublishedApi internal constructor() {
      */
     var isEnabled: Boolean = true
 
+    /**
+     * How any type of secret in log messages should be treated.
+     */
+    var sanitizationMode: SanitizationMode = SanitizationMode.OBFUSCATE
+
     private val appenders: ArrayList<Appender> = ArrayList()
     private val overrides: ArrayList<Override> = ArrayList()
 
@@ -38,6 +44,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
         isEnabled = config.initialEnableState
         appenders += config.appenders
         overrides += config.overrides
+        sanitizationMode = config.sanitizationMode
         return this
     }
 
@@ -79,7 +86,7 @@ class ConfigBuilder @PublishedApi internal constructor() {
     }
 
     @PublishedApi
-    internal fun build(): Config = Config(level, isEnabled, appenders, overrides)
+    internal fun build(): Config = Config(level, isEnabled, appenders, overrides, sanitizationMode)
 }
 
 /**

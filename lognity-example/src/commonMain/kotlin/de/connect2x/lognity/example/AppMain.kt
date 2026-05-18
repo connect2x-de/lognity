@@ -4,6 +4,7 @@ import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.api.sanitization.secret
 import de.connect2x.lognity.backend.DefaultBackend
 import de.connect2x.lognity.config.CoreConfigExtension
 import de.connect2x.lognity.config.SerializableConfig
@@ -15,12 +16,12 @@ import kotlinx.coroutines.launch
 private val marker1: Marker = Marker("marker1")
 
 private fun Logger.printTestMessages(marker: Marker? = null) {
-    trace(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    debug(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    info(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    warn(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    error(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
-    fatal(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam" }
+    trace(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
+    debug(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
+    info(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
+    warn(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
+    error(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
+    fatal(marker) { "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam: ${secret("12345678")}" }
 }
 
 suspend fun appMain() {

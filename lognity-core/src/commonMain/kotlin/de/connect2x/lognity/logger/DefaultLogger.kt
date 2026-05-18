@@ -1,10 +1,11 @@
 package de.connect2x.lognity.logger
 
-import de.connect2x.lognity.api.ansi.AnsiScope
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
+import de.connect2x.lognity.api.logger.MessageProvider
+import de.connect2x.lognity.api.logger.invoke
 import de.connect2x.lognity.api.marker.Marker
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
@@ -36,7 +37,7 @@ open class DefaultLogger( // @formatter:off
             _isEnabled.store(value)
         }
 
-    override fun log(level: Level, message: AnsiScope.() -> Any?) {
+    override fun log(level: Level, message: MessageProvider) {
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
 
@@ -51,7 +52,7 @@ open class DefaultLogger( // @formatter:off
 
         if (!isEnabled || level < targetLevel) return
 
-        val messageContent = message(AnsiScope) ?: "null"
+        val messageContent = message(this) ?: "null"
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
@@ -60,7 +61,7 @@ open class DefaultLogger( // @formatter:off
         }
     }
 
-    override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
+    override fun log(marker: Marker?, level: Level, message: MessageProvider) {
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
 
@@ -75,7 +76,8 @@ open class DefaultLogger( // @formatter:off
 
         if (!isEnabled || level < targetLevel) return
 
-        val messageContent = message(AnsiScope) ?: "null"
+        val messageContent = message(this) ?: "null"
+
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
