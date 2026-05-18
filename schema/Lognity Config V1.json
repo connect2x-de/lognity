@@ -31,6 +31,25 @@
                 }
             ]
         },
+        "sanitization_mode": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "DISABLED",
+                        "OBFUSCATE",
+                        "HIDE"
+                    ],
+                    "default": "OBFUSCATE",
+                    "description": "The default sanitization mode of all loggers."
+                },
+                {
+                    "type": "string",
+                    "pattern": "^\\{([\\w\\-._]+)}$",
+                    "default": "{MY_PROVIDER}"
+                }
+            ]
+        },
         "enabled": {
             "oneOf": [
                 {
@@ -287,7 +306,7 @@
                                                                     "FATAL"
                                                                 ],
                                                                 "default": "INFO",
-                                                                "description": "The log level to check all incoming log levels agsinst."
+                                                                "description": "The log level to check all incoming log levels against."
                                                             },
                                                             {
                                                                 "type": "string",

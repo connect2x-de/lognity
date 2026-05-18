@@ -6,6 +6,7 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.api.sanitization.SanitizationMode
 import de.connect2x.lognity.format.SimpleFormatter.Companion.default
 import de.connect2x.lognity.util.ThreadLocal
 import de.connect2x.lognity.util.getThreadId

@@ -1,6 +1,5 @@
 package de.connect2x.lognity.api.logger
 
-import de.connect2x.lognity.api.ansi.AnsiScope
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.marker.Marker
@@ -22,12 +21,12 @@ class ExceptionLoggingTest {
 
         val logs = mutableListOf<CapturedLog>()
 
-        override fun log(level: Level, message: AnsiScope.() -> Any?) {
-            logs.add(CapturedLog(level, null, message(AnsiScope).toString()))
+        override fun log(level: Level, message: MessageProvider) {
+            logs.add(CapturedLog(level, null, message(this).toString()))
         }
 
-        override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {
-            logs.add(CapturedLog(level, marker, message(AnsiScope).toString()))
+        override fun log(marker: Marker?, level: Level, message: MessageProvider) {
+            logs.add(CapturedLog(level, marker, message(this).toString()))
         }
     }
 

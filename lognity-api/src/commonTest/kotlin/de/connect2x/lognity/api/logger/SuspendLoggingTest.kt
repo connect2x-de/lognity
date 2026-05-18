@@ -1,6 +1,5 @@
 package de.connect2x.lognity.api.logger
 
-import de.connect2x.lognity.api.ansi.AnsiScope
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.backend.NoopBackend
 import de.connect2x.lognity.api.config.Config
@@ -24,8 +23,8 @@ class SuspendLoggingTest {
         override var level: Level = Level.INFO
         override var isEnabled: Boolean = true
 
-        override fun log(level: Level, message: AnsiScope.() -> Any?) {}
-        override fun log(marker: Marker?, level: Level, message: AnsiScope.() -> Any?) {}
+        override fun log(level: Level, message: MessageProvider) = Unit
+        override fun log(marker: Marker?, level: Level, message: MessageProvider) = Unit
     }
 
     private var lastCreatedLoggerName: String? = null
