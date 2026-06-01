@@ -121,6 +121,10 @@ public final class de/connect2x/lognity/api/ansi/AnsiSequence$Companion {
 	public final fun getReset-geN02Ok ()Ljava/lang/String;
 }
 
+public final class de/connect2x/lognity/api/ansi/AnsiSequenceKt {
+	public static final fun toAnsiSequence (Ljava/lang/String;)Ljava/lang/String;
+}
+
 public final class de/connect2x/lognity/api/ansi/AnsiString : java/lang/CharSequence {
 	public static final field Companion Lde/connect2x/lognity/api/ansi/AnsiString$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lde/connect2x/lognity/api/ansi/AnsiString;
@@ -218,11 +222,13 @@ public abstract interface class de/connect2x/lognity/api/backend/Backend {
 	public static synthetic fun createLogger$default (Lde/connect2x/lognity/api/backend/Backend;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lde/connect2x/lognity/api/logger/Logger;
 	public abstract fun createMarker (Ljava/lang/String;Ljava/lang/String;Z)Lde/connect2x/lognity/api/marker/Marker;
 	public abstract fun getConfigSpec ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getConsoleColorScheme ()Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
 	public abstract fun getContextSpec ()Lkotlin/jvm/functions/Function1;
 	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public abstract fun getDefaultFormatter ()Lde/connect2x/lognity/api/format/Formatter;
 	public abstract fun getDefaultLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getOverrideLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public abstract fun setConfigSpec (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun setContextSpec (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun setCoroutineScopeProvider (Lkotlin/jvm/functions/Function0;)V
@@ -233,11 +239,13 @@ public final class de/connect2x/lognity/api/backend/Backend$Companion : de/conne
 	public fun createLogger (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lde/connect2x/lognity/api/logger/Logger;
 	public fun createMarker (Ljava/lang/String;Ljava/lang/String;Z)Lde/connect2x/lognity/api/marker/Marker;
 	public fun getConfigSpec ()Lkotlin/jvm/functions/Function1;
+	public fun getConsoleColorScheme ()Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
 	public fun getContextSpec ()Lkotlin/jvm/functions/Function1;
 	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public fun getDefaultFormatter ()Lde/connect2x/lognity/api/format/Formatter;
 	public fun getDefaultLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public fun getName ()Ljava/lang/String;
+	public fun getOverrideLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public final fun reset ()V
 	public final fun set (Lde/connect2x/lognity/api/backend/Backend;)V
 	public fun setConfigSpec (Lkotlin/jvm/functions/Function1;)V
@@ -256,33 +264,45 @@ public final class de/connect2x/lognity/api/backend/BackendKt {
 	public static final fun isSetOnce ()Ljava/util/concurrent/atomic/AtomicBoolean;
 }
 
+public final class de/connect2x/lognity/api/backend/ConsoleColorScheme : java/lang/Enum {
+	public static final field DARK Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
+	public static final field LIGHT Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
+	public static fun values ()[Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
+}
+
 public final class de/connect2x/lognity/api/backend/NoopBackend : de/connect2x/lognity/api/backend/Backend {
 	public static final field INSTANCE Lde/connect2x/lognity/api/backend/NoopBackend;
 	public fun addShutdownHook (Lkotlin/jvm/functions/Function0;)V
 	public fun createLogger (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lde/connect2x/lognity/api/logger/Logger;
 	public fun createMarker (Ljava/lang/String;Ljava/lang/String;Z)Lde/connect2x/lognity/api/marker/Marker;
 	public fun getConfigSpec ()Lkotlin/jvm/functions/Function1;
+	public fun getConsoleColorScheme ()Lde/connect2x/lognity/api/backend/ConsoleColorScheme;
 	public fun getContextSpec ()Lkotlin/jvm/functions/Function1;
 	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public fun getDefaultFormatter ()Lde/connect2x/lognity/api/format/Formatter;
 	public fun getDefaultLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public fun getName ()Ljava/lang/String;
+	public fun getOverrideLevel ()Lde/connect2x/lognity/api/logger/Level;
 	public fun setConfigSpec (Lkotlin/jvm/functions/Function1;)V
 	public fun setContextSpec (Lkotlin/jvm/functions/Function1;)V
 	public fun setCoroutineScopeProvider (Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class de/connect2x/lognity/api/config/Config {
-	public fun <init> ()V
+	public synthetic fun <init> (Lde/connect2x/lognity/api/logger/Level;ZLjava/util/List;Ljava/util/List;Lde/connect2x/lognity/api/sanitization/SanitizationMode;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lde/connect2x/lognity/api/logger/Level;
 	public final fun component2 ()Z
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Ljava/util/List;
 	public final fun component5 ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public final fun component6-h7EfoRw ()Ljava/util/Map;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAppenders ()Ljava/util/List;
 	public final fun getInitialEnableState ()Z
 	public final fun getInitialLevel ()Lde/connect2x/lognity/api/logger/Level;
+	public final fun getLevelColors-h7EfoRw ()Ljava/util/Map;
 	public final fun getOverrides ()Ljava/util/List;
 	public final fun getSanitizationMode ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public fun hashCode ()I
@@ -294,13 +314,17 @@ public final class de/connect2x/lognity/api/config/ConfigBuilder {
 	public final fun appender (Lde/connect2x/lognity/api/appender/Appender;)V
 	public final fun build ()Lde/connect2x/lognity/api/config/Config;
 	public final fun getLevel ()Lde/connect2x/lognity/api/logger/Level;
+	public final fun getLevelColors-h7EfoRw ()Ljava/util/Map;
 	public final fun getSanitizationMode ()Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public final fun isEnabled ()Z
+	public final fun levelColors (Lkotlin/jvm/functions/Function1;)V
+	public final fun levelColors-khchdEw (Ljava/util/Map;)V
 	public final fun override (Lde/connect2x/lognity/api/config/Override;)V
 	public final fun override (Lkotlin/jvm/functions/Function1;)V
 	public final fun setEnabled (Z)V
 	public final fun setFrom (Lde/connect2x/lognity/api/config/Config;)Lde/connect2x/lognity/api/config/ConfigBuilder;
 	public final fun setLevel (Lde/connect2x/lognity/api/logger/Level;)V
+	public final fun setLevelColors-khchdEw (Ljava/util/Map;)V
 	public final fun setSanitizationMode (Lde/connect2x/lognity/api/sanitization/SanitizationMode;)V
 }
 
@@ -309,6 +333,47 @@ public final class de/connect2x/lognity/api/config/ConfigBuilderKt {
 }
 
 public abstract interface annotation class de/connect2x/lognity/api/config/ConfigDsl : java/lang/annotation/Annotation {
+}
+
+public final class de/connect2x/lognity/api/config/LevelColors {
+	public static final field Companion Lde/connect2x/lognity/api/config/LevelColors$Companion;
+	public static final synthetic fun box-impl (Ljava/util/Map;)Lde/connect2x/lognity/api/config/LevelColors;
+	public static fun constructor-impl (Ljava/util/Map;)Ljava/util/Map;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/util/Map;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/util/Map;Ljava/util/Map;)Z
+	public static final fun get-FzXuVgQ (Ljava/util/Map;Lde/connect2x/lognity/api/logger/Level;)Ljava/lang/String;
+	public final fun getColors ()Ljava/util/Map;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/util/Map;)I
+	public static final fun plus-95DVS6Y (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/util/Map;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/util/Map;
+}
+
+public final class de/connect2x/lognity/api/config/LevelColors$Companion {
+	public final fun getDark-h7EfoRw ()Ljava/util/Map;
+	public final fun getLight-h7EfoRw ()Ljava/util/Map;
+	public final fun optimal-h7EfoRw ()Ljava/util/Map;
+}
+
+public final class de/connect2x/lognity/api/config/LevelColorsBuilder {
+	public fun <init> ()V
+	public final fun build-h7EfoRw ()Ljava/util/Map;
+	public final fun color--eWdtvg (Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;)V
+	public final fun debug-_OqOrHg (Ljava/lang/String;)V
+	public final fun error-_OqOrHg (Ljava/lang/String;)V
+	public final fun fatal-_OqOrHg (Ljava/lang/String;)V
+	public final fun info-_OqOrHg (Ljava/lang/String;)V
+	public final fun setFrom (Ljava/util/Map;)V
+	public final fun setFrom-khchdEw (Ljava/util/Map;)V
+	public final fun trace-_OqOrHg (Ljava/lang/String;)V
+	public final fun warn-_OqOrHg (Ljava/lang/String;)V
+}
+
+public final class de/connect2x/lognity/api/config/LevelColorsBuilderKt {
+	public static final fun LevelColors (Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
 }
 
 public final class de/connect2x/lognity/api/config/Override {
@@ -422,7 +487,6 @@ public final class de/connect2x/lognity/api/logger/Level : java/lang/Enum {
 	public static final field INFO Lde/connect2x/lognity/api/logger/Level;
 	public static final field TRACE Lde/connect2x/lognity/api/logger/Level;
 	public static final field WARN Lde/connect2x/lognity/api/logger/Level;
-	public final fun getAnsi-geN02Ok ()Ljava/lang/String;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getSymbol ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lde/connect2x/lognity/api/logger/Level;
@@ -599,6 +663,7 @@ public final class de/connect2x/lognity/api/sanitization/SanitizationMode : java
 	public static final field DISABLED Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public static final field HIDE Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public static final field OBFUSCATE Lde/connect2x/lognity/api/sanitization/SanitizationMode;
+	public static final field OBFUSCATE_FIXED Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lde/connect2x/lognity/api/sanitization/SanitizationMode;
 	public static fun values ()[Lde/connect2x/lognity/api/sanitization/SanitizationMode;

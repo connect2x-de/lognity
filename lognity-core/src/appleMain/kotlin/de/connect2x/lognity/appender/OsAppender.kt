@@ -40,9 +40,13 @@ class OsAppender( // @formatter:off
     @OptIn(ExperimentalForeignApi::class)
     override fun append(logger: Logger, level: Level, message: String, marker: Marker?) {
         if (!filter(logger, level, message, marker)) return
-        _os_log_internal(__dso_handle.ptr, delegates.getOrPut(logger) {
-            val name = logger.context[Logger.Name]?.name ?: logger.toString()
-            os_log_create(name, CATEGORY)
-        }, level.osLogType, "%{public}s", message.toAnsi().cleanString())
+        _os_log_internal(
+            __dso_handle.ptr,
+            delegates.getOrPut(logger) {
+                val name = logger.context[Logger.Name]?.name ?: logger.toString()
+                os_log_create(name, CATEGORY)
+            },
+            level.osLogType, "%{public}s", message.toAnsi().cleanString(),
+        )
     }
 }

@@ -14,6 +14,7 @@ import de.connect2x.lognity.api.sanitization.SanitizationMode
  * @property appenders The list of appenders.
  * @property overrides A list of per-instance Logger overrides.
  * @property sanitizationMode How any type of secret in log messages should be treated.
+ * @property levelColors A map of ANSI sequences used to color each different log level.
  */
 @ConsistentCopyVisibility
 data class Config internal constructor( // @formatter:off
@@ -22,4 +23,5 @@ data class Config internal constructor( // @formatter:off
     val appenders: List<Appender> = emptyList(),
     val overrides: List<Override> = emptyList(),
     val sanitizationMode: SanitizationMode = SanitizationMode.OBFUSCATE,
+    val levelColors: LevelColors = LevelColors.optimal()
 )

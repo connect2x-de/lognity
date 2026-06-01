@@ -68,8 +68,10 @@ internal data class DefaultContext(
         return elements[key] as? T
     }
 
-    override fun plus(other: Context): Context = DefaultContext(HashMap<Key<*>, Element>().apply {
-        this += elements
-        this += other.elements
-    })
+    override fun plus(other: Context): Context = DefaultContext(
+        HashMap<Key<*>, Element>().apply {
+            this += elements
+            this += other.elements
+        },
+    )
 }

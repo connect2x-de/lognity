@@ -32,6 +32,9 @@ class ConfigBuilder @PublishedApi internal constructor() {
     private val appenders: ArrayList<Appender> = ArrayList()
     private val overrides: ArrayList<Override> = ArrayList()
 
+    @PublishedApi
+    internal var levelColors: LevelColors = LevelColors.optimal()
+
     /**
      * Copies all config properties from the given [Config] instance
      * into this builder instance.
@@ -46,6 +49,24 @@ class ConfigBuilder @PublishedApi internal constructor() {
         overrides += config.overrides
         sanitizationMode = config.sanitizationMode
         return this
+    }
+
+    /**
+     * Override the optimal default level colors of this configuration.
+     *
+     * @param colors The level colors to use on top of the default ones.
+     */
+    fun levelColors(colors: LevelColors) {
+        levelColors += colors
+    }
+
+    /**
+     * Override the optimal default level colors of this configuration.
+     *
+     * @param spec The level colors spec to use on top of the default one.
+     */
+    inline fun levelColors(spec: LevelColorsSpec) {
+        levelColors += LevelColors(spec)
     }
 
     /**
@@ -86,7 +107,14 @@ class ConfigBuilder @PublishedApi internal constructor() {
     }
 
     @PublishedApi
-    internal fun build(): Config = Config(level, isEnabled, appenders, overrides, sanitizationMode)
+    internal fun build(): Config = Config(
+        initialLevel = level,
+        initialEnableState = isEnabled,
+        appenders = appenders,
+        overrides = overrides,
+        sanitizationMode = sanitizationMode,
+        levelColors = levelColors
+    )
 }
 
 /**

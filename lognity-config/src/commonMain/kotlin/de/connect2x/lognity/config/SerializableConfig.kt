@@ -1,11 +1,14 @@
 package de.connect2x.lognity.config
 
+import de.connect2x.lognity.api.ansi.toAnsiSequence
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.sanitization.SanitizationMode
 import de.connect2x.lognity.config.SerializableConfig.Companion.VERSION
+import de.connect2x.lognity.config.ansi.SerializableAnsiBg
+import de.connect2x.lognity.config.ansi.SerializableAnsiFg
 import de.connect2x.lognity.config.appender.SerializableAppender
 import de.connect2x.lognity.config.condition.AlwaysCondition
 import de.connect2x.lognity.config.condition.AndCondition
@@ -34,7 +37,11 @@ import kotlin.math.max
  * @property version configuration format version. Must match [VERSION].
  * @property level default log level.
  * @property enabled whether logging is enabled globally.
- * @property appenders list of configured appenders.
+ * @property appenders A list of configured appenders.
+ * @property conditions A list of globally reusable conditions.
+ * @property overrides A list of dynamic per-logger property overrides.
+ * @property sanitizationMode The sanitization mode used to hide secrets in logs.
+ * @property levelColors Overrides for the default log level colors.
  */
 @Serializable
 data class SerializableConfig( // @formatter:off
@@ -44,7 +51,8 @@ data class SerializableConfig( // @formatter:off
     val appenders: List<SerializableAppender> = emptyList(),
     val conditions: List<SerializableCondition> = emptyList(), // Globally accessible conditions/templates
     val overrides: List<SerializableOverride> = emptyList(), // Global overrides
-    @SerialName("sanitization_mode") val sanitizationMode: RefOrValue<SanitizationMode> = RefOrValue.Value(SanitizationMode.OBFUSCATE)
+    @SerialName("sanitization_mode") val sanitizationMode: RefOrValue<SanitizationMode> = RefOrValue.Value(SanitizationMode.OBFUSCATE),
+    @SerialName("level_colors") val levelColors: Map<Level, RefOrValue<String>> = emptyMap()
 ) { // @formatter:on
     /**
      * Companion for utilities and constants related to [SerializableConfig].
@@ -75,6 +83,9 @@ data class SerializableConfig( // @formatter:off
         init { // Default implementations extension
             this uses ConfigExtension {
                 registerBuiltinEnum("Level", Level.entries)
+                registerBuiltinEnum("Background", SerializableAnsiBg.entries)
+                registerBuiltinEnum("Foreground", SerializableAnsiFg.entries)
+                registerBuiltinEnum("SanitizationMode", SanitizationMode.entries)
                 registerConditionType<AlwaysCondition>()
                 registerConditionType<OrCondition>()
                 registerConditionType<AndCondition>()
@@ -139,6 +150,11 @@ data class SerializableConfig( // @formatter:off
                     applyWhen(override.condition)
                     level = override.level?.resolve()
                     enableState = override.enableState?.resolve()
+                }
+            }
+            for ((level, rawColor) in levelColors) {
+                levelColors {
+                    color(level, rawColor.resolve().toAnsiSequence())
                 }
             }
         }

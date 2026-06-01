@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logger
 
+import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.logger.Level
@@ -41,7 +42,7 @@ open class DefaultLogger( // @formatter:off
         val marker = context[Logger.DefaultMarker]?.marker
         if (marker?.isEnabled == false) return
 
-        var targetLevel = this.level
+        var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
             if (!override.condition(this, level, marker)) continue
@@ -56,7 +57,7 @@ open class DefaultLogger( // @formatter:off
         val timestamp = Clock.System.now()
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null
+                this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null,
             )
         }
     }
@@ -65,7 +66,7 @@ open class DefaultLogger( // @formatter:off
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
         if (actualMarker?.isEnabled == false) return
 
-        var targetLevel = this.level
+        var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
             if (!override.condition(this, level, marker)) continue
@@ -84,7 +85,7 @@ open class DefaultLogger( // @formatter:off
                 this,
                 level,
                 appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern),
-                marker
+                marker,
             )
         }
     }

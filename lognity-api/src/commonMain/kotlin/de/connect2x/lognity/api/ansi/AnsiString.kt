@@ -8,7 +8,8 @@ import kotlin.jvm.JvmInline
  * Provides helpers to manipulate and compose ANSI-decorated strings safely.
  */
 @JvmInline
-value class AnsiString @PublishedApi internal constructor(@PublishedApi internal val value: String) : CharSequence by value {
+value class AnsiString @PublishedApi internal constructor(@PublishedApi internal val value: String) :
+    CharSequence by value {
     companion object {
         /** Pattern for matching ANSI escape sequences in a string. */
         private val pattern: Regex = Regex("""${AnsiSequence.ESC}\[[\w;]+?[ABCDEFGHIJKLm]""")

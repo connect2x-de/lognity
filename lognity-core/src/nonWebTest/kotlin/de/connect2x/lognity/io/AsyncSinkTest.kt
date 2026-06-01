@@ -1,14 +1,14 @@
 package de.connect2x.lognity.io
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.time.Clock
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import kotlinx.io.writeString
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.time.Clock
 
 class AsyncSinkTest {
     private fun getTestPath(name: String) =
@@ -32,8 +32,7 @@ class AsyncSinkTest {
             assertTrue(SystemFileSystem.exists(path), "File should exist after close")
             val result = SystemFileSystem.source(path).buffered().use { it.readString() }
             assertEquals("Hello, World!", result)
-        }
-        finally {
+        } finally {
             cleanup(path)
         }
     }
@@ -50,8 +49,7 @@ class AsyncSinkTest {
 
             val result = SystemFileSystem.source(path).buffered().use { it.readString() }
             assertEquals("New Content", result)
-        }
-        finally {
+        } finally {
             cleanup(path)
         }
     }
@@ -68,8 +66,7 @@ class AsyncSinkTest {
 
             val result = SystemFileSystem.source(path).buffered().use { it.readString() }
             assertEquals("Existing Content - New Content", result)
-        }
-        finally {
+        } finally {
             cleanup(path)
         }
     }
@@ -91,8 +88,7 @@ class AsyncSinkTest {
 
             val result = SystemFileSystem.source(path).buffered().use { it.readString() }
             assertEquals(expected.toString(), result)
-        }
-        finally {
+        } finally {
             cleanup(path)
         }
     }

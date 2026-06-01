@@ -22,6 +22,17 @@ open annotation class de.connect2x.lognity.api/InternalLoggingApi : kotlin/Annot
     constructor <init>() // de.connect2x.lognity.api/InternalLoggingApi.<init>|<init>(){}[0]
 }
 
+final enum class de.connect2x.lognity.api.backend/ConsoleColorScheme : kotlin/Enum<de.connect2x.lognity.api.backend/ConsoleColorScheme> { // de.connect2x.lognity.api.backend/ConsoleColorScheme|null[0]
+    enum entry DARK // de.connect2x.lognity.api.backend/ConsoleColorScheme.DARK|null[0]
+    enum entry LIGHT // de.connect2x.lognity.api.backend/ConsoleColorScheme.LIGHT|null[0]
+
+    final val entries // de.connect2x.lognity.api.backend/ConsoleColorScheme.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<de.connect2x.lognity.api.backend/ConsoleColorScheme> // de.connect2x.lognity.api.backend/ConsoleColorScheme.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): de.connect2x.lognity.api.backend/ConsoleColorScheme // de.connect2x.lognity.api.backend/ConsoleColorScheme.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<de.connect2x.lognity.api.backend/ConsoleColorScheme> // de.connect2x.lognity.api.backend/ConsoleColorScheme.values|values#static(){}[0]
+}
+
 final enum class de.connect2x.lognity.api.logger/Level : kotlin/Enum<de.connect2x.lognity.api.logger/Level> { // de.connect2x.lognity.api.logger/Level|null[0]
     enum entry DEBUG // de.connect2x.lognity.api.logger/Level.DEBUG|null[0]
     enum entry ERROR // de.connect2x.lognity.api.logger/Level.ERROR|null[0]
@@ -30,8 +41,6 @@ final enum class de.connect2x.lognity.api.logger/Level : kotlin/Enum<de.connect2
     enum entry TRACE // de.connect2x.lognity.api.logger/Level.TRACE|null[0]
     enum entry WARN // de.connect2x.lognity.api.logger/Level.WARN|null[0]
 
-    final val ansi // de.connect2x.lognity.api.logger/Level.ansi|{}ansi[0]
-        final fun <get-ansi>(): de.connect2x.lognity.api.ansi/AnsiSequence // de.connect2x.lognity.api.logger/Level.ansi.<get-ansi>|<get-ansi>(){}[0]
     final val entries // de.connect2x.lognity.api.logger/Level.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<de.connect2x.lognity.api.logger/Level> // de.connect2x.lognity.api.logger/Level.entries.<get-entries>|<get-entries>#static(){}[0]
     final val symbol // de.connect2x.lognity.api.logger/Level.symbol|{}symbol[0]
@@ -52,6 +61,7 @@ final enum class de.connect2x.lognity.api.sanitization/SanitizationMode : kotlin
     enum entry DISABLED // de.connect2x.lognity.api.sanitization/SanitizationMode.DISABLED|null[0]
     enum entry HIDE // de.connect2x.lognity.api.sanitization/SanitizationMode.HIDE|null[0]
     enum entry OBFUSCATE // de.connect2x.lognity.api.sanitization/SanitizationMode.OBFUSCATE|null[0]
+    enum entry OBFUSCATE_FIXED // de.connect2x.lognity.api.sanitization/SanitizationMode.OBFUSCATE_FIXED|null[0]
 
     final val entries // de.connect2x.lognity.api.sanitization/SanitizationMode.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<de.connect2x.lognity.api.sanitization/SanitizationMode> // de.connect2x.lognity.api.sanitization/SanitizationMode.entries.<get-entries>|<get-entries>#static(){}[0]
@@ -115,6 +125,8 @@ abstract interface de.connect2x.lognity.api.appender/Appender { // de.connect2x.
 }
 
 abstract interface de.connect2x.lognity.api.backend/Backend { // de.connect2x.lognity.api.backend/Backend|null[0]
+    abstract val consoleColorScheme // de.connect2x.lognity.api.backend/Backend.consoleColorScheme|{}consoleColorScheme[0]
+        abstract fun <get-consoleColorScheme>(): de.connect2x.lognity.api.backend/ConsoleColorScheme // de.connect2x.lognity.api.backend/Backend.consoleColorScheme.<get-consoleColorScheme>|<get-consoleColorScheme>(){}[0]
     abstract val coroutineScope // de.connect2x.lognity.api.backend/Backend.coroutineScope|{}coroutineScope[0]
         abstract fun <get-coroutineScope>(): kotlinx.coroutines/CoroutineScope // de.connect2x.lognity.api.backend/Backend.coroutineScope.<get-coroutineScope>|<get-coroutineScope>(){}[0]
     abstract val defaultFormatter // de.connect2x.lognity.api.backend/Backend.defaultFormatter|{}defaultFormatter[0]
@@ -123,6 +135,8 @@ abstract interface de.connect2x.lognity.api.backend/Backend { // de.connect2x.lo
         abstract fun <get-defaultLevel>(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.api.backend/Backend.defaultLevel.<get-defaultLevel>|<get-defaultLevel>(){}[0]
     abstract val name // de.connect2x.lognity.api.backend/Backend.name|{}name[0]
         abstract fun <get-name>(): kotlin/String // de.connect2x.lognity.api.backend/Backend.name.<get-name>|<get-name>(){}[0]
+    abstract val overrideLevel // de.connect2x.lognity.api.backend/Backend.overrideLevel|{}overrideLevel[0]
+        abstract fun <get-overrideLevel>(): de.connect2x.lognity.api.logger/Level? // de.connect2x.lognity.api.backend/Backend.overrideLevel.<get-overrideLevel>|<get-overrideLevel>(){}[0]
 
     abstract var configSpec // de.connect2x.lognity.api.backend/Backend.configSpec|{}configSpec[0]
         abstract fun <get-configSpec>(): kotlin/Function1<de.connect2x.lognity.api.config/ConfigBuilder, kotlin/Unit> // de.connect2x.lognity.api.backend/Backend.configSpec.<get-configSpec>|<get-configSpec>(){}[0]
@@ -137,6 +151,8 @@ abstract interface de.connect2x.lognity.api.backend/Backend { // de.connect2x.lo
     abstract fun setCoroutineScopeProvider(kotlin/Function0<kotlinx.coroutines/CoroutineScope>) // de.connect2x.lognity.api.backend/Backend.setCoroutineScopeProvider|setCoroutineScopeProvider(kotlin.Function0<kotlinx.coroutines.CoroutineScope>){}[0]
 
     final object Companion : de.connect2x.lognity.api.backend/Backend { // de.connect2x.lognity.api.backend/Backend.Companion|null[0]
+        final val consoleColorScheme // de.connect2x.lognity.api.backend/Backend.Companion.consoleColorScheme|{}consoleColorScheme[0]
+            final fun <get-consoleColorScheme>(): de.connect2x.lognity.api.backend/ConsoleColorScheme // de.connect2x.lognity.api.backend/Backend.Companion.consoleColorScheme.<get-consoleColorScheme>|<get-consoleColorScheme>(){}[0]
         final val coroutineScope // de.connect2x.lognity.api.backend/Backend.Companion.coroutineScope|{}coroutineScope[0]
             final fun <get-coroutineScope>(): kotlinx.coroutines/CoroutineScope // de.connect2x.lognity.api.backend/Backend.Companion.coroutineScope.<get-coroutineScope>|<get-coroutineScope>(){}[0]
         final val defaultFormatter // de.connect2x.lognity.api.backend/Backend.Companion.defaultFormatter|{}defaultFormatter[0]
@@ -145,6 +161,8 @@ abstract interface de.connect2x.lognity.api.backend/Backend { // de.connect2x.lo
             final fun <get-defaultLevel>(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.api.backend/Backend.Companion.defaultLevel.<get-defaultLevel>|<get-defaultLevel>(){}[0]
         final val name // de.connect2x.lognity.api.backend/Backend.Companion.name|{}name[0]
             final fun <get-name>(): kotlin/String // de.connect2x.lognity.api.backend/Backend.Companion.name.<get-name>|<get-name>(){}[0]
+        final val overrideLevel // de.connect2x.lognity.api.backend/Backend.Companion.overrideLevel|{}overrideLevel[0]
+            final fun <get-overrideLevel>(): de.connect2x.lognity.api.logger/Level? // de.connect2x.lognity.api.backend/Backend.Companion.overrideLevel.<get-overrideLevel>|<get-overrideLevel>(){}[0]
 
         final var configSpec // de.connect2x.lognity.api.backend/Backend.Companion.configSpec|{}configSpec[0]
             final fun <get-configSpec>(): kotlin/Function1<de.connect2x.lognity.api.config/ConfigBuilder, kotlin/Unit> // de.connect2x.lognity.api.backend/Backend.Companion.configSpec.<get-configSpec>|<get-configSpec>(){}[0]
@@ -283,6 +301,8 @@ final class de.connect2x.lognity.api.config/Config { // de.connect2x.lognity.api
         final fun <get-initialEnableState>(): kotlin/Boolean // de.connect2x.lognity.api.config/Config.initialEnableState.<get-initialEnableState>|<get-initialEnableState>(){}[0]
     final val initialLevel // de.connect2x.lognity.api.config/Config.initialLevel|{}initialLevel[0]
         final fun <get-initialLevel>(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.api.config/Config.initialLevel.<get-initialLevel>|<get-initialLevel>(){}[0]
+    final val levelColors // de.connect2x.lognity.api.config/Config.levelColors|{}levelColors[0]
+        final fun <get-levelColors>(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/Config.levelColors.<get-levelColors>|<get-levelColors>(){}[0]
     final val overrides // de.connect2x.lognity.api.config/Config.overrides|{}overrides[0]
         final fun <get-overrides>(): kotlin.collections/List<de.connect2x.lognity.api.config/Override> // de.connect2x.lognity.api.config/Config.overrides.<get-overrides>|<get-overrides>(){}[0]
     final val sanitizationMode // de.connect2x.lognity.api.config/Config.sanitizationMode|{}sanitizationMode[0]
@@ -293,6 +313,7 @@ final class de.connect2x.lognity.api.config/Config { // de.connect2x.lognity.api
     final fun component3(): kotlin.collections/List<de.connect2x.lognity.api.appender/Appender> // de.connect2x.lognity.api.config/Config.component3|component3(){}[0]
     final fun component4(): kotlin.collections/List<de.connect2x.lognity.api.config/Override> // de.connect2x.lognity.api.config/Config.component4|component4(){}[0]
     final fun component5(): de.connect2x.lognity.api.sanitization/SanitizationMode // de.connect2x.lognity.api.config/Config.component5|component5(){}[0]
+    final fun component6(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/Config.component6|component6(){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.api.config/Config.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // de.connect2x.lognity.api.config/Config.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // de.connect2x.lognity.api.config/Config.toString|toString(){}[0]
@@ -307,15 +328,35 @@ final class de.connect2x.lognity.api.config/ConfigBuilder { // de.connect2x.logn
     final var level // de.connect2x.lognity.api.config/ConfigBuilder.level|{}level[0]
         final fun <get-level>(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.api.config/ConfigBuilder.level.<get-level>|<get-level>(){}[0]
         final fun <set-level>(de.connect2x.lognity.api.logger/Level) // de.connect2x.lognity.api.config/ConfigBuilder.level.<set-level>|<set-level>(de.connect2x.lognity.api.logger.Level){}[0]
+    final var levelColors // de.connect2x.lognity.api.config/ConfigBuilder.levelColors|{}levelColors[0]
+        final fun <get-levelColors>(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/ConfigBuilder.levelColors.<get-levelColors>|<get-levelColors>(){}[0]
+        final fun <set-levelColors>(de.connect2x.lognity.api.config/LevelColors) // de.connect2x.lognity.api.config/ConfigBuilder.levelColors.<set-levelColors>|<set-levelColors>(de.connect2x.lognity.api.config.LevelColors){}[0]
     final var sanitizationMode // de.connect2x.lognity.api.config/ConfigBuilder.sanitizationMode|{}sanitizationMode[0]
         final fun <get-sanitizationMode>(): de.connect2x.lognity.api.sanitization/SanitizationMode // de.connect2x.lognity.api.config/ConfigBuilder.sanitizationMode.<get-sanitizationMode>|<get-sanitizationMode>(){}[0]
         final fun <set-sanitizationMode>(de.connect2x.lognity.api.sanitization/SanitizationMode) // de.connect2x.lognity.api.config/ConfigBuilder.sanitizationMode.<set-sanitizationMode>|<set-sanitizationMode>(de.connect2x.lognity.api.sanitization.SanitizationMode){}[0]
 
     final fun appender(de.connect2x.lognity.api.appender/Appender) // de.connect2x.lognity.api.config/ConfigBuilder.appender|appender(de.connect2x.lognity.api.appender.Appender){}[0]
     final fun build(): de.connect2x.lognity.api.config/Config // de.connect2x.lognity.api.config/ConfigBuilder.build|build(){}[0]
+    final fun levelColors(de.connect2x.lognity.api.config/LevelColors) // de.connect2x.lognity.api.config/ConfigBuilder.levelColors|levelColors(de.connect2x.lognity.api.config.LevelColors){}[0]
     final fun override(de.connect2x.lognity.api.config/Override) // de.connect2x.lognity.api.config/ConfigBuilder.override|override(de.connect2x.lognity.api.config.Override){}[0]
     final fun setFrom(de.connect2x.lognity.api.config/Config): de.connect2x.lognity.api.config/ConfigBuilder // de.connect2x.lognity.api.config/ConfigBuilder.setFrom|setFrom(de.connect2x.lognity.api.config.Config){}[0]
+    final inline fun levelColors(kotlin/Function1<de.connect2x.lognity.api.config/LevelColorsBuilder, kotlin/Unit>) // de.connect2x.lognity.api.config/ConfigBuilder.levelColors|levelColors(kotlin.Function1<de.connect2x.lognity.api.config.LevelColorsBuilder,kotlin.Unit>){}[0]
     final inline fun override(kotlin/Function1<de.connect2x.lognity.api.config/OverrideBuilder, kotlin/Unit>) // de.connect2x.lognity.api.config/ConfigBuilder.override|override(kotlin.Function1<de.connect2x.lognity.api.config.OverrideBuilder,kotlin.Unit>){}[0]
+}
+
+final class de.connect2x.lognity.api.config/LevelColorsBuilder { // de.connect2x.lognity.api.config/LevelColorsBuilder|null[0]
+    constructor <init>() // de.connect2x.lognity.api.config/LevelColorsBuilder.<init>|<init>(){}[0]
+
+    final fun build(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColorsBuilder.build|build(){}[0]
+    final fun color(de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.color|color(de.connect2x.lognity.api.logger.Level;de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final fun setFrom(de.connect2x.lognity.api.config/LevelColors) // de.connect2x.lognity.api.config/LevelColorsBuilder.setFrom|setFrom(de.connect2x.lognity.api.config.LevelColors){}[0]
+    final fun setFrom(kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.api.ansi/AnsiSequence>) // de.connect2x.lognity.api.config/LevelColorsBuilder.setFrom|setFrom(kotlin.collections.Map<de.connect2x.lognity.api.logger.Level,de.connect2x.lognity.api.ansi.AnsiSequence>){}[0]
+    final inline fun debug(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.debug|debug(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final inline fun error(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.error|error(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final inline fun fatal(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.fatal|fatal(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final inline fun info(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.info|info(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final inline fun trace(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.trace|trace(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
+    final inline fun warn(de.connect2x.lognity.api.ansi/AnsiSequence) // de.connect2x.lognity.api.config/LevelColorsBuilder.warn|warn(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
 }
 
 final class de.connect2x.lognity.api.config/Override { // de.connect2x.lognity.api.config/Override|null[0]
@@ -536,6 +577,28 @@ final value class de.connect2x.lognity.api.ansi/AnsiString : kotlin/CharSequence
     final object Companion // de.connect2x.lognity.api.ansi/AnsiString.Companion|null[0]
 }
 
+final value class de.connect2x.lognity.api.config/LevelColors { // de.connect2x.lognity.api.config/LevelColors|null[0]
+    constructor <init>(kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.api.ansi/AnsiSequence>) // de.connect2x.lognity.api.config/LevelColors.<init>|<init>(kotlin.collections.Map<de.connect2x.lognity.api.logger.Level,de.connect2x.lognity.api.ansi.AnsiSequence>){}[0]
+
+    final val colors // de.connect2x.lognity.api.config/LevelColors.colors|{}colors[0]
+        final fun <get-colors>(): kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.api.ansi/AnsiSequence> // de.connect2x.lognity.api.config/LevelColors.colors.<get-colors>|<get-colors>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.api.config/LevelColors.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // de.connect2x.lognity.api.config/LevelColors.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // de.connect2x.lognity.api.config/LevelColors.toString|toString(){}[0]
+    final inline fun get(de.connect2x.lognity.api.logger/Level): de.connect2x.lognity.api.ansi/AnsiSequence // de.connect2x.lognity.api.config/LevelColors.get|get(de.connect2x.lognity.api.logger.Level){}[0]
+    final inline fun plus(de.connect2x.lognity.api.config/LevelColors): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColors.plus|plus(de.connect2x.lognity.api.config.LevelColors){}[0]
+
+    final object Companion { // de.connect2x.lognity.api.config/LevelColors.Companion|null[0]
+        final val dark // de.connect2x.lognity.api.config/LevelColors.Companion.dark|{}dark[0]
+            final fun <get-dark>(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColors.Companion.dark.<get-dark>|<get-dark>(){}[0]
+        final val light // de.connect2x.lognity.api.config/LevelColors.Companion.light|{}light[0]
+            final fun <get-light>(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColors.Companion.light.<get-light>|<get-light>(){}[0]
+
+        final fun optimal(): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColors.Companion.optimal|optimal(){}[0]
+    }
+}
+
 final object de.connect2x.lognity.api.appender/NoopAppender : de.connect2x.lognity.api.appender/Appender { // de.connect2x.lognity.api.appender/NoopAppender|null[0]
     final val formatter // de.connect2x.lognity.api.appender/NoopAppender.formatter|{}formatter[0]
         final fun <get-formatter>(): de.connect2x.lognity.api.format/Formatter // de.connect2x.lognity.api.appender/NoopAppender.formatter.<get-formatter>|<get-formatter>(){}[0]
@@ -549,6 +612,8 @@ final object de.connect2x.lognity.api.appender/NoopAppender : de.connect2x.logni
 }
 
 final object de.connect2x.lognity.api.backend/NoopBackend : de.connect2x.lognity.api.backend/Backend { // de.connect2x.lognity.api.backend/NoopBackend|null[0]
+    final val consoleColorScheme // de.connect2x.lognity.api.backend/NoopBackend.consoleColorScheme|{}consoleColorScheme[0]
+        final fun <get-consoleColorScheme>(): de.connect2x.lognity.api.backend/ConsoleColorScheme // de.connect2x.lognity.api.backend/NoopBackend.consoleColorScheme.<get-consoleColorScheme>|<get-consoleColorScheme>(){}[0]
     final val coroutineScope // de.connect2x.lognity.api.backend/NoopBackend.coroutineScope|{}coroutineScope[0]
         final fun <get-coroutineScope>(): kotlinx.coroutines/CoroutineScope // de.connect2x.lognity.api.backend/NoopBackend.coroutineScope.<get-coroutineScope>|<get-coroutineScope>(){}[0]
     final val defaultFormatter // de.connect2x.lognity.api.backend/NoopBackend.defaultFormatter|{}defaultFormatter[0]
@@ -557,6 +622,8 @@ final object de.connect2x.lognity.api.backend/NoopBackend : de.connect2x.lognity
         final fun <get-defaultLevel>(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.api.backend/NoopBackend.defaultLevel.<get-defaultLevel>|<get-defaultLevel>(){}[0]
     final val name // de.connect2x.lognity.api.backend/NoopBackend.name|{}name[0]
         final fun <get-name>(): kotlin/String // de.connect2x.lognity.api.backend/NoopBackend.name.<get-name>|<get-name>(){}[0]
+    final val overrideLevel // de.connect2x.lognity.api.backend/NoopBackend.overrideLevel|{}overrideLevel[0]
+        final fun <get-overrideLevel>(): de.connect2x.lognity.api.logger/Level? // de.connect2x.lognity.api.backend/NoopBackend.overrideLevel.<get-overrideLevel>|<get-overrideLevel>(){}[0]
 
     final var configSpec // de.connect2x.lognity.api.backend/NoopBackend.configSpec|{}configSpec[0]
         final fun <get-configSpec>(): kotlin/Function1<de.connect2x.lognity.api.config/ConfigBuilder, kotlin/Unit> // de.connect2x.lognity.api.backend/NoopBackend.configSpec.<get-configSpec>|<get-configSpec>(){}[0]
@@ -620,6 +687,7 @@ final val de.connect2x.lognity.api.backend/isSetOnce // de.connect2x.lognity.api
 
 final fun (context(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/MessageScope)).de.connect2x.lognity.api.sanitization/secret(kotlin/Any?): kotlin/String // de.connect2x.lognity.api.sanitization/secret|secret(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.MessageScope)(kotlin.Any?){}[0]
 final fun (kotlin/Function2<de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/MessageScope, kotlin/Any?>).de.connect2x.lognity.api.logger/invoke(de.connect2x.lognity.api.logger/Logger): kotlin/Any? // de.connect2x.lognity.api.logger/invoke|invoke@kotlin.Function2<de.connect2x.lognity.api.logger.Logger,de.connect2x.lognity.api.logger.MessageScope,kotlin.Any?>(de.connect2x.lognity.api.logger.Logger){}[0]
+final fun (kotlin/String).de.connect2x.lognity.api.ansi/toAnsiSequence(): de.connect2x.lognity.api.ansi/AnsiSequence // de.connect2x.lognity.api.ansi/toAnsiSequence|toAnsiSequence@kotlin.String(){}[0]
 final fun de.connect2x.lognity.api.logger/Logger(kotlin/String? = ..., kotlin/Function1<de.connect2x.lognity.api.context/ContextBuilder, kotlin/Unit> = ...): de.connect2x.lognity.api.logger/Logger // de.connect2x.lognity.api.logger/Logger|Logger(kotlin.String?;kotlin.Function1<de.connect2x.lognity.api.context.ContextBuilder,kotlin.Unit>){}[0]
 final inline fun (context(de.connect2x.lognity.api.logger/MessageScope), kotlin/String).de.connect2x.lognity.api.ansi/reset(): de.connect2x.lognity.api.ansi/AnsiString // de.connect2x.lognity.api.ansi/reset|reset(de.connect2x.lognity.api.logger.MessageScope)@kotlin.String(){}[0]
 final inline fun (context(de.connect2x.lognity.api.logger/MessageScope), kotlin/String).de.connect2x.lognity.api.ansi/with(de.connect2x.lognity.api.ansi/AnsiSequence): de.connect2x.lognity.api.ansi/AnsiString // de.connect2x.lognity.api.ansi/with|with(de.connect2x.lognity.api.logger.MessageScope)@kotlin.String(de.connect2x.lognity.api.ansi.AnsiSequence){}[0]
@@ -632,6 +700,7 @@ final inline fun (de.connect2x.lognity.api.logger/Logger).de.connect2x.lognity.a
 final inline fun (de.connect2x.lognity.api.logger/Logger).de.connect2x.lognity.api.logger/warn(kotlin/Throwable?, de.connect2x.lognity.api.marker/Marker? = ..., crossinline kotlin/Function2<de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/MessageScope, kotlin/Any?>) // de.connect2x.lognity.api.logger/warn|warn@de.connect2x.lognity.api.logger.Logger(kotlin.Throwable?;de.connect2x.lognity.api.marker.Marker?;kotlin.Function2<de.connect2x.lognity.api.logger.Logger,de.connect2x.lognity.api.logger.MessageScope,kotlin.Any?>){}[0]
 final inline fun (kotlin/String).de.connect2x.lognity.api.ansi/toAnsi(): de.connect2x.lognity.api.ansi/AnsiString // de.connect2x.lognity.api.ansi/toAnsi|toAnsi@kotlin.String(){}[0]
 final inline fun de.connect2x.lognity.api.config/Config(kotlin/Function1<de.connect2x.lognity.api.config/ConfigBuilder, kotlin/Unit>): de.connect2x.lognity.api.config/Config // de.connect2x.lognity.api.config/Config|Config(kotlin.Function1<de.connect2x.lognity.api.config.ConfigBuilder,kotlin.Unit>){}[0]
+final inline fun de.connect2x.lognity.api.config/LevelColors(kotlin/Function1<de.connect2x.lognity.api.config/LevelColorsBuilder, kotlin/Unit>): de.connect2x.lognity.api.config/LevelColors // de.connect2x.lognity.api.config/LevelColors|LevelColors(kotlin.Function1<de.connect2x.lognity.api.config.LevelColorsBuilder,kotlin.Unit>){}[0]
 final inline fun de.connect2x.lognity.api.context/Context(kotlin/Function1<de.connect2x.lognity.api.context/ContextBuilder, kotlin/Unit>): de.connect2x.lognity.api.context/Context // de.connect2x.lognity.api.context/Context|Context(kotlin.Function1<de.connect2x.lognity.api.context.ContextBuilder,kotlin.Unit>){}[0]
 final inline fun de.connect2x.lognity.api.marker/Marker(kotlin/String, kotlin/String = ..., kotlin/Boolean = ...): de.connect2x.lognity.api.marker/Marker // de.connect2x.lognity.api.marker/Marker|Marker(kotlin.String;kotlin.String;kotlin.Boolean){}[0]
 final suspend inline fun (de.connect2x.lognity.api.logger/Logger).de.connect2x.lognity.api.logger/deriveSuspend(crossinline kotlin/Function1<de.connect2x.lognity.api.context/ContextBuilder, kotlin/Unit> = ...): de.connect2x.lognity.api.logger/Logger // de.connect2x.lognity.api.logger/deriveSuspend|deriveSuspend@de.connect2x.lognity.api.logger.Logger(kotlin.Function1<de.connect2x.lognity.api.context.ContextBuilder,kotlin.Unit>){}[0]

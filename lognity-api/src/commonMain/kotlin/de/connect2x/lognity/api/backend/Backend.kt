@@ -6,10 +6,10 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import kotlinx.coroutines.CoroutineScope
-import org.jetbrains.annotations.TestOnly
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
+import kotlinx.coroutines.CoroutineScope
+import org.jetbrains.annotations.TestOnly
 
 @PublishedApi
 internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
@@ -48,8 +48,10 @@ interface Backend {
 
         override val name: String get() = currentBackend.load().name
         override val defaultLevel: Level get() = currentBackend.load().defaultLevel
+        override val overrideLevel: Level? get() = currentBackend.load().overrideLevel
         override val defaultFormatter: Formatter get() = currentBackend.load().defaultFormatter
         override val coroutineScope: CoroutineScope get() = currentBackend.load().coroutineScope
+        override val consoleColorScheme: ConsoleColorScheme get() = currentBackend.load().consoleColorScheme
 
         override var configSpec: ConfigSpec
             get() = currentBackend.load().configSpec
@@ -92,6 +94,12 @@ interface Backend {
     val defaultLevel: Level
 
     /**
+     * The global override log level as provided by the environment
+     * through program arguments and environment variables.
+     */
+    val overrideLevel: Level?
+
+    /**
      * The default log formatter used by this backend when not explicitly specified.
      * This is used for formatting log messages in appenders.
      */
@@ -115,6 +123,12 @@ interface Backend {
      * The coroutine scope used by the backend for asynchronous operations.
      */
     val coroutineScope: CoroutineScope
+
+    /**
+     * The global console color scheme as guessed by the Lognity implementation.
+     * **Note that this might not be 100% accurate on all platforms!**
+     */
+    val consoleColorScheme: ConsoleColorScheme
 
     /**
      * Sets the provider for the coroutine scope used by the backend.

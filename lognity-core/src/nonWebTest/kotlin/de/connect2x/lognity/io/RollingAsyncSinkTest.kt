@@ -1,13 +1,13 @@
 package de.connect2x.lognity.io
 
-import kotlinx.io.buffered
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
-import kotlinx.io.readString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Clock
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readString
 
 class RollingAsyncSinkTest {
     private fun getTestBasePath(name: String): Path {
@@ -32,7 +32,7 @@ class RollingAsyncSinkTest {
             maxFileSize = 1024,
             useTimestamps = false,
             deleteExisting = true,
-            latestSuffix = "-latest"
+            latestSuffix = "-latest",
         )
         try {
             sink.write("Hello, Rolling World!")
@@ -45,8 +45,7 @@ class RollingAsyncSinkTest {
 
             val result = SystemFileSystem.source(files[0]).buffered().use { it.readString() }
             assertEquals("Hello, Rolling World!", result)
-        }
-        finally {
+        } finally {
             cleanup(basePath)
         }
     }
@@ -60,7 +59,7 @@ class RollingAsyncSinkTest {
             maxFileSize = 10L,
             useTimestamps = false,
             deleteExisting = true,
-            latestSuffix = "-latest"
+            latestSuffix = "-latest",
         )
         try {
             // Write 3 chunks of 10 bytes each
@@ -86,8 +85,7 @@ class RollingAsyncSinkTest {
             assertEquals("klmnopqrst", SystemFileSystem.source(file2).buffered().use { it.readString() })
             assertEquals("", SystemFileSystem.source(file3Latest).buffered().use { it.readString() })
 
-        }
-        finally {
+        } finally {
             cleanup(basePath)
         }
     }
@@ -102,7 +100,7 @@ class RollingAsyncSinkTest {
             maxFileSize = 10L,
             useTimestamps = false,
             deleteExisting = true,
-            latestSuffix = "-latest"
+            latestSuffix = "-latest",
         )
         try {
             sink.write("first_____")
@@ -115,8 +113,7 @@ class RollingAsyncSinkTest {
             val files = SystemFileSystem.list(parentDir)
 
             assertEquals(fileCount, files.size, "Should have 3 files")
-        }
-        finally {
+        } finally {
             cleanup(basePath)
         }
     }
@@ -125,7 +122,7 @@ class RollingAsyncSinkTest {
     fun `No latest suffix`() {
         val basePath = getTestBasePath("no_suffix")
         val sink = RollingAsyncSink(
-            basePath, fileCount = 2, maxFileSize = 10L, useTimestamps = false, deleteExisting = true, latestSuffix = ""
+            basePath, fileCount = 2, maxFileSize = 10L, useTimestamps = false, deleteExisting = true, latestSuffix = "",
         )
         try {
             sink.write("0123456789")
@@ -141,8 +138,7 @@ class RollingAsyncSinkTest {
 
             assertEquals("", SystemFileSystem.source(file0).buffered().use { it.readString() })
             assertEquals("abcdefghij", SystemFileSystem.source(file1).buffered().use { it.readString() })
-        }
-        finally {
+        } finally {
             cleanup(basePath)
         }
     }
@@ -156,7 +152,7 @@ class RollingAsyncSinkTest {
             maxFileSize = 1000,
             useTimestamps = true,
             deleteExisting = true,
-            latestSuffix = "-latest"
+            latestSuffix = "-latest",
         )
         try {
             sink.write("Timestamped")
@@ -167,8 +163,7 @@ class RollingAsyncSinkTest {
             assertEquals(1, files.size)
             assertTrue(files[0].name.contains("-latest"), "Should contain latest suffix")
             assertTrue(files[0].name.contains("20"), "Should contain part of year")
-        }
-        finally {
+        } finally {
             cleanup(basePath)
         }
     }

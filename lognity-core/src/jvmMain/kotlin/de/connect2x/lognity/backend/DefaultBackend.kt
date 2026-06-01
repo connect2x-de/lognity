@@ -4,15 +4,19 @@ package de.connect2x.lognity.backend
 
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
+import de.connect2x.lognity.api.backend.ConsoleColorScheme
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.appender.ExtendedConsoleAppender
 
-internal actual fun getDefaultLogLevel(): Level { // @formatter:off
+internal actual fun getConsoleColorScheme(): ConsoleColorScheme = ConsoleColorScheme.DARK
+
+internal actual fun getOverrideLogLevel(): Level? { // @formatter:off
     return System.getenv("LOGNITY_DEFAULT_LEVEL")?.let(Level::byName)
         ?: System.getProperty("lognity.default.level")?.let(Level::byName)
-        ?: Level.INFO
 } // @formatter:on
+
+internal actual fun getDefaultLogLevel(): Level = getOverrideLogLevel() ?: Level.INFO
 
 internal actual fun createSystemLogAppender( // @formatter:off
     pattern: String,

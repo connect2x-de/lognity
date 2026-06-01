@@ -8,6 +8,7 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.util.eventType
+import kotlin.uuid.Uuid
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValuesOf
 import kotlinx.cinterop.memScoped
@@ -16,7 +17,6 @@ import platform.windows.DeregisterEventSource
 import platform.windows.HANDLE
 import platform.windows.RegisterEventSourceW
 import platform.windows.ReportEventW
-import kotlin.uuid.Uuid
 
 /**
  * Appender that writes log messages to the Windows Event Log.

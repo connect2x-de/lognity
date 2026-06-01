@@ -16,8 +16,7 @@ internal inline fun <R> Mutex.withLock(action: () -> R): R {
     return try {
         lock()
         action()
-    }
-    finally {
+    } finally {
         unlock()
     }
 }
@@ -26,8 +25,7 @@ internal suspend inline fun <R> Mutex.withLockSuspend(action: () -> R): R {
     return try {
         lockSuspend()
         action()
-    }
-    finally {
+    } finally {
         unlock()
     }
 }

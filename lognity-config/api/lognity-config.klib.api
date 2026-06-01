@@ -15,6 +15,72 @@ open annotation class de.connect2x.lognity.config/SerializableConfigDsl : kotlin
     constructor <init>() // de.connect2x.lognity.config/SerializableConfigDsl.<init>|<init>(){}[0]
 }
 
+final enum class de.connect2x.lognity.config.ansi/SerializableAnsiBg : kotlin/Enum<de.connect2x.lognity.config.ansi/SerializableAnsiBg> { // de.connect2x.lognity.config.ansi/SerializableAnsiBg|null[0]
+    enum entry BLACK // de.connect2x.lognity.config.ansi/SerializableAnsiBg.BLACK|null[0]
+    enum entry BLUE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.BLUE|null[0]
+    enum entry CYAN // de.connect2x.lognity.config.ansi/SerializableAnsiBg.CYAN|null[0]
+    enum entry DEFAULT // de.connect2x.lognity.config.ansi/SerializableAnsiBg.DEFAULT|null[0]
+    enum entry GREEN // de.connect2x.lognity.config.ansi/SerializableAnsiBg.GREEN|null[0]
+    enum entry HI_BLACK // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_BLACK|null[0]
+    enum entry HI_BLUE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_BLUE|null[0]
+    enum entry HI_CYAN // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_CYAN|null[0]
+    enum entry HI_GREEN // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_GREEN|null[0]
+    enum entry HI_PURPLE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_PURPLE|null[0]
+    enum entry HI_RED // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_RED|null[0]
+    enum entry HI_WHITE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_WHITE|null[0]
+    enum entry HI_YELLOW // de.connect2x.lognity.config.ansi/SerializableAnsiBg.HI_YELLOW|null[0]
+    enum entry PURPLE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.PURPLE|null[0]
+    enum entry RED // de.connect2x.lognity.config.ansi/SerializableAnsiBg.RED|null[0]
+    enum entry WHITE // de.connect2x.lognity.config.ansi/SerializableAnsiBg.WHITE|null[0]
+    enum entry YELLOW // de.connect2x.lognity.config.ansi/SerializableAnsiBg.YELLOW|null[0]
+
+    final val entries // de.connect2x.lognity.config.ansi/SerializableAnsiBg.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<de.connect2x.lognity.config.ansi/SerializableAnsiBg> // de.connect2x.lognity.config.ansi/SerializableAnsiBg.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val value // de.connect2x.lognity.config.ansi/SerializableAnsiBg.value|{}value[0]
+        final fun <get-value>(): de.connect2x.lognity.api.ansi/AnsiBg // de.connect2x.lognity.config.ansi/SerializableAnsiBg.value.<get-value>|<get-value>(){}[0]
+
+    final fun valueOf(kotlin/String): de.connect2x.lognity.config.ansi/SerializableAnsiBg // de.connect2x.lognity.config.ansi/SerializableAnsiBg.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<de.connect2x.lognity.config.ansi/SerializableAnsiBg> // de.connect2x.lognity.config.ansi/SerializableAnsiBg.values|values#static(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // de.connect2x.lognity.config.ansi/SerializableAnsiBg.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.ansi/SerializableAnsiBg> // de.connect2x.lognity.config.ansi/SerializableAnsiBg.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // de.connect2x.lognity.config.ansi/SerializableAnsiBg.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+final enum class de.connect2x.lognity.config.ansi/SerializableAnsiFg : kotlin/Enum<de.connect2x.lognity.config.ansi/SerializableAnsiFg> { // de.connect2x.lognity.config.ansi/SerializableAnsiFg|null[0]
+    enum entry BLACK // de.connect2x.lognity.config.ansi/SerializableAnsiFg.BLACK|null[0]
+    enum entry BLUE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.BLUE|null[0]
+    enum entry CYAN // de.connect2x.lognity.config.ansi/SerializableAnsiFg.CYAN|null[0]
+    enum entry DEFAULT // de.connect2x.lognity.config.ansi/SerializableAnsiFg.DEFAULT|null[0]
+    enum entry GREEN // de.connect2x.lognity.config.ansi/SerializableAnsiFg.GREEN|null[0]
+    enum entry HI_BLACK // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_BLACK|null[0]
+    enum entry HI_BLUE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_BLUE|null[0]
+    enum entry HI_CYAN // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_CYAN|null[0]
+    enum entry HI_GREEN // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_GREEN|null[0]
+    enum entry HI_PURPLE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_PURPLE|null[0]
+    enum entry HI_RED // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_RED|null[0]
+    enum entry HI_WHITE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_WHITE|null[0]
+    enum entry HI_YELLOW // de.connect2x.lognity.config.ansi/SerializableAnsiFg.HI_YELLOW|null[0]
+    enum entry PURPLE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.PURPLE|null[0]
+    enum entry RED // de.connect2x.lognity.config.ansi/SerializableAnsiFg.RED|null[0]
+    enum entry WHITE // de.connect2x.lognity.config.ansi/SerializableAnsiFg.WHITE|null[0]
+    enum entry YELLOW // de.connect2x.lognity.config.ansi/SerializableAnsiFg.YELLOW|null[0]
+
+    final val entries // de.connect2x.lognity.config.ansi/SerializableAnsiFg.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<de.connect2x.lognity.config.ansi/SerializableAnsiFg> // de.connect2x.lognity.config.ansi/SerializableAnsiFg.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val value // de.connect2x.lognity.config.ansi/SerializableAnsiFg.value|{}value[0]
+        final fun <get-value>(): de.connect2x.lognity.api.ansi/AnsiFg // de.connect2x.lognity.config.ansi/SerializableAnsiFg.value.<get-value>|<get-value>(){}[0]
+
+    final fun valueOf(kotlin/String): de.connect2x.lognity.config.ansi/SerializableAnsiFg // de.connect2x.lognity.config.ansi/SerializableAnsiFg.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<de.connect2x.lognity.config.ansi/SerializableAnsiFg> // de.connect2x.lognity.config.ansi/SerializableAnsiFg.values|values#static(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // de.connect2x.lognity.config.ansi/SerializableAnsiFg.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<de.connect2x.lognity.config.ansi/SerializableAnsiFg> // de.connect2x.lognity.config.ansi/SerializableAnsiFg.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // de.connect2x.lognity.config.ansi/SerializableAnsiFg.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
 abstract fun interface de.connect2x.lognity.config.extension/ConfigExtension { // de.connect2x.lognity.config.extension/ConfigExtension|null[0]
     abstract fun (de.connect2x.lognity.config.extension/ConfigExtensionRegistrar).register() // de.connect2x.lognity.config.extension/ConfigExtension.register|register@de.connect2x.lognity.config.extension.ConfigExtensionRegistrar(){}[0]
 }
@@ -339,7 +405,7 @@ final class de.connect2x.lognity.config.override/SerializableOverride { // de.co
 }
 
 final class de.connect2x.lognity.config/SerializableConfig { // de.connect2x.lognity.config/SerializableConfig|null[0]
-    constructor <init>(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.sanitization/SanitizationMode> = ...) // de.connect2x.lognity.config/SerializableConfig.<init>|<init>(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.sanitization.SanitizationMode>){}[0]
+    constructor <init>(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.sanitization/SanitizationMode> = ..., kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String>> = ...) // de.connect2x.lognity.config/SerializableConfig.<init>|<init>(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.sanitization.SanitizationMode>;kotlin.collections.Map<de.connect2x.lognity.api.logger.Level,de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String>>){}[0]
 
     final val appenders // de.connect2x.lognity.config/SerializableConfig.appenders|{}appenders[0]
         final fun <get-appenders>(): kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> // de.connect2x.lognity.config/SerializableConfig.appenders.<get-appenders>|<get-appenders>(){}[0]
@@ -349,6 +415,8 @@ final class de.connect2x.lognity.config/SerializableConfig { // de.connect2x.log
         final fun <get-enabled>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> // de.connect2x.lognity.config/SerializableConfig.enabled.<get-enabled>|<get-enabled>(){}[0]
     final val level // de.connect2x.lognity.config/SerializableConfig.level|{}level[0]
         final fun <get-level>(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> // de.connect2x.lognity.config/SerializableConfig.level.<get-level>|<get-level>(){}[0]
+    final val levelColors // de.connect2x.lognity.config/SerializableConfig.levelColors|{}levelColors[0]
+        final fun <get-levelColors>(): kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String>> // de.connect2x.lognity.config/SerializableConfig.levelColors.<get-levelColors>|<get-levelColors>(){}[0]
     final val overrides // de.connect2x.lognity.config/SerializableConfig.overrides|{}overrides[0]
         final fun <get-overrides>(): kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> // de.connect2x.lognity.config/SerializableConfig.overrides.<get-overrides>|<get-overrides>(){}[0]
     final val sanitizationMode // de.connect2x.lognity.config/SerializableConfig.sanitizationMode|{}sanitizationMode[0]
@@ -365,7 +433,8 @@ final class de.connect2x.lognity.config/SerializableConfig { // de.connect2x.log
     final fun component5(): kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> // de.connect2x.lognity.config/SerializableConfig.component5|component5(){}[0]
     final fun component6(): kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> // de.connect2x.lognity.config/SerializableConfig.component6|component6(){}[0]
     final fun component7(): de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.sanitization/SanitizationMode> // de.connect2x.lognity.config/SerializableConfig.component7|component7(){}[0]
-    final fun copy(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.sanitization/SanitizationMode> = ...): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.copy|copy(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.sanitization.SanitizationMode>){}[0]
+    final fun component8(): kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String>> // de.connect2x.lognity.config/SerializableConfig.component8|component8(){}[0]
+    final fun copy(kotlin/Int = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.logger/Level> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/Boolean> = ..., kotlin.collections/List<de.connect2x.lognity.config.appender/SerializableAppender> = ..., kotlin.collections/List<de.connect2x.lognity.config.condition/SerializableCondition> = ..., kotlin.collections/List<de.connect2x.lognity.config.override/SerializableOverride> = ..., de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.api.sanitization/SanitizationMode> = ..., kotlin.collections/Map<de.connect2x.lognity.api.logger/Level, de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String>> = ...): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config/SerializableConfig.copy|copy(kotlin.Int;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.logger.Level>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.Boolean>;kotlin.collections.List<de.connect2x.lognity.config.appender.SerializableAppender>;kotlin.collections.List<de.connect2x.lognity.config.condition.SerializableCondition>;kotlin.collections.List<de.connect2x.lognity.config.override.SerializableOverride>;de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.api.sanitization.SanitizationMode>;kotlin.collections.Map<de.connect2x.lognity.api.logger.Level,de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String>>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // de.connect2x.lognity.config/SerializableConfig.equals|equals(kotlin.Any?){}[0]
     final fun getCombinedLevel(): de.connect2x.lognity.api.logger/Level // de.connect2x.lognity.config/SerializableConfig.getCombinedLevel|getCombinedLevel(){}[0]
     final fun hashCode(): kotlin/Int // de.connect2x.lognity.config/SerializableConfig.hashCode|hashCode(){}[0]
