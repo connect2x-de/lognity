@@ -25,3 +25,10 @@ value class AnsiSequence @PublishedApi internal constructor(@PublishedApi intern
     /** Return the raw escape sequence string. */
     override fun toString(): String = value
 }
+
+/**
+ * Convert this string into an ANSI sequence with the same contents.
+ *
+ * @return A new ANSI sequence with the same contents as this string.
+ */
+fun String.toAnsiSequence(): AnsiSequence = AnsiSequence(this)

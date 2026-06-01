@@ -80,7 +80,7 @@ value class AnsiFg @PublishedApi internal constructor(@PublishedApi internal val
     inline infix fun on(bg: AnsiBg): AnsiSequence = AnsiSequence(
         "${
             AnsiMod.default(bg)
-        }${AnsiMod.default(this)}"
+        }${AnsiMod.default(this)}",
     )
 
     /**
@@ -93,6 +93,6 @@ value class AnsiFg @PublishedApi internal constructor(@PublishedApi internal val
     inline infix fun boldOn(bg: AnsiBg): AnsiSequence = AnsiSequence(
         "${
             AnsiMod.default(bg)
-        }${AnsiMod.bold(this)}"
+        }${AnsiMod.bold(this)}",
     )
 }

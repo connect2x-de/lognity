@@ -6,16 +6,15 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import de.connect2x.lognity.api.sanitization.SanitizationMode
 import de.connect2x.lognity.format.SimpleFormatter.Companion.default
 import de.connect2x.lognity.util.ThreadLocal
 import de.connect2x.lognity.util.getThreadId
 import de.connect2x.lognity.util.getThreadName
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 /**
  * A simple, fast log message formatter that compiles format strings once and reuses them.
@@ -37,6 +36,8 @@ class SimpleFormatter(
     private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
 ) : Formatter {
     companion object {
+        private const val NA_PLACEHOLDER: String = "(_)"
+
         private val context: ThreadLocal<FormatterContext> = ThreadLocal { FormatterContext() }
 
         private val maxLevelNameLength: Int = Level.entries //
@@ -76,15 +77,15 @@ class SimpleFormatter(
          */
         val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off
             "r" to CompiledFormat.Text(AnsiSequence.reset.toString()),
-            "levelColor" to CompiledFormat.Variable { ctx -> ctx.level.ansi.toString() },
-            "marker" to CompiledFormat.Variable { ctx -> ctx.marker?.name ?: "<n/a>" },
-            "message" to CompiledFormat.Variable { ctx -> ctx.content.toString() },
-            "thread" to CompiledFormat.Variable { getThreadName() },
-            "threadId" to CompiledFormat.Variable { getThreadId().toString() },
-            "level" to CompiledFormat.Variable { ctx -> paddedLevelNames[ctx.level.ordinal] },
-            "levelSymbol" to CompiledFormat.Variable { ctx -> ctx.level.symbol },
-            "name" to CompiledFormat.Variable { ctx -> ctx.logger.context[Logger.Name]?.name ?: "<n/a>" },
-            "coroutineName" to CompiledFormat.Variable { ctx -> ctx.logger.context[Logger.CoroutineName]?.name ?: "<n/a>" },
+            "marker" to CompiledFormat.Variable(::formatMarker),
+            "message" to CompiledFormat.Variable(::formatMessage),
+            "thread" to CompiledFormat.Variable(::formatThreadName),
+            "threadId" to CompiledFormat.Variable(::formatThreadId),
+            "levelColor" to CompiledFormat.Variable(::formatLevelColor),
+            "level" to CompiledFormat.Variable(::formatLevelName),
+            "levelSymbol" to CompiledFormat.Variable(::formatLevelSymbol),
+            "name" to CompiledFormat.Variable(::formatLoggerName),
+            "coroutineName" to CompiledFormat.Variable(::formatCoroutineName),
             "yyyy" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(yearFormat) },
             "MM" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(monthFormat) },
             "dd" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(dayFormat) },
@@ -92,7 +93,33 @@ class SimpleFormatter(
             "mm" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(minuteFormat) },
             "ss" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFormat) },
             "SSS" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFractionFormat) }
-        )) // @formatter:on
+        ))
+        // @formatter:on
+
+        private fun formatLevelColor(context: FormatterContext): String {
+            val config = context.logger.config
+            return config.levelColors[context.level].toString()
+        }
+
+        private fun formatLevelName(context: FormatterContext): String = paddedLevelNames[context.level.ordinal]
+        private fun formatLevelSymbol(context: FormatterContext): String = context.level.symbol
+
+        private fun formatMarker(context: FormatterContext): String = context.marker?.name ?: NA_PLACEHOLDER
+        private fun formatMessage(context: FormatterContext): String = context.content.toString()
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun formatThreadName(context: FormatterContext): String = getThreadName()
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun formatThreadId(context: FormatterContext): String = getThreadId().toString()
+
+        private fun formatLoggerName(context: FormatterContext): String {
+            return context.logger.context[Logger.Name]?.name ?: NA_PLACEHOLDER
+        }
+
+        private fun formatCoroutineName(context: FormatterContext): String {
+            return context.logger.context[Logger.CoroutineName]?.name ?: NA_PLACEHOLDER
+        }
     }
 
     private val formats: SharedHashMap<String, CompiledFormat<FormatterContext>> = SharedHashMap()
@@ -120,12 +147,14 @@ class SimpleFormatter(
         s: String
     ): String { // @formatter:on
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
-        return format(context.get().apply {
-            this.logger = logger
-            this.level = level
-            this.content = content
-            this.marker = marker
-            this.timestamp = timestamp
-        })
+        return format(
+            context.get().apply {
+                this.logger = logger
+                this.level = level
+                this.content = content
+                this.marker = marker
+                this.timestamp = timestamp
+            },
+        )
     }
 }

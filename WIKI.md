@@ -11,11 +11,13 @@ Welcome to the single-file wiki for the Lognity logging library.
         - [3.1.2. Formatters](#312-formatters)
         - [3.1.3. Filters](#313-filters)
         - [3.1.4. Overrides](#314-overrides)
+        - [3.1.5. Colors](#315-colors)
     - [3.2. File based configuration](#32-file-based-configuration)
         - [3.2.1. Appenders](#321-appenders)
         - [3.2.2. Filters](#322-filters)
         - [3.2.3. Overrides](#323-overrides)
         - [3.2.4. Providers](#324-providers)
+        - [3.2.5. Colors](#325-colors)
     - [3.3. Environment based configuration](#33-environment-based-configuration)
         - [3.3.1. JVM](#331-jvm)
         - [3.3.2. Native](#332-native)
@@ -125,6 +127,9 @@ val myConfig: Config = Config {
 }
 ```
 
+> Note: inspect `de.connect2x.lognity.api.config.ConfigBuilder` to get a list of
+> all available DSL functions.
+
 #### 3.1.1. Appenders
 
 Appenders effectively model IO-sinks which the `Logger` instance pipes the messages into after some basic  
@@ -220,9 +225,9 @@ import de.connect2x.lognity.api.appender.Filter
 // a set of loggers based on their package name.
 val myFilter: Filter = object : Filter {
     override operator fun invoke(
-        logger: Logger, 
-        level: Level, 
-        message: String, 
+        logger: Logger,
+        level: Level,
+        message: String,
         marker: Marker?
     ): Boolean = logger.name.startsWith("com.example.")
 }
@@ -247,9 +252,38 @@ val myConfig: Config = Config {
         applyWhen { logger, _, _ -> logger.name.startsWith("com.example.") }
         // Any per-logger values to be overridden when the above predicate evaluates to true
         level = Level.TRACE
+        enableState = true
     }
 }
 ```
+
+> Note: inspect `de.connect2x.lognity.api.config.Override` to get a list of
+> all available overridable properties.
+
+#### 3.1.5. Colors
+
+Lognity offers various customization points and APIs for dealing with different
+types of consoles, including the detection of console color schemes on supported targets.  
+This allows Lognity to always pick the optimal default colors for your console.
+
+However, this might not satisfy the requirements of every use case, so colors can be customized  
+via the configuration using the `LevelColors` API:
+
+```kotlin
+import de.connect2x.lognity.api.config.Config
+import de.connect2x.lognity.api.ansi.AnsiFg
+import de.connect2x.lognity.api.ansi.AnsiBg
+import de.connect2x.lognity.api.ansi.on
+
+val myConfig: Config = Config {
+    levelColors {
+        debug(AnsiFg.hiCyan on AnsiBg.default)
+    }
+}
+```
+
+> Note: inspect `de.connect2x.lognity.api.config.LevelColorsBuilder` to get a list of
+> all available DSL functions.
 
 ### 3.2. File based configuration
 
@@ -448,6 +482,27 @@ The provider may be accessed using the single-brace syntax `{NAME}`:
 
 For more detailed information on providers, check the KDoc of the `ConfigExtensionRegistrar` class.
 
+#### 3.2.5. Colors
+
+Log colors as described by [3.1.5. Colors](#315-colors) can also be configured when using  
+the JSON config system:
+
+```json5
+{
+    "version": 1,
+    "level_colors": {
+        // Use pre-defined color constants that expand to ANSI codes..
+        "DEBUG": "{Foreground.CYAN}{Background.DEFAULT}",
+        // ..or go completely wild and use your own custom strings
+        "INFO": "HELLO!",
+        // ...
+    }
+}
+```
+
+> Note: to get a full list of all available pre-defined colors,
+> check the `SerializableAnsiBg` and `SerializableAnsiFg` enums.
+
 ### 3.3. Environment based configuration
 
 Being able to quickly change the logging configuration without touching any source code or config files is
@@ -499,4 +554,10 @@ configuration specification provided by the `Backend`.
 
 #### 3.3.4. NodeJS
 
-Not supported as of last edit.
+**Environment variables**
+
+| Name                  | Values                                 |
+|-----------------------|----------------------------------------|
+| LOGNITY_DEFAULT_LEVEL | TRACE, DEBUG, INFO, WARN, ERROR, FATAL |
+
+> Example: `LOGNITY_DEFAULT_LEVEL=TRACE npm start .`

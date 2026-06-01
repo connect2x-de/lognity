@@ -44,6 +44,17 @@ class SecretTest {
     }
 
     @Test
+    fun testSecretObfuscateFixed() {
+        val logger = TestLogger(Config(sanitizationMode = SanitizationMode.OBFUSCATE_FIXED))
+        val value = "password"
+        with(logger) {
+            with(MessageScope) {
+                assertEquals("***", secret(value))
+            }
+        }
+    }
+
+    @Test
     fun testSecretHide() {
         val logger = TestLogger(Config(sanitizationMode = SanitizationMode.HIDE))
         val value = "sensitive"

@@ -41,16 +41,15 @@ class SimpleFormatterTest {
         val logger = createTestLogger(name = "my-logger", coroutineName = "my-coroutine")
 
         // levelColor and r
-        val levelColor = Level.INFO.ansi.toString()
         val reset = AnsiSequence.reset.toString()
         assertEquals(
-            "${levelColor}INFO${reset}",
-            formatter(logger, Level.INFO, "msg", null, timestamp, "{{levelColor}}INFO{{r}}")
+            "INFO${reset}",
+            formatter(logger, Level.INFO, "msg", null, timestamp, "INFO{{r}}"),
         )
 
         // marker
         assertEquals("test-marker", formatter(logger, Level.INFO, "msg", TestMarker(), timestamp, "{{marker}}"))
-        assertEquals("<n/a>", formatter(logger, Level.INFO, "msg", null, timestamp, "{{marker}}"))
+        assertEquals("(_)", formatter(logger, Level.INFO, "msg", null, timestamp, "{{marker}}"))
 
         // message
         assertEquals("Hello World", formatter(logger, Level.INFO, "Hello World", null, timestamp, "{{message}}"))
@@ -68,11 +67,11 @@ class SimpleFormatterTest {
 
         // name
         assertEquals("my-logger", formatter(logger, Level.INFO, "msg", null, timestamp, "{{name}}"))
-        assertEquals("<n/a>", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{name}}"))
+        assertEquals("(_)", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{name}}"))
 
         // coroutineName
         assertEquals("my-coroutine", formatter(logger, Level.INFO, "msg", null, timestamp, "{{coroutineName}}"))
-        assertEquals("<n/a>", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{coroutineName}}"))
+        assertEquals("(_)", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{coroutineName}}"))
 
         // timestamp components (2024-03-19T14:30:00.123Z)
         assertEquals("2024", formatter(logger, Level.INFO, "msg", null, timestamp, "{{yyyy}}"))
@@ -88,20 +87,20 @@ class SimpleFormatterTest {
     fun `Custom variables`() {
         val variables = mapOf(
             "custom" to CompiledFormat.Variable<FormatterContext> { ctx -> "custom-${ctx.content}" },
-            "static" to CompiledFormat.Text("static-val")
+            "static" to CompiledFormat.Text("static-val"),
         )
         val formatter = SimpleFormatter(variables)
 
         assertEquals(
             "custom-hello static-val",
-            formatter(NoopLogger, Level.INFO, "hello", null, timestamp, "{{custom}} {{static}}")
+            formatter(NoopLogger, Level.INFO, "hello", null, timestamp, "{{custom}} {{static}}"),
         )
     }
 
     @Test
     fun `Compilation and caching`() {
         val formatter = SimpleFormatter(
-            mapOf("v" to CompiledFormat.Variable { ctx -> ctx.content.toString() })
+            mapOf("v" to CompiledFormat.Variable { ctx -> ctx.content.toString() }),
         )
 
         val formatString = "Value: {{v}}"

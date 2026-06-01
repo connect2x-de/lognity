@@ -7,7 +7,8 @@ class CompiledFormatTest {
     private val variables: Map<String, CompiledFormat.Segment<String>> = mapOf(
         "foo" to CompiledFormat.Text(", World!"),
         "bar" to CompiledFormat.Variable { ctx -> """🦊 goes $ctx!""" },
-        "baz" to CompiledFormat.Variable { ctx -> ctx })
+        "baz" to CompiledFormat.Variable { ctx -> ctx },
+    )
 
     @Test
     fun `Empty input should result in empty output`() {
@@ -37,7 +38,9 @@ class CompiledFormatTest {
             "mm" to CompiledFormat.Variable { "48" },
             "ss" to CompiledFormat.Variable { "12" },
             "SSS" to CompiledFormat.Variable { "223" }
-        ), "{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}") // @formatter:on
+        ),
+            "{{yyyy}}/{{MM}}/{{dd}} {{hh}}:{{mm}}:{{ss}}.{{SSS}}",
+        ) // @formatter:on
         assertEquals("2000/12/07 00:48:12.223", format(Unit))
     }
 }

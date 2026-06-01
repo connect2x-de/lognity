@@ -13,7 +13,6 @@ internal class ThreadLocal<T>(
             val newValue = initializer()
             ref.set(newValue)
             newValue
-        }
-        else oldValue
+        } else oldValue
     }
 }

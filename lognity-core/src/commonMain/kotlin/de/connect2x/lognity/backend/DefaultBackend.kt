@@ -3,6 +3,7 @@ package de.connect2x.lognity.backend
 import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.appender.Filter
 import de.connect2x.lognity.api.backend.Backend
+import de.connect2x.lognity.api.backend.ConsoleColorScheme
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.config.ConfigSpec
 import de.connect2x.lognity.api.context.Context
@@ -17,13 +18,15 @@ import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
 import de.connect2x.lognity.util.ShutdownHandler
+import kotlin.concurrent.atomics.AtomicReference
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlin.concurrent.atomics.AtomicReference
 
 internal expect fun getDefaultLogLevel(): Level
+internal expect fun getOverrideLogLevel(): Level?
+internal expect fun getConsoleColorScheme(): ConsoleColorScheme
 
 internal expect fun createSystemConsoleAppender( // @formatter:off
     pattern: String,
@@ -52,6 +55,8 @@ internal expect fun createSystemLogAppender( // @formatter:off
 object DefaultBackend : Backend {
     override val name: String = "Lognity"
     override val defaultLevel: Level = getDefaultLogLevel()
+    override val overrideLevel: Level? = getOverrideLogLevel()
+    override val consoleColorScheme: ConsoleColorScheme = getConsoleColorScheme()
 
     private val coroutineScopeProvider: AtomicReference<() -> CoroutineScope> = AtomicReference {
         val supervisorJob = SupervisorJob()
@@ -61,12 +66,12 @@ object DefaultBackend : Backend {
 
     override val coroutineScope: CoroutineScope by lazy( // @formatter:off
         mode = LazyThreadSafetyMode.SYNCHRONIZED,
-        initializer = coroutineScopeProvider.load()
+        initializer = coroutineScopeProvider.load(),
     ) // @formatter:on
 
     private val _configSpec: AtomicReference<ConfigSpec> = AtomicReference {
         systemLogAppender(
-            "{{levelColor}}>> {{levelSymbol}} {{hh}}:{{mm}}:{{ss}}.{{SSS}} [{{threadId}}/{{coroutineName}}][{{name}}] {{message}}{{r}}"
+            "{{levelColor}}>> {{levelSymbol}} {{hh}}:{{mm}}:{{ss}}.{{SSS}} [{{threadId}}/{{coroutineName}}][{{name}}] {{message}}{{r}}",
         )
     }
 
@@ -93,11 +98,14 @@ object DefaultBackend : Backend {
     }
 
     override fun createLogger(name: String?, contextSpec: ContextSpec): Logger {
-        return DefaultLogger(Config(configSpec), Context {
-            this@DefaultBackend.contextSpec(this)
-            contextSpec()
-            name?.let(::Name)?.let(::value)
-        })
+        return DefaultLogger(
+            Config(configSpec),
+            Context {
+                this@DefaultBackend.contextSpec(this)
+                contextSpec()
+                name?.let(::Name)?.let(::value)
+            },
+        )
     }
 
     override fun setCoroutineScopeProvider(provider: () -> CoroutineScope) {

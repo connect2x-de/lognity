@@ -7,8 +7,8 @@ import de.connect2x.lognity.api.config.ConfigBuilder
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.appender.FileAppender
 import de.connect2x.lognity.appender.RollingFileAppender
-import kotlinx.io.files.Path
 import kotlin.jvm.JvmName
+import kotlinx.io.files.Path
 
 /**
  * Adds a new file appender to this logger config.
@@ -68,7 +68,7 @@ fun ConfigBuilder.rollingFileAppender( // @formatter:off
             maxFileSize,
             useTimestamps,
             deleteExisting,
-            latestSuffix
-        )
+            latestSuffix,
+        ),
     )
 }

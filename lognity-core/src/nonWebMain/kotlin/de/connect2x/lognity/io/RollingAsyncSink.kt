@@ -1,6 +1,8 @@
 package de.connect2x.lognity.io
 
 import de.connect2x.lognity.api.backend.Backend
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.time.Clock
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -14,8 +16,6 @@ import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import kotlin.concurrent.atomics.AtomicLong
-import kotlin.time.Clock
 
 /**
  * An asynchronous, thread-safe sink that supports rolling files based on size and count.
@@ -112,8 +112,7 @@ internal class RollingAsyncSink( // @formatter:off
             if (latestFilePath == null) { // If we can't figure out the latest file, start fresh
                 deleteExisting()
                 latestFilePath = resolveLatestFilePath(fileIndex)
-            }
-            else {
+            } else {
                 // If we found the latest file, we parse the current segment number to pick up where we left off
                 val result = latestFileNamePattern.matchEntire(latestFilePath.name)
                 fileIndex =
@@ -152,14 +151,12 @@ internal class RollingAsyncSink( // @formatter:off
         val timestamp = if (useTimestamps) {
             val ts = result.groupValues.getOrNull(FILE_TIMESTAMP_GROUP) ?: ""
             "-$ts"
-        }
-        else ""
+        } else ""
 
         val newFileName = if ("." in name) {
             val fileExt = name.substringAfterLast('.')
             "$rawName.$fileIndex$timestamp.$fileExt"
-        }
-        else {
+        } else {
             "$rawName.$fileIndex$timestamp"
         }
         return path.parent?.let { parent -> Path(parent, newFileName) } ?: Path(newFileName)
@@ -170,8 +167,7 @@ internal class RollingAsyncSink( // @formatter:off
         val timestampPattern = if (useTimestamps) "-([0-9T\\-+.Z]+)" else ""
         val suffix = if (matchLatestOnly) {
             if (latestSuffix.isNotEmpty()) "(${latestSuffix.replace(".", "\\.")})" else ""
-        }
-        else {
+        } else {
             if (latestSuffix.isNotEmpty()) "(${latestSuffix.replace(".", "\\.")})?" else ""
         }
 
@@ -179,8 +175,7 @@ internal class RollingAsyncSink( // @formatter:off
             val fileNameWithoutExt = fileName.substringBeforeLast('.').replace(".", "\\.")
             val fileExt = fileName.substringAfterLast('.')
             Regex("""($fileNameWithoutExt)\.([0-9]+)$timestampPattern$suffix\.($fileExt)""")
-        }
-        else {
+        } else {
             Regex("""($fileName)\.([0-9]+)$timestampPattern$suffix""")
         }
     }

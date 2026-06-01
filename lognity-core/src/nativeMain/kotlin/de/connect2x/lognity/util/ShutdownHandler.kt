@@ -13,11 +13,13 @@ internal actual object ShutdownHandler {
     private val mutex: Mutex = Mutex()
 
     init {
-        atexit(staticCFunction<Unit> {
-            // Need full qualifier here because of volatile closure
-            val handler = ShutdownHandler // To prevent formatter from removing ref
-            handler.invokeAll()
-        })
+        atexit(
+            staticCFunction<Unit> {
+                // Need full qualifier here because of volatile closure
+                val handler = ShutdownHandler // To prevent formatter from removing ref
+                handler.invokeAll()
+            },
+        )
     }
 
     actual fun invokeAll() {

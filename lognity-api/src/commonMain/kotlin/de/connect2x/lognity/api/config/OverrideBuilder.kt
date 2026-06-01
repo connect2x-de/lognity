@@ -32,7 +32,7 @@ class OverrideBuilder @PublishedApi internal constructor() {
     internal fun build(): Override = Override( // @formatter:off
         condition = condition,
         level = level,
-        enableState = enableState
+        enableState = enableState,
     ) // @formatter:on
 }
 

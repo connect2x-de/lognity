@@ -23,6 +23,7 @@ fun secret(value: Any?): String {
     val rawString = value.toString()
     return when (logger.config.sanitizationMode) {
         SanitizationMode.OBFUSCATE -> "*".repeat(rawString.length)
+        SanitizationMode.OBFUSCATE_FIXED -> "***"
         SanitizationMode.HIDE -> ""
         else -> rawString
     }

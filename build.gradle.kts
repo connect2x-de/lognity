@@ -31,7 +31,7 @@ subprojects {
     version = rootProject.version
     if (System.getenv("WITH_LOCK")?.toBoolean() == true) defaultDependencyLocking()
 
-    if ("example" in project.name || "schema" in project.name) return@subprojects
+    if ("example" in project.name || "benchmarks" in project.name) return@subprojects
 
     if(CI.isCI) {
         apply<MavenPublishBasePlugin>()
