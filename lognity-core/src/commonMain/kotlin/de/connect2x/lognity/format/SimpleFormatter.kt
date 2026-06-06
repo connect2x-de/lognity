@@ -6,15 +6,14 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.format.CompiledFormat.Segment
 import de.connect2x.lognity.format.SimpleFormatter.Companion.default
 import de.connect2x.lognity.util.ThreadLocal
 import de.connect2x.lognity.util.getThreadId
 import de.connect2x.lognity.util.getThreadName
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.number
 import kotlin.time.Clock
-import kotlin.time.Instant
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.DateTimeFormat
 
 /**
  * A simple, fast log message formatter that compiles format strings once and reuses them.
@@ -33,7 +32,7 @@ import kotlinx.datetime.format.DateTimeFormat
  *   values define how those placeholders are rendered from a [FormatterContext].
  */
 class SimpleFormatter(
-    private val variables: Map<String, CompiledFormat.Segment<FormatterContext>>
+    private val variables: Map<String, Segment<FormatterContext>>
 ) : Formatter {
     companion object {
         private const val NA_PLACEHOLDER: String = "(_)"
@@ -47,14 +46,14 @@ class SimpleFormatter(
             .map { it.name.padEnd(maxLevelNameLength, '-') } //
             .toTypedArray()
 
-        internal val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
-        internal val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
-        internal val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
-        internal val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
-        internal val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
-        internal val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
-        internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
-            DateTimeComponents.Format { secondFraction(3, 3) }
+        //internal val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
+        //internal val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
+        //internal val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
+        //internal val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
+        //internal val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
+        //internal val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
+        //internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
+        //    DateTimeComponents.Format { secondFraction(3, 3) }
 
         /**
          * A preconfigured [SimpleFormatter] that exposes a useful set of variables commonly needed in log output.
@@ -75,26 +74,42 @@ class SimpleFormatter(
          * - Date/time variables are evaluated at call time using [Clock.System.now].
          * - ANSI sequences depend on the chosen [Level] configuration.
          */
-        val default: SimpleFormatter = SimpleFormatter(mapOf( // @formatter:off
-            "r" to CompiledFormat.Text(AnsiSequence.reset.toString()),
-            "marker" to CompiledFormat.Variable(::formatMarker),
-            "message" to CompiledFormat.Variable(::formatMessage),
-            "thread" to CompiledFormat.Variable(::formatThreadName),
-            "threadId" to CompiledFormat.Variable(::formatThreadId),
-            "levelColor" to CompiledFormat.Variable(::formatLevelColor),
-            "level" to CompiledFormat.Variable(::formatLevelName),
-            "levelSymbol" to CompiledFormat.Variable(::formatLevelSymbol),
-            "name" to CompiledFormat.Variable(::formatLoggerName),
-            "coroutineName" to CompiledFormat.Variable(::formatCoroutineName),
-            "yyyy" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(yearFormat) },
-            "MM" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(monthFormat) },
-            "dd" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(dayFormat) },
-            "hh" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(hourFormat) },
-            "mm" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(minuteFormat) },
-            "ss" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFormat) },
-            "SSS" to CompiledFormat.Variable { ctx -> ctx.timestamp.format(secondFractionFormat) }
-        ))
-        // @formatter:on
+        val default: SimpleFormatter = SimpleFormatter(HashMap<String, Segment<FormatterContext>>().apply {
+            this += "r" to CompiledFormat.Text(AnsiSequence.reset.toString())
+            this += "marker" to CompiledFormat.Variable(::formatMarker)
+            this += "message" to CompiledFormat.Variable(::formatMessage)
+            this += "thread" to CompiledFormat.Variable(::formatThreadName)
+            this += "threadId" to CompiledFormat.Variable(::formatThreadId)
+            this += "levelColor" to CompiledFormat.Variable(::formatLevelColor)
+            this += "level" to CompiledFormat.Variable(::formatLevelName)
+            this += "levelSymbol" to CompiledFormat.Variable(::formatLevelSymbol)
+            this += "name" to CompiledFormat.Variable(::formatLoggerName)
+            this += "coroutineName" to CompiledFormat.Variable(::formatCoroutineName)
+            this += "yyyy" to CompiledFormat.Variable(::formatYear)
+            this += "MM" to CompiledFormat.Variable(::formatMonth)
+            this += "dd" to CompiledFormat.Variable(::formatDay)
+            this += "hh" to CompiledFormat.Variable(::formatHour)
+            this += "mm" to CompiledFormat.Variable(::formatMinute)
+            this += "ss" to CompiledFormat.Variable(::formatSecond)
+            this += "SSS" to CompiledFormat.Variable(::formatSecondFraction)
+        })
+
+        private fun formatYear(context: FormatterContext): String = context.timestamp.year.toString()
+        private fun formatMonth(context: FormatterContext): String = context.timestamp.month.number.toString().padStart(2, '0')
+        private fun formatDay(context: FormatterContext): String = context.timestamp.day.toString().padStart(2, '0')
+        private fun formatHour(context: FormatterContext): String = context.timestamp.hour.toString().padStart(2, '0')
+        private fun formatMinute(context: FormatterContext): String = context.timestamp.minute.toString().padStart(2, '0')
+        private fun formatSecond(context: FormatterContext): String = context.timestamp.second.toString().padStart(2, '0')
+
+        private fun formatSecondFraction(context: FormatterContext): String {
+            val fraction = (context.timestamp.nanosecond % 1000000000).toDouble() / 1000000000.0
+            val result = fraction.toString().substringAfter('.')
+            return when {
+                result.length > 3 -> result.take(3)
+                result.length < 3 -> result.padStart(3, '0')
+                else -> result
+            }
+        }
 
         private fun formatLevelColor(context: FormatterContext): String {
             val config = context.logger.config
@@ -143,7 +158,7 @@ class SimpleFormatter(
         level: Level,
         content: Any,
         marker: Marker?,
-        timestamp: Instant,
+        timestamp: LocalDateTime,
         s: String
     ): String { // @formatter:on
         val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }

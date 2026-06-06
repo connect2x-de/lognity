@@ -8,6 +8,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.MessageProvider
 import de.connect2x.lognity.api.logger.invoke
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.time.Clock
@@ -54,7 +56,7 @@ open class DefaultLogger( // @formatter:off
         if (!isEnabled || level < targetLevel) return
 
         val messageContent = message(this) ?: "null"
-        val timestamp = Clock.System.now()
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
         for (appender in config.appenders) {
             appender.append(
                 this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null,
@@ -79,7 +81,7 @@ open class DefaultLogger( // @formatter:off
 
         val messageContent = message(this) ?: "null"
 
-        val timestamp = Clock.System.now()
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
         for (appender in config.appenders) {
             appender.append(
                 this,

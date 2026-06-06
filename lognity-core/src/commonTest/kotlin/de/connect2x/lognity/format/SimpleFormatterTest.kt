@@ -6,13 +6,15 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 class SimpleFormatterTest {
-    private val timestamp = Instant.parse("2024-03-19T14:30:00.123Z")
+    private val timestamp = Instant.parse("2024-03-19T14:30:00.123Z").toLocalDateTime(TimeZone.UTC)
 
     private fun createTestLogger(name: String? = null, coroutineName: String? = null): Logger {
         val context = Context {

@@ -85,7 +85,8 @@ value class CompiledFormat<T> private constructor(val segments: List<Segment<T>>
      *
      * @param getter function that extracts or computes the string value from the given context [T].
      */
-    data class Variable<T>(val getter: (T) -> String) : Segment<T> {
+    @JvmInline
+    value class Variable<T>(val getter: (T) -> String) : Segment<T> {
         override operator fun invoke(ctx: T): String = getter(ctx)
     }
 
@@ -94,7 +95,8 @@ value class CompiledFormat<T> private constructor(val segments: List<Segment<T>>
      *
      * @param value the literal text value that will be emitted during rendering.
      */
-    data class Text<T>(val value: String) : Segment<T> {
+    @JvmInline
+    value class Text<T>(val value: String) : Segment<T> {
         override operator fun invoke(ctx: T): String = value
     }
 
@@ -105,7 +107,8 @@ value class CompiledFormat<T> private constructor(val segments: List<Segment<T>>
      * @param ctx the rendering context passed to every segment
      * @return the final rendered string
      */
-    operator fun invoke(ctx: T): String = segments.joinToString("") { segment ->
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun invoke(ctx: T): String = segments.joinToString("") { segment ->
         segment(ctx)
     }
 }

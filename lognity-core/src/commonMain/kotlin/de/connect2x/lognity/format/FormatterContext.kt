@@ -4,8 +4,10 @@ import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
-import kotlin.time.Instant
 
 /**
  * Context object provided to formatters when rendering log messages.
@@ -28,5 +30,5 @@ data class FormatterContext( // @formatter:off
     var level: Level = Level.default,
     var content: Any = "",
     var marker: Marker? = null,
-    var timestamp: Instant = Clock.System.now(),
+    var timestamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
 ) // @formatter:on

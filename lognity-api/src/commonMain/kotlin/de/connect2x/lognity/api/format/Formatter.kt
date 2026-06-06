@@ -4,7 +4,7 @@ import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import kotlin.time.Instant
+import kotlinx.datetime.LocalDateTime
 
 /**
  * A function which represents a transformation applied for a given template variable
@@ -42,7 +42,7 @@ fun interface Formatter {
         level: Level,
         content: Any,
         marker: Marker?,
-        timestamp: Instant,
+        timestamp: LocalDateTime,
         s: String
     ): String // @formatter:on
 
