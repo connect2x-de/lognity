@@ -46,15 +46,6 @@ class SimpleFormatter(
             .map { it.name.padEnd(maxLevelNameLength, '-') } //
             .toTypedArray()
 
-        //internal val yearFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { year() }
-        //internal val monthFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { monthNumber() }
-        //internal val dayFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { day() }
-        //internal val hourFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { hour() }
-        //internal val minuteFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { minute() }
-        //internal val secondFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format { second() }
-        //internal val secondFractionFormat: DateTimeFormat<DateTimeComponents> =
-        //    DateTimeComponents.Format { secondFraction(3, 3) }
-
         /**
          * A preconfigured [SimpleFormatter] that exposes a useful set of variables commonly needed in log output.
          *
@@ -95,11 +86,16 @@ class SimpleFormatter(
         })
 
         private fun formatYear(context: FormatterContext): String = context.timestamp.year.toString()
-        private fun formatMonth(context: FormatterContext): String = context.timestamp.month.number.toString().padStart(2, '0')
+        private fun formatMonth(context: FormatterContext): String =
+            context.timestamp.month.number.toString().padStart(2, '0')
+
         private fun formatDay(context: FormatterContext): String = context.timestamp.day.toString().padStart(2, '0')
         private fun formatHour(context: FormatterContext): String = context.timestamp.hour.toString().padStart(2, '0')
-        private fun formatMinute(context: FormatterContext): String = context.timestamp.minute.toString().padStart(2, '0')
-        private fun formatSecond(context: FormatterContext): String = context.timestamp.second.toString().padStart(2, '0')
+        private fun formatMinute(context: FormatterContext): String =
+            context.timestamp.minute.toString().padStart(2, '0')
+
+        private fun formatSecond(context: FormatterContext): String =
+            context.timestamp.second.toString().padStart(2, '0')
 
         private fun formatSecondFraction(context: FormatterContext): String {
             val fraction = (context.timestamp.nanosecond % 1000000000).toDouble() / 1000000000.0
@@ -161,7 +157,11 @@ class SimpleFormatter(
         timestamp: LocalDateTime,
         s: String
     ): String { // @formatter:on
-        val format = formats.getOrPut(s) { CompiledFormat.compile(variables, s) }
+        var format = formats[s]
+        if (format == null) {
+            format = CompiledFormat.compile(variables, s)
+            formats[s] = format
+        }
         return format(
             context.get().apply {
                 this.logger = logger
