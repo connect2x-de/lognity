@@ -8,8 +8,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
 import de.connect2x.lognity.api.marker.NoopMarker
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * A no-operation implementation of the [Backend] interface.

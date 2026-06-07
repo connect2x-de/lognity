@@ -9,10 +9,9 @@ internal class ThreadLocal<T>(
 
     fun get(): T {
         val oldValue = ref.get()
-        return if (oldValue == null) {
-            val newValue = initializer()
-            ref.set(newValue)
-            newValue
-        } else oldValue
+        if (oldValue != null) return oldValue
+        val newValue = initializer()
+        ref.set(newValue)
+        return newValue
     }
 }

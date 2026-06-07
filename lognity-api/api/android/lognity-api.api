@@ -181,6 +181,20 @@ public final class de/connect2x/lognity/api/appender/Appender$DefaultImpls {
 	public static fun getFilter (Lde/connect2x/lognity/api/appender/Appender;)Lde/connect2x/lognity/api/appender/Filter;
 }
 
+public final class de/connect2x/lognity/api/appender/FakeAppender : de/connect2x/lognity/api/appender/Appender {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lde/connect2x/lognity/api/format/Formatter;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lde/connect2x/lognity/api/format/Formatter;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun append (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)V
+	public fun appendSuspend (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun flush ()V
+	public fun flushSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getFilter ()Lde/connect2x/lognity/api/appender/Filter;
+	public fun getFormatter ()Lde/connect2x/lognity/api/format/Formatter;
+	public fun getName ()Ljava/lang/String;
+	public fun getPattern ()Ljava/lang/String;
+}
+
 public abstract interface class de/connect2x/lognity/api/appender/Filter {
 	public static final field Companion Lde/connect2x/lognity/api/appender/Filter$Companion;
 	public fun and (Lde/connect2x/lognity/api/appender/Filter;)Lde/connect2x/lognity/api/appender/Filter;
@@ -451,17 +465,12 @@ public final class de/connect2x/lognity/api/context/EmptyContext : de/connect2x/
 
 public abstract interface class de/connect2x/lognity/api/format/Formatter {
 	public static final field Companion Lde/connect2x/lognity/api/format/Formatter$Companion;
-	public abstract fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/Object;Lde/connect2x/lognity/api/marker/Marker;Lkotlin/time/Instant;Ljava/lang/String;)Ljava/lang/String;
-	public fun plus (Lde/connect2x/lognity/api/format/Formatter;)Lde/connect2x/lognity/api/format/Formatter;
+	public abstract fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/appender/Appender;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/Object;Lde/connect2x/lognity/api/marker/Marker;Lkotlinx/datetime/LocalDateTime;)Ljava/lang/String;
 }
 
 public final class de/connect2x/lognity/api/format/Formatter$Companion {
 	public final fun getDefault ()Lde/connect2x/lognity/api/format/Formatter;
 	public final fun getIdentity ()Lde/connect2x/lognity/api/format/Formatter;
-}
-
-public final class de/connect2x/lognity/api/format/Formatter$DefaultImpls {
-	public static fun plus (Lde/connect2x/lognity/api/format/Formatter;Lde/connect2x/lognity/api/format/Formatter;)Lde/connect2x/lognity/api/format/Formatter;
 }
 
 public final class de/connect2x/lognity/api/logger/ExceptionLoggingKt {

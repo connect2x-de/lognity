@@ -6,10 +6,10 @@ import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
-import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.annotations.TestOnly
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.AtomicReference
 
 @PublishedApi
 internal val currentBackend: AtomicReference<Backend> = AtomicReference(NoopBackend)
