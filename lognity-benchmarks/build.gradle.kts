@@ -66,8 +66,8 @@ benchmark {
     }
     configurations {
         named("main") {
-            iterationTime = 100
-            iterationTimeUnit = "ms"
+            iterationTime = 1
+            iterationTimeUnit = "s"
             iterations = 10
             warmups = 5
         }
