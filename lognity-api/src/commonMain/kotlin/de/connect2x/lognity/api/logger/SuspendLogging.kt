@@ -3,8 +3,8 @@ package de.connect2x.lognity.api.logger
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.context.ContextSpec
 import de.connect2x.lognity.api.logger.Logger.CoroutineName
-import kotlinx.coroutines.CoroutineName as KxCoroutineName
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.CoroutineName as KxCoroutineName
 
 /**
  * Creates a new [Logger] that derives from this instance within a coroutine.

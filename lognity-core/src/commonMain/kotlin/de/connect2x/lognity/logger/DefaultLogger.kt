@@ -58,7 +58,7 @@ open class DefaultLogger( // @formatter:off
         if (marker?.isEnabled == false) return
 
         val messageContent = message(this) ?: "null"
-        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         for (appender in config.appenders) {
             appender.append(
                 this,
@@ -88,7 +88,7 @@ open class DefaultLogger( // @formatter:off
 
         val messageContent = message(this) ?: "null"
 
-        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         for (appender in config.appenders) {
             appender.append(
                 this,

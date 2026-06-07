@@ -135,7 +135,25 @@ class SimpleFormatter(
         }
     }
 
-    private val formats: SharedHashMap<String, CompiledFormat<FormatterContext>> = SharedHashMap()
+    private val cachedFormatters: SharedHashMap<String, CompiledFormat<FormatterContext>> = SharedHashMap()
+
+    private fun getCompiledFormat(appender: Appender): CompiledFormat<FormatterContext> = when (appender) {
+        is AbstractAppender -> {
+            var format = appender.cachedFormat.load()
+            if (format == null) {
+                format = CompiledFormat.compile(variables, appender.pattern)
+                appender.cachedFormat.store(format)
+            }
+            format
+        }
+
+        else -> {
+            val pattern = appender.pattern
+            cachedFormatters.getOrPut(pattern) {
+                CompiledFormat.compile(variables, pattern)
+            }
+        }
+    }
 
     override operator fun invoke( // @formatter:off
         logger: Logger,
@@ -145,16 +163,7 @@ class SimpleFormatter(
         marker: Marker?,
         timestamp: LocalDateTime,
     ): String { // @formatter:on
-        val pattern = appender.pattern
-        var format = (appender as? AbstractAppender)?.cachedFormat
-        if (format == null) {
-            format = formats[pattern]
-            if (format == null) {
-                format = CompiledFormat.compile(variables, pattern)
-                formats[pattern] = format
-            }
-        }
-        return format(
+        return getCompiledFormat(appender)(
             context.get().apply {
                 this.logger = logger
                 this.level = level

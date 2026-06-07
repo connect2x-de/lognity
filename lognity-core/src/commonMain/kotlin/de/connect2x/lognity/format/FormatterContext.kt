@@ -30,5 +30,5 @@ data class FormatterContext( // @formatter:off
     var level: Level = Level.default,
     var content: Any = "",
     var marker: Marker? = null,
-    var timestamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    var timestamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
 ) // @formatter:on
