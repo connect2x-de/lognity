@@ -1,5 +1,6 @@
 package de.connect2x.lognity.api.format
 
+import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
@@ -18,7 +19,7 @@ fun interface Formatter {
          * This identity formatter can be used as a base for building more complex formatters
          * or when no formatting is desired.
          */
-        val identity: Formatter = Formatter { _, _, _, _, _, s -> s }
+        val identity: Formatter = Formatter { _, _, _, content, _, _ -> content.toString() }
 
         /**
          * The default formatter provided by the current log backend.
@@ -31,28 +32,18 @@ fun interface Formatter {
      * of the template variable associated with this format element.
      *
      * @param logger The logger instance associated with this format element.
+     * @param appender The appender invoking this formatter
      * @param level The level at which the message will be logged.
      * @param content The raw content of the message.
      * @param marker The log marker the message being formatted is tagged with.
-     * @param s The string being transformed.
      * @return The transformed string or the original string if no template variable was replaced.
      */
     operator fun invoke( // @formatter:off
         logger: Logger,
+        appender: Appender,
         level: Level,
         content: Any,
         marker: Marker?,
-        timestamp: LocalDateTime,
-        s: String
+        timestamp: LocalDateTime
     ): String // @formatter:on
-
-    /**
-     * Concatenates this format element with another to form a new [Formatter] instance.
-     *
-     * @param other The element with which to join this element to form a new formatter instance.
-     * @return A new [Formatter] instance containing both this and the other format element.
-     */
-    operator fun plus(other: Formatter): Formatter = Formatter { logger, level, content, marker, timestamp, s ->
-        other(logger, level, content, marker, timestamp, this(logger, level, content, marker, timestamp, s))
-    }
 }

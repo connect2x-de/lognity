@@ -1,5 +1,6 @@
 package de.connect2x.lognity.slf4j
 
+import de.connect2x.lognity.api.appender.FakeAppender
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
@@ -23,15 +24,19 @@ internal class Slf4jLognityLogger(
     override var level: Level = Level.default
     override var isEnabled: Boolean = true
 
-    private val formatPattern = config.appenders.first().pattern // Yank the first available log pattern for interop
+    private val appender: FakeAppender = FakeAppender( // @formatter:off
+        name = delegate.name,
+        pattern = config.appenders.first().pattern,
+        formatter = Formatter.default
+    ) // @formatter:on
 
     override fun log(level: Level, message: MessageProvider) = log(null, level, message)
 
     override fun log(marker: Marker?, level: Level, message: MessageProvider) {
         if (level < this.level || marker?.isEnabled == false) return
         val messageContent = message(this) ?: "null"
-        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
-        val formattedMessage = Formatter.default(this, level, messageContent, marker, timestamp, formatPattern)
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val formattedMessage = Formatter.default(this, appender, level, messageContent, marker, timestamp)
         when (level) {
             Level.TRACE -> delegate.trace(formattedMessage)
             Level.DEBUG -> delegate.debug(formattedMessage)

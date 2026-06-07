@@ -2,10 +2,12 @@ package de.connect2x.lognity.format
 
 import co.touchlab.stately.collections.SharedHashMap
 import de.connect2x.lognity.api.ansi.AnsiSequence
+import de.connect2x.lognity.api.appender.Appender
 import de.connect2x.lognity.api.format.Formatter
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.appender.AbstractAppender
 import de.connect2x.lognity.format.CompiledFormat.Segment
 import de.connect2x.lognity.format.SimpleFormatter.Companion.default
 import de.connect2x.lognity.util.ThreadLocal
@@ -32,7 +34,7 @@ import kotlin.time.Clock
  *   values define how those placeholders are rendered from a [FormatterContext].
  */
 class SimpleFormatter(
-    private val variables: Map<String, Segment<FormatterContext>>
+    internal val variables: Map<String, Segment<FormatterContext>>
 ) : Formatter {
     companion object {
         private const val NA_PLACEHOLDER: String = "(_)"
@@ -135,32 +137,22 @@ class SimpleFormatter(
 
     private val formats: SharedHashMap<String, CompiledFormat<FormatterContext>> = SharedHashMap()
 
-    /**
-     * Formats a log entry according to the provided format string [s].
-     *
-     * The format string may reference any variables known to this formatter (see [default] for
-     * the built-in set). The format is compiled on first use and cached for subsequent calls.
-     * This method is thread-safe and optimized to minimize allocations.
-     *
-     * @param logger The source [Logger].
-     * @param level The [Level] of the log entry.
-     * @param content The log message or object to be rendered.
-     * @param marker Optional [Marker] for additional classification.
-     * @param s The format string containing placeholders to resolve.
-     * @return The formatted log line.
-     */
     override operator fun invoke( // @formatter:off
         logger: Logger,
+        appender: Appender,
         level: Level,
         content: Any,
         marker: Marker?,
         timestamp: LocalDateTime,
-        s: String
     ): String { // @formatter:on
-        var format = formats[s]
+        val pattern = appender.pattern
+        var format = (appender as? AbstractAppender)?.cachedFormat
         if (format == null) {
-            format = CompiledFormat.compile(variables, s)
-            formats[s] = format
+            format = formats[pattern]
+            if (format == null) {
+                format = CompiledFormat.compile(variables, pattern)
+                formats[pattern] = format
+            }
         }
         return format(
             context.get().apply {

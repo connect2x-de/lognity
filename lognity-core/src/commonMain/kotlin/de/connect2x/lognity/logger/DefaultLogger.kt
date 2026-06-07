@@ -42,8 +42,8 @@ open class DefaultLogger( // @formatter:off
 
     override fun log(level: Level, message: MessageProvider) {
         val marker = context[Logger.DefaultMarker]?.marker
-        if (marker?.isEnabled == false) return
 
+        // Evaluate level
         var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
@@ -52,22 +52,27 @@ open class DefaultLogger( // @formatter:off
             override.enableState?.let { isEnabled = it }
             break // The first override that matches wins
         }
-
         if (!isEnabled || level < targetLevel) return
+
+        // Evaluate marker
+        if (marker?.isEnabled == false) return
 
         val messageContent = message(this) ?: "null"
         val timestamp = Clock.System.now().toLocalDateTime(TimeZone.UTC)
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null,
+                this,
+                level,
+                appender.formatter(this, appender, level, messageContent, marker, timestamp),
+                null,
             )
         }
     }
 
     override fun log(marker: Marker?, level: Level, message: MessageProvider) {
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
-        if (actualMarker?.isEnabled == false) return
 
+        // Evaluate level
         var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
@@ -76,8 +81,10 @@ open class DefaultLogger( // @formatter:off
             override.enableState?.let { isEnabled = it }
             break // The first override that matches wins
         }
-
         if (!isEnabled || level < targetLevel) return
+
+        // Evaluate marker
+        if (actualMarker?.isEnabled == false) return
 
         val messageContent = message(this) ?: "null"
 
@@ -86,7 +93,7 @@ open class DefaultLogger( // @formatter:off
             appender.append(
                 this,
                 level,
-                appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern),
+                appender.formatter(this, appender, level, messageContent, marker, timestamp),
                 marker,
             )
         }
