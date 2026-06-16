@@ -97,8 +97,7 @@ abstract fun interface de.connect2x.lognity.api.config/OverrideCondition { // de
 }
 
 abstract fun interface de.connect2x.lognity.api.format/Formatter { // de.connect2x.lognity.api.format/Formatter|null[0]
-    abstract fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/Any, de.connect2x.lognity.api.marker/Marker?, kotlin.time/Instant, kotlin/String): kotlin/String // de.connect2x.lognity.api.format/Formatter.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.Any;de.connect2x.lognity.api.marker.Marker?;kotlin.time.Instant;kotlin.String){}[0]
-    open fun plus(de.connect2x.lognity.api.format/Formatter): de.connect2x.lognity.api.format/Formatter // de.connect2x.lognity.api.format/Formatter.plus|plus(de.connect2x.lognity.api.format.Formatter){}[0]
+    abstract fun invoke(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.appender/Appender, de.connect2x.lognity.api.logger/Level, kotlin/Any, de.connect2x.lognity.api.marker/Marker?, kotlinx.datetime/LocalDateTime): kotlin/String // de.connect2x.lognity.api.format/Formatter.invoke|invoke(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.appender.Appender;de.connect2x.lognity.api.logger.Level;kotlin.Any;de.connect2x.lognity.api.marker.Marker?;kotlinx.datetime.LocalDateTime){}[0]
 
     final object Companion { // de.connect2x.lognity.api.format/Formatter.Companion|null[0]
         final val default // de.connect2x.lognity.api.format/Formatter.Companion.default|{}default[0]
@@ -292,6 +291,20 @@ abstract interface de.connect2x.lognity.api.marker/Marker { // de.connect2x.logn
     abstract var isEnabled // de.connect2x.lognity.api.marker/Marker.isEnabled|{}isEnabled[0]
         abstract fun <get-isEnabled>(): kotlin/Boolean // de.connect2x.lognity.api.marker/Marker.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
         abstract fun <set-isEnabled>(kotlin/Boolean) // de.connect2x.lognity.api.marker/Marker.isEnabled.<set-isEnabled>|<set-isEnabled>(kotlin.Boolean){}[0]
+}
+
+final class de.connect2x.lognity.api.appender/FakeAppender : de.connect2x.lognity.api.appender/Appender { // de.connect2x.lognity.api.appender/FakeAppender|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/String = ..., de.connect2x.lognity.api.format/Formatter = ...) // de.connect2x.lognity.api.appender/FakeAppender.<init>|<init>(kotlin.String?;kotlin.String;de.connect2x.lognity.api.format.Formatter){}[0]
+
+    final val formatter // de.connect2x.lognity.api.appender/FakeAppender.formatter|{}formatter[0]
+        final fun <get-formatter>(): de.connect2x.lognity.api.format/Formatter // de.connect2x.lognity.api.appender/FakeAppender.formatter.<get-formatter>|<get-formatter>(){}[0]
+    final val name // de.connect2x.lognity.api.appender/FakeAppender.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // de.connect2x.lognity.api.appender/FakeAppender.name.<get-name>|<get-name>(){}[0]
+    final val pattern // de.connect2x.lognity.api.appender/FakeAppender.pattern|{}pattern[0]
+        final fun <get-pattern>(): kotlin/String // de.connect2x.lognity.api.appender/FakeAppender.pattern.<get-pattern>|<get-pattern>(){}[0]
+
+    final fun append(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/FakeAppender.append|append(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
+    final suspend fun appendSuspend(de.connect2x.lognity.api.logger/Logger, de.connect2x.lognity.api.logger/Level, kotlin/String, de.connect2x.lognity.api.marker/Marker?) // de.connect2x.lognity.api.appender/FakeAppender.appendSuspend|appendSuspend(de.connect2x.lognity.api.logger.Logger;de.connect2x.lognity.api.logger.Level;kotlin.String;de.connect2x.lognity.api.marker.Marker?){}[0]
 }
 
 final class de.connect2x.lognity.api.config/Config { // de.connect2x.lognity.api.config/Config|null[0]

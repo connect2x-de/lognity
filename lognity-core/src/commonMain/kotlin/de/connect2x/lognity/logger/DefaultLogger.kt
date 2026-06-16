@@ -8,6 +8,8 @@ import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.MessageProvider
 import de.connect2x.lognity.api.logger.invoke
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.time.Clock
@@ -40,8 +42,8 @@ open class DefaultLogger( // @formatter:off
 
     override fun log(level: Level, message: MessageProvider) {
         val marker = context[Logger.DefaultMarker]?.marker
-        if (marker?.isEnabled == false) return
 
+        // Evaluate level
         var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
@@ -50,22 +52,27 @@ open class DefaultLogger( // @formatter:off
             override.enableState?.let { isEnabled = it }
             break // The first override that matches wins
         }
-
         if (!isEnabled || level < targetLevel) return
 
+        // Evaluate marker
+        if (marker?.isEnabled == false) return
+
         val messageContent = message(this) ?: "null"
-        val timestamp = Clock.System.now()
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         for (appender in config.appenders) {
             appender.append(
-                this, level, appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern), null,
+                this,
+                level,
+                appender.formatter(this, appender, level, messageContent, marker, timestamp),
+                null,
             )
         }
     }
 
     override fun log(marker: Marker?, level: Level, message: MessageProvider) {
         val actualMarker = marker ?: context[Logger.DefaultMarker]?.marker
-        if (actualMarker?.isEnabled == false) return
 
+        // Evaluate level
         var targetLevel = Backend.overrideLevel ?: this.level
         var isEnabled = isEnabled
         for (override in config.overrides) {
@@ -74,17 +81,19 @@ open class DefaultLogger( // @formatter:off
             override.enableState?.let { isEnabled = it }
             break // The first override that matches wins
         }
-
         if (!isEnabled || level < targetLevel) return
+
+        // Evaluate marker
+        if (actualMarker?.isEnabled == false) return
 
         val messageContent = message(this) ?: "null"
 
-        val timestamp = Clock.System.now()
+        val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         for (appender in config.appenders) {
             appender.append(
                 this,
                 level,
-                appender.formatter(this, level, messageContent, marker, timestamp, appender.pattern),
+                appender.formatter(this, appender, level, messageContent, marker, timestamp),
                 marker,
             )
         }

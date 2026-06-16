@@ -7,6 +7,7 @@ import com.sun.jna.Native
 import com.sun.jna.Platform
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.ptr.LongByReference
+import java.lang.ThreadLocal
 import java.lang.Thread as JavaThread
 
 private interface LibSystemLinux : Library {
@@ -34,14 +35,18 @@ private interface LibSystemMacos : Library {
     fun pthread_threadid_np(thread: Long, id: LongByReference): Int
 }
 
-internal actual fun getThreadId(): ULong = when {
-    Platform.isWindows() -> Kernel32.INSTANCE.GetCurrentThreadId().toULong()
-    Platform.isLinux() -> LibSystemLinux.syscall(LibSystemLinux.SYS_gettid).toULong()
-    Platform.isMac() -> {
-        val id = LongByReference(0)
-        LibSystemMacos.pthread_threadid_np(LibSystemMacos.pthread_self(), id)
-        id.value.toULong()
-    }
+private val currentThreadId: ThreadLocal<ULong> = ThreadLocal.withInitial {
+    when {
+        Platform.isWindows() -> Kernel32.INSTANCE.GetCurrentThreadId().toULong()
+        Platform.isLinux() -> LibSystemLinux.syscall(LibSystemLinux.SYS_gettid).toULong()
+        Platform.isMac() -> {
+            val id = LongByReference(0)
+            LibSystemMacos.pthread_threadid_np(LibSystemMacos.pthread_self(), id)
+            id.value.toULong()
+        }
 
-    else -> JavaThread.currentThread().id.toULong() // Fall back to JVM internal ID when nothing else is supported
+        else -> JavaThread.currentThread().id.toULong() // Fall back to JVM internal ID when nothing else is supported
+    }
 }
+
+internal actual fun getThreadId(): ULong = currentThreadId.get()

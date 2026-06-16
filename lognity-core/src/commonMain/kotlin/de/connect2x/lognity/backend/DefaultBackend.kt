@@ -18,11 +18,11 @@ import de.connect2x.lognity.format.SimpleFormatter
 import de.connect2x.lognity.logger.DefaultLogger
 import de.connect2x.lognity.logger.DefaultMarker
 import de.connect2x.lognity.util.ShutdownHandler
-import kotlin.concurrent.atomics.AtomicReference
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlin.concurrent.atomics.AtomicReference
 
 internal expect fun getDefaultLogLevel(): Level
 internal expect fun getOverrideLogLevel(): Level?

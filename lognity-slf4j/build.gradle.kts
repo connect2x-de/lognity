@@ -34,6 +34,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.lognityApi)
+                implementation(sharedLibs.kotlinx.datetime)
             }
         }
         @Suppress("UNUSED") //

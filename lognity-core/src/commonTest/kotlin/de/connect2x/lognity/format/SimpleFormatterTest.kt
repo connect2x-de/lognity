@@ -1,18 +1,21 @@
 package de.connect2x.lognity.format
 
 import de.connect2x.lognity.api.ansi.AnsiSequence
+import de.connect2x.lognity.api.appender.FakeAppender
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.logger.NoopLogger
 import de.connect2x.lognity.api.marker.Marker
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 class SimpleFormatterTest {
-    private val timestamp = Instant.parse("2024-03-19T14:30:00.123Z")
+    private val timestamp = Instant.parse("2024-03-19T14:30:00.123Z").toLocalDateTime(TimeZone.UTC)
 
     private fun createTestLogger(name: String? = null, coroutineName: String? = null): Logger {
         val context = Context {
@@ -44,43 +47,79 @@ class SimpleFormatterTest {
         val reset = AnsiSequence.reset.toString()
         assertEquals(
             "INFO${reset}",
-            formatter(logger, Level.INFO, "msg", null, timestamp, "INFO{{r}}"),
+            formatter(logger, FakeAppender(pattern = "INFO{{r}}"), Level.INFO, "msg", null, timestamp),
         )
 
         // marker
-        assertEquals("test-marker", formatter(logger, Level.INFO, "msg", TestMarker(), timestamp, "{{marker}}"))
-        assertEquals("(_)", formatter(logger, Level.INFO, "msg", null, timestamp, "{{marker}}"))
+        assertEquals(
+            "test-marker",
+            formatter(logger, FakeAppender(pattern = "{{marker}}"), Level.INFO, "msg", TestMarker(), timestamp)
+        )
+        assertEquals("(_)", formatter(logger, FakeAppender(pattern = "{{marker}}"), Level.INFO, "msg", null, timestamp))
 
         // message
-        assertEquals("Hello World", formatter(logger, Level.INFO, "Hello World", null, timestamp, "{{message}}"))
-        assertEquals("123", formatter(logger, Level.INFO, 123, null, timestamp, "{{message}}"))
+        assertEquals(
+            "Hello World",
+            formatter(logger, FakeAppender(pattern = "{{message}}"), Level.INFO, "Hello World", null, timestamp)
+        )
+        assertEquals("123", formatter(logger, FakeAppender(pattern = "{{message}}"), Level.INFO, 123, null, timestamp))
 
         // thread and threadId (just check they are not empty)
-        assertTrue(formatter(logger, Level.INFO, "msg", null, timestamp, "{{thread}}").isNotEmpty())
+        assertTrue(
+            formatter(
+                logger,
+                FakeAppender(pattern = "{{thread}}"),
+                Level.INFO,
+                "msg",
+                null,
+                timestamp
+            ).isNotEmpty()
+        )
 
         // level (padded)
-        assertEquals("INFO-", formatter(logger, Level.INFO, "msg", null, timestamp, "{{level}}"))
-        assertEquals("DEBUG", formatter(logger, Level.DEBUG, "msg", null, timestamp, "{{level}}"))
+        assertEquals(
+            "INFO-",
+            formatter(logger, FakeAppender(pattern = "{{level}}"), Level.INFO, "msg", null, timestamp)
+        )
+        assertEquals(
+            "DEBUG",
+            formatter(logger, FakeAppender(pattern = "{{level}}"), Level.DEBUG, "msg", null, timestamp)
+        )
 
         // levelSymbol
-        assertEquals(Level.INFO.symbol, formatter(logger, Level.INFO, "msg", null, timestamp, "{{levelSymbol}}"))
+        assertEquals(
+            Level.INFO.symbol,
+            formatter(logger, FakeAppender(pattern = "{{levelSymbol}}"), Level.INFO, "msg", null, timestamp)
+        )
 
         // name
-        assertEquals("my-logger", formatter(logger, Level.INFO, "msg", null, timestamp, "{{name}}"))
-        assertEquals("(_)", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{name}}"))
+        assertEquals(
+            "my-logger",
+            formatter(logger, FakeAppender(pattern = "{{name}}"), Level.INFO, "msg", null, timestamp)
+        )
+        assertEquals(
+            "(_)",
+            formatter(NoopLogger, FakeAppender(pattern = "{{name}}"), Level.INFO, "msg", null, timestamp)
+        )
 
         // coroutineName
-        assertEquals("my-coroutine", formatter(logger, Level.INFO, "msg", null, timestamp, "{{coroutineName}}"))
-        assertEquals("(_)", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{coroutineName}}"))
+        assertEquals(
+            "my-coroutine",
+            formatter(logger, FakeAppender(pattern = "{{coroutineName}}"), Level.INFO, "msg", null, timestamp)
+        )
+        assertEquals(
+            "(_)",
+            formatter(NoopLogger, FakeAppender(pattern = "{{coroutineName}}"), Level.INFO, "msg", null, timestamp)
+        )
 
         // timestamp components (2024-03-19T14:30:00.123Z)
-        assertEquals("2024", formatter(logger, Level.INFO, "msg", null, timestamp, "{{yyyy}}"))
-        assertEquals("03", formatter(logger, Level.INFO, "msg", null, timestamp, "{{MM}}"))
-        assertEquals("19", formatter(logger, Level.INFO, "msg", null, timestamp, "{{dd}}"))
-        assertEquals("14", formatter(logger, Level.INFO, "msg", null, timestamp, "{{hh}}"))
-        assertEquals("30", formatter(logger, Level.INFO, "msg", null, timestamp, "{{mm}}"))
-        assertEquals("00", formatter(logger, Level.INFO, "msg", null, timestamp, "{{ss}}"))
-        assertEquals("123", formatter(logger, Level.INFO, "msg", null, timestamp, "{{SSS}}"))
+        assertEquals("2024", formatter(logger, FakeAppender(pattern = "{{yyyy}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("03", formatter(logger, FakeAppender(pattern = "{{MM}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("19", formatter(logger, FakeAppender(pattern = "{{dd}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("14", formatter(logger, FakeAppender(pattern = "{{hh}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("30", formatter(logger, FakeAppender(pattern = "{{mm}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("00", formatter(logger, FakeAppender(pattern = "{{ss}}"), Level.INFO, "msg", null, timestamp))
+        assertEquals("123", formatter(logger, FakeAppender(pattern = "{{SSS}}"), Level.INFO, "msg", null, timestamp))
     }
 
     @Test
@@ -93,7 +132,14 @@ class SimpleFormatterTest {
 
         assertEquals(
             "custom-hello static-val",
-            formatter(NoopLogger, Level.INFO, "hello", null, timestamp, "{{custom}} {{static}}"),
+            formatter(
+                NoopLogger,
+                FakeAppender(pattern = "{{custom}} {{static}}"),
+                Level.INFO,
+                "hello",
+                null,
+                timestamp
+            ),
         )
     }
 
@@ -106,16 +152,25 @@ class SimpleFormatterTest {
         val formatString = "Value: {{v}}"
 
         // First call triggers compilation
-        assertEquals("Value: foo", formatter(NoopLogger, Level.INFO, "foo", null, timestamp, formatString))
+        assertEquals(
+            "Value: foo",
+            formatter(NoopLogger, FakeAppender(pattern = formatString), Level.INFO, "foo", null, timestamp)
+        )
 
         // Second call should use cached format
-        assertEquals("Value: bar", formatter(NoopLogger, Level.INFO, "bar", null, timestamp, formatString))
+        assertEquals(
+            "Value: bar",
+            formatter(NoopLogger, FakeAppender(pattern = formatString), Level.INFO, "bar", null, timestamp)
+        )
     }
 
     @Test
     fun `Text only format`() {
         val formatter = SimpleFormatter(emptyMap())
-        assertEquals("pure text", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "pure text"))
+        assertEquals(
+            "pure text",
+            formatter(NoopLogger, FakeAppender(pattern = "pure text"), Level.INFO, "msg", null, timestamp)
+        )
     }
 
     @Test
@@ -123,6 +178,9 @@ class SimpleFormatterTest {
         val formatter = SimpleFormatter(emptyMap())
         // Unknown variables are currently not recognized by the DFA if not in 'variables' map,
         // so they are treated as plain text.
-        assertEquals("{{missing}}", formatter(NoopLogger, Level.INFO, "msg", null, timestamp, "{{missing}}"))
+        assertEquals(
+            "{{missing}}",
+            formatter(NoopLogger, FakeAppender(pattern = "{{missing}}"), Level.INFO, "msg", null, timestamp)
+        )
     }
 }
