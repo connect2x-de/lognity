@@ -59,7 +59,6 @@ benchmark {
         register("linuxX64")
         register("linuxArm64")
         register("macosArm64")
-        register("macosX64")
         register("mingwX64")
         register("js")
         register("wasmJs")
