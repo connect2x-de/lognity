@@ -1,0 +1,7 @@
+scan:
+  skip-dirs:
+    - .gradle
+    - lognity-benchmarks
+    - lognity-example
+  scanners:
+    - vuln
