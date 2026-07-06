@@ -8,16 +8,8 @@ pluginManagement {
     }
 }
 
-@Suppress("UnstableApiUsage") //
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        maven("https://gitlab.com/api/v4/projects/68438621/packages/maven") // c2x Conventions
-    }
-}
-
 plugins {
-    id("de.connect2x.conventions.c2x-settings-plugin") version "20260618.105512"
+    id("de.connect2x.conventions.c2x-settings-plugin") version "20260706.081921"
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
