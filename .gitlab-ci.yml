@@ -8,9 +8,15 @@ workflow:
 
 stages:
   - build
+  - check
   - test
   - security
   - publish
+
+include:
+  - component: $CI_SERVER_FQDN/connect2x/meta/create-mr-discussions@main
+    inputs:
+      token: $MR_DISCUSSIONS_TOKEN
 
 variables:
   GRADLE_OPTS: -Dorg.gradle.daemon=false
