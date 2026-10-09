@@ -5,9 +5,9 @@ package de.connect2x.lognity.logstash
 import de.connect2x.lognity.api.logger.Level
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
-import io.ktor.utils.io.readLine
-import io.ktor.utils.io.readLineStrict
+import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -31,8 +31,7 @@ class LogstashTcpTest {
             LogstashConfig(
             destinations = listOf(
                 LogstashDestination(
-                    "127.0.0.1",
-                    (server.localAddress as InetSocketAddress).port
+                    "127.0.0.1", (server.localAddress as InetSocketAddress).port
                 )
             ), writeTimeout = 5.seconds, shutdownGracePeriod = 5.seconds, socketOptions = { sendBufferSize = 1024 }),
             LogstashEncoder { (it.message + "\n").encodeToByteArray() })
@@ -70,8 +69,7 @@ class LogstashTcpTest {
             LogstashConfig(
                 destinations = listOf(
                     LogstashDestination(
-                        "127.0.0.1",
-                        (server.localAddress as InetSocketAddress).port
+                        "127.0.0.1", (server.localAddress as InetSocketAddress).port
                     )
                 ), shutdownGracePeriod = 2.seconds, flushTimeout = 5.seconds
             )

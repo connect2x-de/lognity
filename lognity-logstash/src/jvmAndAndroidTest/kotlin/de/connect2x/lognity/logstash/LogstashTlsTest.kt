@@ -3,8 +3,8 @@
 package de.connect2x.lognity.logstash
 
 import de.connect2x.lognity.api.logger.Level
-import io.ktor.network.tls.addKeyStore
-import io.ktor.network.tls.certificates.buildKeyStore
+import io.ktor.network.tls.*
+import io.ktor.network.tls.certificates.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -51,7 +51,8 @@ class LogstashTlsTest {
                 appender.flushSuspend()
                 assertEquals("encrypted ä", received.await())
             }
-        } finally {
+        }
+        finally {
             appender.stopSuspend()
             server.close()
         }
@@ -61,12 +62,15 @@ class LogstashTlsTest {
     fun defaultTrustRejectsSelfSignedCertificate() = runBlocking {
         val server = server(keyStore())
         val failed = CompletableDeferred<Throwable>()
-        val appender = LogstashAppender(config(server).copy(
-            tls = {},
-            listeners = listOf(object : LogstashListener {
-                override fun connectionFailed(destination: LogstashDestination, cause: Throwable) { failed.complete(cause) }
+        val appender = LogstashAppender(
+            config(server).copy(
+                tls = {}, listeners = listOf(object : LogstashListener {
+                override fun connectionFailed(destination: LogstashDestination, cause: Throwable) {
+                    failed.complete(cause)
+                }
             })
-        ))
+            )
+        )
         try {
             withTimeout(10.seconds) {
                 val handshake = async(Dispatchers.IO) {
@@ -78,7 +82,8 @@ class LogstashTlsTest {
                 failed.await()
                 assertTrue(handshake.await().isFailure)
             }
-        } finally {
+        }
+        finally {
             appender.stopSuspend()
             server.close()
         }
@@ -90,12 +95,15 @@ class LogstashTlsTest {
         val server = server(keyStore)
         val trust = trustManager(keyStore)
         val failed = CompletableDeferred<Throwable>()
-        val appender = LogstashAppender(config(server).copy(
-            tls = { trustManager = trust },
-            listeners = listOf(object : LogstashListener {
-                override fun connectionFailed(destination: LogstashDestination, cause: Throwable) { failed.complete(cause) }
+        val appender = LogstashAppender(
+            config(server).copy(
+                tls = { trustManager = trust }, listeners = listOf(object : LogstashListener {
+                override fun connectionFailed(destination: LogstashDestination, cause: Throwable) {
+                    failed.complete(cause)
+                }
             })
-        ))
+            )
+        )
         try {
             withTimeout(10.seconds) {
                 val handshake = async(Dispatchers.IO) {
@@ -107,7 +115,8 @@ class LogstashTlsTest {
                 failed.await()
                 assertTrue(handshake.await().isFailure)
             }
-        } finally {
+        }
+        finally {
             appender.stopSuspend()
             server.close()
         }
@@ -129,8 +138,13 @@ class LogstashTlsTest {
         val keys = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm()).apply {
             init(keyStore, password.toCharArray())
         }
-        val context = SSLContext.getInstance("TLS").apply { init(keys.keyManagers, arrayOf(trustManager(keyStore)), null) }
-        return (context.serverSocketFactory.createServerSocket(0, 50, InetAddress.getByName("127.0.0.1")) as SSLServerSocket).apply {
+        val context =
+            SSLContext.getInstance("TLS").apply { init(keys.keyManagers, arrayOf(trustManager(keyStore)), null) }
+        return (context.serverSocketFactory.createServerSocket(
+            0,
+            50,
+            InetAddress.getByName("127.0.0.1")
+        ) as SSLServerSocket).apply {
             soTimeout = 5000
             enabledProtocols = arrayOf("TLSv1.2")
         }

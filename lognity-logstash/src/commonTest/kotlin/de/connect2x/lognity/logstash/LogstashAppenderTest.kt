@@ -50,8 +50,7 @@ class LogstashAppenderTest {
         val socket = RecordingSocket()
         val appender = LogstashAppender(
             config(socket).copy(
-                ringBufferSize = 1,
-                socketFactory = LogstashSocketFactory { _, _ -> gate.await(); socket }), plain
+                ringBufferSize = 1, socketFactory = LogstashSocketFactory { _, _ -> gate.await(); socket }), plain
         )
         try {
             runCurrent()
@@ -73,7 +72,8 @@ class LogstashAppenderTest {
             config(RecordingSocket()).copy(
             ringBufferSize = 1,
             appendTimeout = 50.milliseconds,
-            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain)
+            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain
+        )
         try {
             runCurrent()
             appender.append(logger, Level.INFO, "one", null)
@@ -99,7 +99,8 @@ class LogstashAppenderTest {
             config(socket).copy(
             ringBufferSize = 1,
             appendTimeout = (-1).milliseconds,
-            socketFactory = LogstashSocketFactory { _, _ -> gate.await(); socket }), plain)
+            socketFactory = LogstashSocketFactory { _, _ -> gate.await(); socket }), plain
+        )
         try {
             runCurrent()
             appender.append(logger, Level.INFO, "one", null)
@@ -158,7 +159,8 @@ class LogstashAppenderTest {
                 attempts += destination.host to testScheduler.currentTime
                 if (attempts.size <= 2) error("unavailable")
                 socket
-            }), plain)
+            }), plain
+        )
         try {
             appender.append(logger, Level.INFO, "retry", null)
             appender.flushSuspend()
@@ -197,7 +199,8 @@ class LogstashAppenderTest {
         val appender = LogstashAppender(
             config(recovered).copy(
             writeTimeout = 50.milliseconds,
-            socketFactory = LogstashSocketFactory { _, _ -> if (attempts++ == 0) blocked else recovered }), plain)
+            socketFactory = LogstashSocketFactory { _, _ -> if (attempts++ == 0) blocked else recovered }), plain
+        )
         try {
             appender.append(logger, Level.INFO, "retry", null)
             appender.flushSuspend()
@@ -221,7 +224,8 @@ class LogstashAppenderTest {
                 attempts += destination.host
                 if (destination.host == "primary") awaitCancellation()
                 socket
-            }), plain)
+            }), plain
+        )
         try {
             appender.append(logger, Level.INFO, "one", null)
             appender.flushSuspend()
@@ -237,8 +241,7 @@ class LogstashAppenderTest {
     fun idleKeepAliveUsesConfiguredBytesAndResetsAfterEvents() = runTest {
         val socket = RecordingSocket()
         val appender = LogstashAppender(
-            config(socket).copy(keepAliveDuration = 100.milliseconds, keepAliveMessage = "PING\n"),
-            plain
+            config(socket).copy(keepAliveDuration = 100.milliseconds, keepAliveMessage = "PING\n"), plain
         )
         try {
             runCurrent()
@@ -271,7 +274,8 @@ class LogstashAppenderTest {
             socketFactory = LogstashSocketFactory { destination, _ ->
                 destinations += destination.host
                 RecordingSocket().also { sockets += it }
-            }), plain)
+            }), plain
+        )
         try {
             runCurrent()
             advanceTimeBy(100)
@@ -296,7 +300,8 @@ class LogstashAppenderTest {
                 attempts += destination.host
                 if (attempts.size == 1) error("primary unavailable")
                 RecordingSocket().also { sockets += it }
-            }), plain)
+            }), plain
+        )
         try {
             runCurrent()
             advanceTimeBy(100)
@@ -337,9 +342,7 @@ class LogstashAppenderTest {
             config(RecordingSocket()).copy(
                 connectionStrategy = object : DestinationConnectionStrategy {
                 override fun selectDestination(
-                    destinationCount: Int,
-                    previousIndex: Int,
-                    connectionDuration: kotlin.time.Duration?
+                    destinationCount: Int, previousIndex: Int, connectionDuration: kotlin.time.Duration?
                 ) = -2
             }, listeners = listOf(object : LogstashListener {
                 override fun writerFailed(cause: Throwable) {
@@ -405,7 +408,8 @@ class LogstashAppenderTest {
         val appender = LogstashAppender(
             config(RecordingSocket()).copy(
             flushTimeout = 50.milliseconds, socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }),
-            plain)
+            plain
+        )
         try {
             appender.append(logger, Level.INFO, "offline", null)
             assertFailsWith<TimeoutCancellationException> { appender.flushSuspend() }
@@ -421,7 +425,8 @@ class LogstashAppenderTest {
             config(RecordingSocket()).copy(
             ringBufferSize = 1,
             appendTimeout = (-1).seconds,
-            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain)
+            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain
+        )
         runCurrent()
         appender.append(logger, Level.INFO, "one", null)
         val producer = launch { appender.appendSuspend(logger, Level.INFO, "cancelled", null) }
@@ -438,7 +443,8 @@ class LogstashAppenderTest {
             config(RecordingSocket()).copy(
             ringBufferSize = 1,
             appendTimeout = (-1).seconds,
-            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain)
+            socketFactory = LogstashSocketFactory { _, _ -> awaitCancellation() }), plain
+        )
         runCurrent()
         appender.append(logger, Level.INFO, "queued", null)
         val producer = async { appender.appendSuspend(logger, Level.INFO, "waiting", null) }

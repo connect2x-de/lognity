@@ -194,8 +194,7 @@ class LogstashAppender(
     private fun undelivered(command: LogstashCommand) {
         when (command) {
             is LogstashCommand.Event -> drop(
-                command,
-                if (stopped.load()) LogstashDropReason.SHUTDOWN else LogstashDropReason.QUEUE_FULL
+                command, if (stopped.load()) LogstashDropReason.SHUTDOWN else LogstashDropReason.QUEUE_FULL
             )
 
             is LogstashCommand.Flush -> command.completion.completeExceptionally(IllegalStateException("Appender stopped before flushing"))

@@ -129,9 +129,7 @@ internal class LogstashWriter(
         while (socket == null) {
             currentCoroutineContext().ensureActive()
             destinationIndex = config.connectionStrategy.selectDestination(
-                config.destinations.size,
-                destinationIndex,
-                connectionDuration
+                config.destinations.size, destinationIndex, connectionDuration
             )
             require(destinationIndex in config.destinations.indices) { "Connection strategy returned an invalid destination index" }
             connectionDuration = null
