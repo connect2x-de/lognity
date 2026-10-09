@@ -201,6 +201,9 @@ abstract class de.connect2x.lognity.config.appender/AbstractSerializableAppender
 abstract class de.connect2x.lognity.config.condition/AbstractSerializableCondition : de.connect2x.lognity.config.condition/SerializableCondition { // de.connect2x.lognity.config.condition/AbstractSerializableCondition|null[0]
     constructor <init>() // de.connect2x.lognity.config.condition/AbstractSerializableCondition.<init>|<init>(){}[0]
 
+    final var _config // de.connect2x.lognity.config.condition/AbstractSerializableCondition._config|{}_config[0]
+        final fun <get-_config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/AbstractSerializableCondition._config.<get-_config>|<get-_config>(){}[0]
+        final fun <set-_config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/AbstractSerializableCondition._config.<set-_config>|<set-_config>(de.connect2x.lognity.config.SerializableConfig){}[0]
     open var config // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config|{}config[0]
         open fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config.<get-config>|<get-config>(){}[0]
         open fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/AbstractSerializableCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
@@ -255,6 +258,10 @@ final class de.connect2x.lognity.config.condition/AndCondition : de.connect2x.lo
     final val name // de.connect2x.lognity.config.condition/AndCondition.name|{}name[0]
         final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/AndCondition.name.<get-name>|<get-name>(){}[0]
 
+    final var config // de.connect2x.lognity.config.condition/AndCondition.config|{}config[0]
+        final fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/AndCondition.config.<get-config>|<get-config>(){}[0]
+        final fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/AndCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+
     final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/AndCondition.component1|component1(){}[0]
     final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/AndCondition.component2|component2(){}[0]
     final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...): de.connect2x.lognity.config.condition/AndCondition // de.connect2x.lognity.config.condition/AndCondition.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
@@ -287,6 +294,10 @@ final class de.connect2x.lognity.config.condition/ExactlyOneCondition : de.conne
     final val name // de.connect2x.lognity.config.condition/ExactlyOneCondition.name|{}name[0]
         final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/ExactlyOneCondition.name.<get-name>|<get-name>(){}[0]
 
+    final var config // de.connect2x.lognity.config.condition/ExactlyOneCondition.config|{}config[0]
+        final fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/ExactlyOneCondition.config.<get-config>|<get-config>(){}[0]
+        final fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/ExactlyOneCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
+
     final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/ExactlyOneCondition.component1|component1(){}[0]
     final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/ExactlyOneCondition.component2|component2(){}[0]
     final fun copy(kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> = ..., de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> = ...): de.connect2x.lognity.config.condition/ExactlyOneCondition // de.connect2x.lognity.config.condition/ExactlyOneCondition.copy|copy(kotlin.collections.List<de.connect2x.lognity.config.serialization.RefOrValue<de.connect2x.lognity.config.condition.SerializableCondition>>;de.connect2x.lognity.config.serialization.RefOrValue<kotlin.String?>){}[0]
@@ -318,6 +329,10 @@ final class de.connect2x.lognity.config.condition/OrCondition : de.connect2x.log
         final fun <get-conditions>(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/OrCondition.conditions.<get-conditions>|<get-conditions>(){}[0]
     final val name // de.connect2x.lognity.config.condition/OrCondition.name|{}name[0]
         final fun <get-name>(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/OrCondition.name.<get-name>|<get-name>(){}[0]
+
+    final var config // de.connect2x.lognity.config.condition/OrCondition.config|{}config[0]
+        final fun <get-config>(): de.connect2x.lognity.config/SerializableConfig // de.connect2x.lognity.config.condition/OrCondition.config.<get-config>|<get-config>(){}[0]
+        final fun <set-config>(de.connect2x.lognity.config/SerializableConfig) // de.connect2x.lognity.config.condition/OrCondition.config.<set-config>|<set-config>(de.connect2x.lognity.config.SerializableConfig){}[0]
 
     final fun component1(): kotlin.collections/List<de.connect2x.lognity.config.serialization/RefOrValue<de.connect2x.lognity.config.condition/SerializableCondition>> // de.connect2x.lognity.config.condition/OrCondition.component1|component1(){}[0]
     final fun component2(): de.connect2x.lognity.config.serialization/RefOrValue<kotlin/String?> // de.connect2x.lognity.config.condition/OrCondition.component2|component2(){}[0]

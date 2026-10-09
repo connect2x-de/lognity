@@ -172,9 +172,12 @@ public abstract interface class de/connect2x/lognity/config/appender/Serializabl
 }
 
 public abstract class de/connect2x/lognity/config/condition/AbstractSerializableCondition : de/connect2x/lognity/config/condition/SerializableCondition {
+	protected field _config Lde/connect2x/lognity/config/SerializableConfig;
 	public fun <init> ()V
 	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
+	protected final fun get_config ()Lde/connect2x/lognity/config/SerializableConfig;
 	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
+	protected final fun set_config (Lde/connect2x/lognity/config/SerializableConfig;)V
 }
 
 public final class de/connect2x/lognity/config/condition/AlwaysCondition : de/connect2x/lognity/config/condition/AbstractSerializableCondition {
@@ -197,9 +200,11 @@ public final class de/connect2x/lognity/config/condition/AndCondition : de/conne
 	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/AndCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/AndCondition;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConditions ()Ljava/util/List;
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
 	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
 	public fun hashCode ()I
 	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -228,9 +233,11 @@ public final class de/connect2x/lognity/config/condition/ExactlyOneCondition : d
 	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/ExactlyOneCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/ExactlyOneCondition;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConditions ()Ljava/util/List;
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
 	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
 	public fun hashCode ()I
 	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -259,9 +266,11 @@ public final class de/connect2x/lognity/config/condition/OrCondition : de/connec
 	public static synthetic fun copy$default (Lde/connect2x/lognity/config/condition/OrCondition;Ljava/util/List;Lde/connect2x/lognity/config/serialization/RefOrValue;ILjava/lang/Object;)Lde/connect2x/lognity/config/condition/OrCondition;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConditions ()Ljava/util/List;
+	public fun getConfig ()Lde/connect2x/lognity/config/SerializableConfig;
 	public fun getName ()Lde/connect2x/lognity/config/serialization/RefOrValue;
 	public fun hashCode ()I
 	public fun invoke (Lde/connect2x/lognity/api/logger/Logger;Lde/connect2x/lognity/api/logger/Level;Ljava/lang/String;Lde/connect2x/lognity/api/marker/Marker;)Z
+	public fun setConfig (Lde/connect2x/lognity/config/SerializableConfig;)V
 	public fun toString ()Ljava/lang/String;
 }
 
