@@ -5,7 +5,7 @@ import kotlinx.serialization.Transient
 
 abstract class AbstractSerializableCondition : SerializableCondition {
     @Transient
-    private lateinit var _config: SerializableConfig
+    protected lateinit var _config: SerializableConfig
     override var config: SerializableConfig
         get() = _config
         set(value) {
