@@ -3,6 +3,7 @@ package de.connect2x.lognity.config.condition
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import de.connect2x.lognity.api.marker.Marker
+import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,6 +18,16 @@ data class ExactlyOneCondition(
     val conditions: List<RefOrValue<SerializableCondition>>,
     override val name: RefOrValue<String?> = RefOrValue.Value(null)
 ) : AbstractSerializableCondition() {
+    override var config: SerializableConfig
+        get() = _config
+        set(value) {
+            _config = value
+            conditions
+                .map { it.resolveTemplate(value) }
+                .filterIsInstance<AbstractSerializableCondition>()
+                .forEach { it.config = value }
+        }
+
     override fun invoke(logger: Logger, level: Level, message: String, marker: Marker?): Boolean { // @formatter:off
         return conditions.map { refOrValue -> refOrValue.resolveTemplate(config) }
             .count { condition -> condition(logger, level, message, marker) } == 1
