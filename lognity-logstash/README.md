@@ -1,5 +1,9 @@
 # Logstash TCP appender
 
+> **This feature is experimental!**  
+> If you experience any issues or need 1:1 compatibility, use Logback Logstash Encoder via SLF4J
+> as illustrated on the [external-backend-example](https://gitlab.com/connect2x/lognity/-/tree/external-backend-example/lognity-external-backend?ref_type=heads) branch.
+
 `LogstashAppender` implements Lognity's `Appender` in `commonMain` using Ktor TCP sockets.
 It sends to one destination at a time, like `net.logstash.logback.appender.LogstashTcpSocketAppender`.
 It does **not** use Socket.IO or WebSockets.
