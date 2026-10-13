@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.network.tls.*
@@ -13,10 +14,12 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /** Implementations must support cancellation of connect/write/flush, and nonblocking, idempotent close. */
+@ExperimentalLoggingApi
 fun interface LogstashSocketFactory {
     suspend fun connect(destination: LogstashDestination, config: LogstashConfig): LogstashSocket
 }
 
+@ExperimentalLoggingApi
 interface LogstashSocket {
     val isClosed: Boolean
     suspend fun write(bytes: ByteArray)
@@ -28,6 +31,7 @@ interface LogstashSocket {
     fun close()
 }
 
+@ExperimentalLoggingApi
 object KtorLogstashSocketFactory : LogstashSocketFactory {
     override suspend fun connect(destination: LogstashDestination, config: LogstashConfig): LogstashSocket {
         val selector = SelectorManager(Dispatchers.IO)

@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
 import kotlinx.serialization.json.JsonElement
@@ -11,6 +12,7 @@ import kotlinx.serialization.json.put
 import kotlin.time.Instant
 
 /** Event data is captured on the producer, before asynchronous encoding. */
+@ExperimentalLoggingApi
 data class LogstashEvent(
     val timestamp: Instant,
     val logger: Logger,
@@ -21,6 +23,7 @@ data class LogstashEvent(
 )
 
 /** Encoders own framing, charset, and optional per-connection headers and footers. */
+@ExperimentalLoggingApi
 fun interface LogstashEncoder {
     fun encode(event: LogstashEvent): ByteArray
     fun header(): ByteArray = byteArrayOf()
@@ -28,6 +31,7 @@ fun interface LogstashEncoder {
 }
 
 /** UTF-8 JSON Lines, with configurable fields and additional per-event JSON providers. */
+@ExperimentalLoggingApi
 class LogstashJsonEncoder(
     customFields: Map<String, JsonElement> = emptyMap(),
     fieldNames: Map<String, String> = emptyMap(),

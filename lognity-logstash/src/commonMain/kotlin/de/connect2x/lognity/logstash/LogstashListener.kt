@@ -1,8 +1,12 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
+
+@ExperimentalLoggingApi
 enum class LogstashDropReason { NOT_STARTED, QUEUE_FULL, SHUTDOWN }
 
 /** Listener exceptions are isolated from logging. Callbacks can run on producers or the writer. */
+@ExperimentalLoggingApi
 interface LogstashListener {
     fun appenderStarted() = Unit
     fun appenderStopped() = Unit

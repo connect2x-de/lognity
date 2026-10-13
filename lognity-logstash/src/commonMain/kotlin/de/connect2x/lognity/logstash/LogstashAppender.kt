@@ -36,6 +36,7 @@ import kotlin.time.Duration
  * [flush] is a FIFO barrier for previously accepted events, not an acknowledgement from Logstash.
  * TCP cannot guarantee delivery: reconnection can lose or duplicate events after a partial write.
  */
+@ExperimentalLoggingApi
 class LogstashAppender(
     config: LogstashConfig,
     val encoder: LogstashEncoder = LogstashJsonEncoder(),
@@ -202,6 +203,7 @@ class LogstashAppender(
     }
 }
 
+@ExperimentalLoggingApi
 internal sealed interface LogstashCommand {
     class Event(val event: LogstashEvent) : LogstashCommand {
         val completed = AtomicBoolean(false)

@@ -1,7 +1,8 @@
-@file:OptIn(de.connect2x.lognity.api.ExperimentalLoggingApi::class)
+@file:OptIn(ExperimentalLoggingApi::class)
 
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.logger.Level
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -12,6 +13,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalLoggingApi::class)
 class LogstashConcurrencyTest {
     @Test
     fun concurrentProducersPreserveEachProducersOrderWithoutLosingEvents() = runBlocking {

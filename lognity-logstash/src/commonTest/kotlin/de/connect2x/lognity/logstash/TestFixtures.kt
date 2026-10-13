@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.config.Config
 import de.connect2x.lognity.api.context.Context
 import de.connect2x.lognity.api.logger.Level
@@ -16,6 +17,7 @@ internal class TestLogger : Logger {
     override fun log(marker: Marker?, level: Level, message: MessageProvider) = Unit
 }
 
+@OptIn(ExperimentalLoggingApi::class)
 internal class RecordingSocket(
     private val writeAction: suspend (ByteArray) -> Unit = {}
 ) : LogstashSocket {

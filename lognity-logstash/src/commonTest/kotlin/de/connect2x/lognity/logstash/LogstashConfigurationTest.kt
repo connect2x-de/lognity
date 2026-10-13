@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -7,6 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalLoggingApi::class)
 class LogstashConfigurationTest {
     @Test
     fun destinationsAcceptHostnamesIpv4AndBracketedIpv6() {

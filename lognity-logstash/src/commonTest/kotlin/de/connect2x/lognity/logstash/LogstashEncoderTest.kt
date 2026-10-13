@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.logger.Level
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -13,6 +14,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Instant
 
+@OptIn(ExperimentalLoggingApi::class)
 class LogstashEncoderTest {
     private val event = LogstashEvent(
         Instant.parse("2026-10-09T12:00:00Z"),

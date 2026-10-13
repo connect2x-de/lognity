@@ -1,7 +1,8 @@
-@file:OptIn(de.connect2x.lognity.api.ExperimentalLoggingApi::class)
+@file:OptIn(ExperimentalLoggingApi::class)
 
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.logger.Level
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
@@ -21,6 +22,7 @@ import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalLoggingApi::class)
 class LogstashTcpTest {
     @Test
     fun shutdownDrainsLargePayloadBeforeClosingSocket() = runBlocking {

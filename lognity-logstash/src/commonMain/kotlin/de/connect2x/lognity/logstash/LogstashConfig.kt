@@ -1,5 +1,6 @@
 package de.connect2x.lognity.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import io.ktor.network.sockets.*
 import io.ktor.network.tls.*
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,6 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 /** A TCP destination. IPv6 literals in [parse] must be enclosed in brackets. */
+@ExperimentalLoggingApi
 data class LogstashDestination(val host: String, val port: Int = 4560) {
     init {
         require(host.isNotBlank() && host.none { it.isWhitespace() || it in "[],/" }) { "Invalid destination host" }
@@ -57,6 +59,7 @@ data class LogstashDestination(val host: String, val port: Int = 4560) {
  * [socketOptions] configures low-level TCP options. [socketFactory] permits custom transports.
  * Callbacks and strategies must be thread-safe, fast, and must not flush or stop this appender.
  */
+@ExperimentalLoggingApi
 data class LogstashConfig(
     val destinations: List<LogstashDestination>,
     val connectionStrategy: DestinationConnectionStrategy = PreferPrimaryStrategy(),
@@ -93,5 +96,57 @@ data class LogstashConfig(
         require(tls == null || socketFactory !== KtorLogstashSocketFactory || supportsLogstashTls) {
             "Ktor TLS is supported on JVM and Android, not on Native"
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as LogstashConfig
+
+        if (ringBufferSize != other.ringBufferSize) return false
+        if (writeBufferSize != other.writeBufferSize) return false
+        if (destinations != other.destinations) return false
+        if (connectionStrategy != other.connectionStrategy) return false
+        if (appendTimeout != other.appendTimeout) return false
+        if (reconnectionDelay != other.reconnectionDelay) return false
+        if (connectionTimeout != other.connectionTimeout) return false
+        if (writeTimeout != other.writeTimeout) return false
+        if (keepAliveDuration != other.keepAliveDuration) return false
+        if (keepAliveMessage != other.keepAliveMessage) return false
+        if (!keepAliveBytes.contentEquals(other.keepAliveBytes)) return false
+        if (shutdownGracePeriod != other.shutdownGracePeriod) return false
+        if (flushTimeout != other.flushTimeout) return false
+        if (tls != other.tls) return false
+        if (socketOptions != other.socketOptions) return false
+        if (socketFactory != other.socketFactory) return false
+        if (listeners != other.listeners) return false
+        if (dispatcher != other.dispatcher) return false
+        if (timeSource != other.timeSource) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ringBufferSize
+        result = 31 * result + writeBufferSize
+        result = 31 * result + destinations.hashCode()
+        result = 31 * result + connectionStrategy.hashCode()
+        result = 31 * result + appendTimeout.hashCode()
+        result = 31 * result + reconnectionDelay.hashCode()
+        result = 31 * result + connectionTimeout.hashCode()
+        result = 31 * result + writeTimeout.hashCode()
+        result = 31 * result + keepAliveDuration.hashCode()
+        result = 31 * result + keepAliveMessage.hashCode()
+        result = 31 * result + (keepAliveBytes?.contentHashCode() ?: 0)
+        result = 31 * result + shutdownGracePeriod.hashCode()
+        result = 31 * result + flushTimeout.hashCode()
+        result = 31 * result + tls.hashCode()
+        result = 31 * result + socketOptions.hashCode()
+        result = 31 * result + socketFactory.hashCode()
+        result = 31 * result + listeners.hashCode()
+        result = 31 * result + dispatcher.hashCode()
+        result = 31 * result + timeSource.hashCode()
+        return result
     }
 }
