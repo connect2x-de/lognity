@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.serialization.RefOrValue
 import de.connect2x.lognity.logstash.DestinationConnectionStrategy
@@ -12,6 +13,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /** Built-in destination selection strategies for the Logstash TCP appender. */
+@ExperimentalLoggingApi
 @Serializable
 sealed class LogstashConnectionStrategy {
     internal abstract fun asStrategy(config: SerializableConfig): DestinationConnectionStrategy
@@ -21,8 +23,7 @@ sealed class LogstashConnectionStrategy {
     data class PreferPrimary(
         @SerialName("min_connection_time_before_primary") val minConnectionTimeBeforePrimary: RefOrValue<Duration> = RefOrValue.Value(
             10.seconds
-        ),
-        @SerialName("secondary_connection_ttl") val secondaryConnectionTTL: RefOrValue<Duration?> = RefOrValue.Value(
+        ), @SerialName("secondary_connection_ttl") val secondaryConnectionTTL: RefOrValue<Duration?> = RefOrValue.Value(
             null
         )
     ) : LogstashConnectionStrategy() {

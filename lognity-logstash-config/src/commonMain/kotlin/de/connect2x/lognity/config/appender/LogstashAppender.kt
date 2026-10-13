@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.appender
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.config.SerializableFilter
 import de.connect2x.lognity.config.logstash.LogstashConnectionStrategy
 import de.connect2x.lognity.config.logstash.LogstashJsonEncoder
@@ -12,6 +13,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /** Serializable TCP appender options. Durations are ISO-8601 strings; destinations use host[:port]. */
+@ExperimentalLoggingApi
 @SerialName("logstash")
 @Serializable
 data class LogstashAppender(

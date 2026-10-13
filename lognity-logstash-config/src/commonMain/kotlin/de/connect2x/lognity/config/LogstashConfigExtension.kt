@@ -1,11 +1,13 @@
 package de.connect2x.lognity.config
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.config.appender.LogstashAppender
 import de.connect2x.lognity.config.extension.ConfigExtension
 import de.connect2x.lognity.config.extension.ConfigExtensionRegistrar
 import de.connect2x.lognity.logstash.LogstashAppender as LogstashAppenderImpl
 
 /** Registers the Logstash TCP appender for use in serializable configurations. */
+@ExperimentalLoggingApi
 object LogstashConfigExtension : ConfigExtension {
     override fun ConfigExtensionRegistrar.register() {
         registerAppenderType<LogstashAppender> { config, formatter ->

@@ -1,5 +1,6 @@
 package de.connect2x.lognity.config.logstash
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.config.SerializableConfig
 import de.connect2x.lognity.config.serialization.RefOrValue
 import kotlinx.serialization.SerialName
@@ -8,6 +9,7 @@ import kotlinx.serialization.json.JsonElement
 import de.connect2x.lognity.logstash.LogstashJsonEncoder as LogstashJsonEncoderImpl
 
 /** JSON Lines encoder options. A field name of `[ignore]` omits that field. */
+@ExperimentalLoggingApi
 @Serializable
 data class LogstashJsonEncoder(
     @SerialName("custom_fields") val customFields: RefOrValue<Map<String, RefOrValue<JsonElement>>> = RefOrValue.Value(

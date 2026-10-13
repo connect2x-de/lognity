@@ -2,6 +2,7 @@
 
 package de.connect2x.lognity.config
 
+import de.connect2x.lognity.api.ExperimentalLoggingApi
 import de.connect2x.lognity.api.backend.Backend
 import de.connect2x.lognity.api.logger.Level
 import de.connect2x.lognity.api.logger.Logger
@@ -30,6 +31,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalLoggingApi::class)
 class LogstashConfigTcpTest {
     @BeforeTest
     fun setup() {
