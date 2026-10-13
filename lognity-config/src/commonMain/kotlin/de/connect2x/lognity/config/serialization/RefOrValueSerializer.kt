@@ -82,12 +82,23 @@ class RefOrValueSerializer<T>(
         }
     }
 
-    // @formatter:off
-    private fun isBareReference(s: String): Boolean = s.startsWith(REFERENCE_BEGIN)
-        && s.endsWith(REFERENCE_END)
-        && s.getOrNull(1) != REFERENCE_BEGIN
-        && s.getOrNull(s.length - 2) != REFERENCE_END
+    private fun isBareReference(s: String): Boolean {
+        if (!s.startsWith(REFERENCE_BEGIN) || !s.endsWith(REFERENCE_END)
+            || s.getOrNull(1) == REFERENCE_BEGIN || s.getOrNull(s.length - 2) == REFERENCE_END
+        ) return false
+        var inParameters = false
+        var inString = false
+        for (index in 1..s.lastIndex) {
+            when (s[index]) {
+                TEMPLATE_PARAM_BEGIN -> if (!inString) inParameters = true
+                TEMPLATE_PARAM_STR_DELIMITER -> if (inParameters) inString = !inString
+                REFERENCE_END -> if (!inString) return index == s.lastIndex
+            }
+        }
+        return false
+    }
 
+    // @formatter:off
     private fun stripReferenceDelimiters(s: String): String = s.substringAfter(REFERENCE_BEGIN)
         .substringBeforeLast(REFERENCE_END)
     // @formatter:on

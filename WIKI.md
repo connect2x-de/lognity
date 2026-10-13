@@ -38,6 +38,8 @@ consider the following matrix:
 | lognity-core         | The default standalone implementation of the Lognity logging API.<br>If your project is an application, you want to depend on this module. | KMP         |
 | lognity-config       | The standalone Lognity config API.<br>If you're writing a Lognity extension with JSON config support, you want to depend on this module.   | KMP         |
 | lognity-core-config  | Exposes features from `lognity-core` through the `lognity-config` config system.                                                           | KMP         |
+| lognity-logstash     | Provides asynchronous TCP logging to Logstash.                                                                                            | JVM/Android/Native |
+| lognity-logstash-config | Exposes the Logstash appender through `lognity-config`. See the [configuration guide](lognity-logstash-config/README.md).                | JVM/Android/Native |
 | lognity-test         | Provides a special `TestBackend` and default configuration for logging in unit tests.                                                      | KMP         |
 | lognity-java-logging | Provides integration between the Lognity logging API and the Java logging facade.                                                          | JVM/Android |
 | lognity-ktor-client  | Provides integration between the Lognity logging API and the Ktor Client logging interface.                                                | KMP         |                                               

@@ -80,7 +80,8 @@
                             "system_log",
                             "os_log",
                             "logcat",
-                            "winevent"
+                            "winevent",
+                            "logstash"
                         ],
                         "default": "system_console",
                         "description": "The type of appender."
@@ -540,12 +541,113 @@
                         "required": ["base_path"]
                     }
                 },
+                "allOf": [
+                    {
+                        "if": {"properties": {"type": {"const": "logstash"}}, "required": ["type"]},
+                        "then": {"$ref": "#/$defs/logstash"},
+                        "else": {"required": ["pattern", "formatter"]}
+                    }
+                ],
                 "required": [
-                    "type",
-                    "pattern",
-                    "formatter"
+                    "type"
                 ]
             }
+        }
+    },
+    "$defs": {
+        "logstash_reference": {
+            "type": "string",
+            "pattern": "^\\{[^{}]+}$"
+        },
+        "logstash_duration": {
+            "type": "string",
+            "description": "An ISO-8601 duration or a reference to a Kotlin Duration value."
+        },
+        "logstash_nullable_duration": {
+            "type": ["string", "null"],
+            "description": "An ISO-8601 duration, a reference, or null to disable."
+        },
+        "logstash": {
+            "type": "object",
+            "description": "Logstash TCP appender; requires LogstashConfigExtension. JVM, Android, and Native only.",
+            "properties": {
+                "destinations": {
+                    "oneOf": [
+                        {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+                        {"$ref": "#/$defs/logstash_reference"}
+                    ],
+                    "description": "TCP destinations as host[:port]; bracket IPv6 literals. Default port: 4560."
+                },
+                "connection_strategy": {
+                    "oneOf": [
+                        {"$ref": "#/$defs/logstash_reference"},
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {"enum": ["prefer_primary", "round_robin", "random"]},
+                                "min_connection_time_before_primary": {"$ref": "#/$defs/logstash_duration", "default": "PT10S"},
+                                "secondary_connection_ttl": {"$ref": "#/$defs/logstash_nullable_duration", "default": null},
+                                "connection_ttl": {"$ref": "#/$defs/logstash_nullable_duration", "default": null}
+                            },
+                            "required": ["type"]
+                        }
+                    ],
+                    "default": {"type": "prefer_primary"}
+                },
+                "ring_buffer_size": {
+                    "oneOf": [{"type": "integer", "minimum": 1}, {"$ref": "#/$defs/logstash_reference"}],
+                    "description": "Queue capacity; must be a positive power of two.",
+                    "default": 8192
+                },
+                "append_timeout": {"$ref": "#/$defs/logstash_duration", "default": "PT0S"},
+                "reconnection_delay": {"$ref": "#/$defs/logstash_duration", "default": "PT30S"},
+                "connection_timeout": {"$ref": "#/$defs/logstash_duration", "default": "PT5S"},
+                "write_timeout": {"$ref": "#/$defs/logstash_duration", "default": "PT0S"},
+                "write_buffer_size": {
+                    "oneOf": [{"type": "integer", "minimum": 0}, {"$ref": "#/$defs/logstash_reference"}],
+                    "default": 8192
+                },
+                "keep_alive_duration": {"$ref": "#/$defs/logstash_nullable_duration", "default": null},
+                "keep_alive_message": {"type": "string", "default": "\n"},
+                "keep_alive_bytes": {
+                    "oneOf": [
+                        {"type": "array", "items": {"type": "integer", "minimum": -128, "maximum": 127}},
+                        {"type": "null"},
+                        {"$ref": "#/$defs/logstash_reference"}
+                    ],
+                    "default": null
+                },
+                "shutdown_grace_period": {"$ref": "#/$defs/logstash_duration", "default": "PT60S"},
+                "flush_timeout": {"$ref": "#/$defs/logstash_duration", "default": "PT60S"},
+                "tls": {
+                    "oneOf": [{"type": "boolean"}, {"$ref": "#/$defs/logstash_reference"}],
+                    "description": "Enable TLS with platform trust and hostname verification; JVM/Android only.",
+                    "default": false
+                },
+                "encoder": {
+                    "oneOf": [
+                        {"$ref": "#/$defs/logstash_reference"},
+                        {
+                            "type": "object",
+                            "properties": {
+                                "custom_fields": {
+                                    "oneOf": [{"type": "object"}, {"$ref": "#/$defs/logstash_reference"}],
+                                    "description": "Additional JSON fields, with references supported for each field value."
+                                },
+                                "field_names": {
+                                    "oneOf": [
+                                        {"type": "object", "additionalProperties": {"type": "string"}},
+                                        {"$ref": "#/$defs/logstash_reference"}
+                                    ],
+                                    "description": "Field renaming map; [ignore] omits a field."
+                                },
+                                "line_separator": {"type": "string", "default": "\n"}
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": ["destinations"]
         }
     },
     "required": ["version"]

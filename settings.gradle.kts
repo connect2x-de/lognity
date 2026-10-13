@@ -23,6 +23,8 @@ include("lognity-ktor-server")
 include("lognity-ktor-client")
 include("lognity-config")
 include("lognity-test")
+include("lognity-logstash")
+include("lognity-logstash-config")
 
 include("lognity-example")
 include("lognity-benchmarks")

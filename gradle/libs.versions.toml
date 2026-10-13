@@ -1,3 +1,10 @@
 [versions]
 
-lognity = "2.3.1"
+lognity = "2.4.0"
+ktor = "3.5.0"
+
+[libraries]
+
+ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
+ktor-network-tls = { module = "io.ktor:ktor-network-tls", version.ref = "ktor" }
+ktor-network-tls-certificates = { module = "io.ktor:ktor-network-tls-certificates", version.ref = "ktor" }
