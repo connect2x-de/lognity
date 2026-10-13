@@ -23,6 +23,36 @@ class RollingAsyncSinkTest {
         SystemFileSystem.delete(parentDir, mustExist = false)
     }
 
+    private fun assertRollingContents(
+        name: String,
+        messages: List<String>,
+        expectedFiles: Map<String, String>,
+        fileCount: Int = 5,
+        latestSuffix: String = "-latest",
+    ) {
+        val basePath = getTestBasePath(name)
+        try {
+            RollingAsyncSink(
+                basePath,
+                fileCount = fileCount,
+                maxFileSize = 10L,
+                useTimestamps = false,
+                deleteExisting = true,
+                latestSuffix = latestSuffix,
+            ).use { sink ->
+                messages.forEach(sink::write)
+            }
+
+            val files = SystemFileSystem.list(basePath.parent ?: Path("."))
+            val actualFiles = files.associate { file ->
+                file.name to SystemFileSystem.source(file).buffered().use { it.readString() }
+            }
+            assertEquals(expectedFiles, actualFiles)
+        } finally {
+            cleanup(basePath)
+        }
+    }
+
     @Test
     fun `Basic write and flush`() {
         val basePath = getTestBasePath("basic")
@@ -91,56 +121,89 @@ class RollingAsyncSinkTest {
     }
 
     @Test
-    fun `File count limit and overwriting`() {
-        val basePath = getTestBasePath("limit")
-        val fileCount = 3
-        val sink = RollingAsyncSink(
-            basePath,
-            fileCount = fileCount,
-            maxFileSize = 10L,
-            useTimestamps = false,
-            deleteExisting = true,
-            latestSuffix = "-latest",
+    fun `No rolling below maxFileSize`() {
+        assertRollingContents(
+            name = "below_limit",
+            messages = listOf("0123", "45678"),
+            expectedFiles = mapOf("test.0-latest.log" to "012345678"),
         )
-        try {
-            sink.write("first_____")
-            sink.write("second____")
-            sink.write("third_____")
-            sink.write("first_____")
-            sink.close()
+    }
 
-            val parentDir = basePath.parent ?: Path(".")
-            val files = SystemFileSystem.list(parentDir)
+    @Test
+    fun `Rolling on cumulative maxFileSize`() {
+        assertRollingContents(
+            name = "cumulative_exact",
+            messages = listOf("0123", "456789"),
+            expectedFiles = mapOf(
+                "test.0.log" to "0123456789",
+                "test.1-latest.log" to "",
+            ),
+        )
+    }
 
-            assertEquals(fileCount, files.size, "Should have 3 files")
-        } finally {
-            cleanup(basePath)
-        }
+    @Test
+    fun `Oversized write rolls once and resets byte count`() {
+        assertRollingContents(
+            name = "oversized",
+            messages = listOf("012345678901234567890", "123456789"),
+            expectedFiles = mapOf(
+                "test.0.log" to "012345678901234567890",
+                "test.1-latest.log" to "123456789",
+            ),
+        )
+    }
+
+    @Test
+    fun `Rolling when cumulative writes exceed maxFileSize`() {
+        assertRollingContents(
+            name = "cumulative_overshoot",
+            messages = listOf("012345", "6789a", "abcdef", "ghijk", "tail"),
+            expectedFiles = mapOf(
+                "test.0.log" to "0123456789a",
+                "test.1.log" to "abcdefghijk",
+                "test.2-latest.log" to "tail",
+            ),
+        )
+    }
+
+    @Test
+    fun `Rolling uses UTF-8 byte count rather than character count`() {
+        assertRollingContents(
+            name = "utf8_overshoot",
+            messages = listOf("ééé", "ééé"),
+            expectedFiles = mapOf(
+                "test.0.log" to "éééééé",
+                "test.1-latest.log" to "",
+            ),
+        )
+    }
+
+    @Test
+    fun `File count limit and overwriting`() {
+        assertRollingContents(
+            name = "limit",
+            messages = listOf("first______", "second______", "third________", "fourth________"),
+            expectedFiles = mapOf(
+                "test.0.log" to "fourth________",
+                "test.1-latest.log" to "",
+                "test.2.log" to "third________",
+            ),
+            fileCount = 3,
+        )
     }
 
     @Test
     fun `No latest suffix`() {
-        val basePath = getTestBasePath("no_suffix")
-        val sink = RollingAsyncSink(
-            basePath, fileCount = 2, maxFileSize = 10L, useTimestamps = false, deleteExisting = true, latestSuffix = "",
+        assertRollingContents(
+            name = "no_suffix",
+            messages = listOf("0123456789a", "abcdefghijk"),
+            expectedFiles = mapOf(
+                "test.0.log" to "",
+                "test.1.log" to "abcdefghijk",
+            ),
+            fileCount = 2,
+            latestSuffix = "",
         )
-        try {
-            sink.write("0123456789")
-            sink.write("abcdefghij")
-            sink.close()
-
-            val parentDir = basePath.parent ?: Path(".")
-            val files = SystemFileSystem.list(parentDir)
-
-            assertEquals(2, files.size)
-            val file0 = files.find { it.name.endsWith(".0.log") }!!
-            val file1 = files.find { it.name.endsWith(".1.log") }!!
-
-            assertEquals("", SystemFileSystem.source(file0).buffered().use { it.readString() })
-            assertEquals("abcdefghij", SystemFileSystem.source(file1).buffered().use { it.readString() })
-        } finally {
-            cleanup(basePath)
-        }
     }
 
     @Test

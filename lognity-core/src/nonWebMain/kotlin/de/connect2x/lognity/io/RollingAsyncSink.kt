@@ -194,7 +194,7 @@ internal class RollingAsyncSink( // @formatter:off
     }
 
     private fun rotateIfNeeded(bytesWritten: Int) {
-        if (this.bytesWritten.addAndFetch(bytesWritten.toLong()) == maxFileSize) {
+        if (this.bytesWritten.addAndFetch(bytesWritten.toLong()) >= maxFileSize) {
             this.bytesWritten.store(0)
             sink.close()
             if (latestSuffix.isNotEmpty()) {
