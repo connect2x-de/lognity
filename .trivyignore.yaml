@@ -5,3 +5,9 @@ vulnerabilities:
     statement: Only affects local dev tools
   - id: CVE-2026-84939
     statement: Only affects local dev tools
+  - id: CVE-2026-90711
+    statement: Only affects local dev tools
+  - id: CVE-2026-9277
+    statement: Only affects local dev tools
+  - id: CVE-2026-54466
+    statement: Only affects local dev tools
